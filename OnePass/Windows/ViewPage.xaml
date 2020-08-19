@@ -16,7 +16,7 @@
 
                 <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
                 <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login"/>
-                <GridViewColumn DisplayMemberBinding="{Binding Path=Password}" Header="Password"/>
+                <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password"/>
 
             </GridView>
 

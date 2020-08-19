@@ -9,5 +9,7 @@
         public string Login { get; set; }
 
         public string Password { get; set; }
+
+        public string CensoredPassword => new string('*', Password.Length);
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,7 +32,8 @@ namespace OnePass.Windows
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             using var context = new OnePassContext();
-            LoginDataListView.ItemsSource = await context.Products.ToListAsync();
+            var products = await context.Products.ToListAsync();
+            LoginDataListView.ItemsSource = products;
         }
     }
 }
