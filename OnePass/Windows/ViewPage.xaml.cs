@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,18 +19,19 @@ using System.Windows.Shapes;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ViewPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ViewPage : Page
     {
-        public MainWindow()
+        public ViewPage()
         {
             InitializeComponent();
         }
 
-        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Close();
+            using var context = new OnePassContext();
+            LoginDataListView.ItemsSource = await context.Products.ToListAsync();
         }
     }
 }

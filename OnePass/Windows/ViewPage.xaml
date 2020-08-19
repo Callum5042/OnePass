@@ -1,0 +1,26 @@
+﻿<Page x:Name="View" x:Class="OnePass.Windows.ViewPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OnePass.Windows"
+      mc:Ignorable="d" 
+      d:DesignHeight="480" d:DesignWidth="640"
+      Title="ViewPage" Loaded="OnLoaded" >
+
+    <!-- Product list -->
+    <ListView x:Name="LoginDataListView">
+        <ListView.View>
+
+            <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Product data">
+
+                <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
+                <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login"/>
+                <GridViewColumn DisplayMemberBinding="{Binding Path=Password}" Header="Password"/>
+
+            </GridView>
+
+        </ListView.View>
+    </ListView>
+
+</Page>

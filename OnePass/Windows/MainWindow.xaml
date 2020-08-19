@@ -3,10 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OnePass"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="OnePass" Height="480" Width="640">
+    
+    <DockPanel>
+        
+        <!-- Menubar -->
+        <Menu x:Name="Menubar" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
+            </MenuItem>
+        </Menu>
+        
+        <Frame x:Name="ContentFrame" Source="/Windows/LoginPage.xaml" NavigationUIVisibility="Hidden"></Frame>
 
-    </Grid>
+    </DockPanel>
+
 </Window>

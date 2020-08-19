@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnePass.Services.DataAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,18 +16,20 @@ using System.Windows.Shapes;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginPage : Page
     {
-        public MainWindow()
+        public LoginPage()
         {
             InitializeComponent();
         }
 
-        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Close();
+            var window = Application.Current.MainWindow as MainWindow;
+
+            window.ContentFrame.Navigate(new ViewPage());
         }
     }
 }
