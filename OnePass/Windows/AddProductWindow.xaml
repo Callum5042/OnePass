@@ -6,18 +6,18 @@
         xmlns:local="clr-namespace:OnePass.Windows"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Add Product" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" Loaded="OnLoaded">
+        Title="Add Product" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow">
 
     <StackPanel Margin="10,0,10,10">
         
         <Label>Name</Label>
         <TextBox x:Name="NameTextbox"></TextBox>
         
-        <Label x:Name="LoginTextbox">Login</Label>
-        <TextBox></TextBox>
+        <Label>Login</Label>
+        <TextBox x:Name="LoginTextbox"></TextBox>
         
-        <Label x:Name="PasswordTextbox">Password</Label>
-        <TextBox></TextBox>
+        <Label>Password</Label>
+        <TextBox x:Name="PasswordTextbox"></TextBox>
 
         <Grid Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="SubmitButton" Grid.Column="0">Add Product</Button>
+            <Button x:Name="SubmitButton" Grid.Column="0" Click="OnClick_AddProduct">Add Product</Button>
             <Separator Grid.Column="1" Margin="10,0,10,0"></Separator>
             <Button x:Name="GeneratePasswordButton" Grid.Column="2">Generate Password</Button>
         </Grid>

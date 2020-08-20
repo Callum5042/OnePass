@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace OnePass.Handlers
 {
-    [Inject]
-    public class ViewPageHandler
+    [Inject(typeof(IViewProductHandler))]
+    public class ViewProductHandler : IViewProductHandler
     {
         private readonly OnePassContext _context;
 
-        public ViewPageHandler(OnePassContext context)
+        public ViewProductHandler(OnePassContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

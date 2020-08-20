@@ -1,34 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OnePass.Handlers;
+using OnePass.Infrastructure;
+using OnePass.Services;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
     /// <summary>
     /// Interaction logic for ProductAuthorWindow.xaml
     /// </summary>
+    [Inject]
     public partial class AddProductWindow : Window
     {
-        public AddProductWindow()
+        private readonly IAddProductHandler _handler;
+
+        public AddProductWindow(IAddProductHandler handler)
         {
             InitializeComponent();
             Owner = Application.Current.MainWindow;
             ShowInTaskbar = false;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private async void OnClick_AddProduct(object sender, RoutedEventArgs e)
         {
+            var product = new Product()
+            {
+                Name = NameTextbox.Text,
+                Login = LoginTextbox.Text,
+                Password = PasswordTextbox.Text
+            };
 
+            await _handler.AddProduct(product);
+
+            Close();
+
+            if (Application.Current.MainWindow is MainWindow window)
+            {
+                if (window.Content is ViewPage viewPage)
+                {
+                    await viewPage.UpdateProductListAsync();
+                }
+            }
         }
     }
 }
