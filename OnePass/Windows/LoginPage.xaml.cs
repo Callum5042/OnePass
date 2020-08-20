@@ -27,10 +27,10 @@ namespace OnePass.Windows
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            var app = Application.Current as App;
             var window = Application.Current.MainWindow as MainWindow;
-            window.Content = new ViewPage();
 
-            //(Application.Current as App).IsLoggedIn = true;
+            window.Content = app.GetService<ViewPage>();
         }
     }
 }
