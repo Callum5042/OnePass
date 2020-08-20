@@ -50,14 +50,7 @@ namespace OnePass.Windows
 
         private void MenuItem_Click_Add(object sender, RoutedEventArgs e)
         {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
-
-            var window = new AuthorWindow
-            {
-                Owner = mainWindow,
-                ShowInTaskbar = false
-            };
-
+            var window = new AddProductWindow();
             window.ShowDialog();
         }
 

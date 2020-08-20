@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnePass.Services.DataAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,21 +10,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ProductAuthorWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class AddProductWindow : Window
     {
-        public MainWindow()
+        public AddProductWindow()
         {
             InitializeComponent();
+            Owner = Application.Current.MainWindow;
+            ShowInTaskbar = false;
+        }
 
-            Content = new LoginPage();
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

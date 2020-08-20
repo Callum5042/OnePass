@@ -15,13 +15,18 @@ using System.Windows.Shapes;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for ProductAuthorWindow.xaml
+    /// Interaction logic for UpdateProductWindow.xaml
     /// </summary>
-    public partial class AuthorWindow : Window
+    public partial class UpdateProductWindow : Window
     {
-        public AuthorWindow()
+        public UpdateProductWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
