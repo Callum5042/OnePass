@@ -8,19 +8,41 @@
       d:DesignHeight="480" d:DesignWidth="640"
       Title="ViewPage" Loaded="OnLoaded" >
 
-    <!-- Product list -->
-    <ListView x:Name="LoginDataListView">
-        <ListView.View>
+    <DockPanel>
 
-            <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Product data">
+        <!-- Menu -->
+        <Menu x:Name="Menubar" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
+            </MenuItem>
+            <MenuItem Header="Add Product"></MenuItem>
+        </Menu>
 
-                <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
-                <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login"/>
-                <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password"/>
+        <!-- Product list -->
+        <ListView x:Name="LoginDataListView">
+            <ListView.View>
 
-            </GridView>
+                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Product data">
 
-        </ListView.View>
-    </ListView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password"/>
 
+                </GridView>
+
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnMouseLeftReleased_Test" />
+                </Style>
+
+            </ListView.ItemContainerStyle>
+
+        </ListView>
+
+    </DockPanel>
+    
 </Page>

@@ -25,11 +25,18 @@ namespace OnePass.Windows
         public MainWindow()
         {
             InitializeComponent();
+
+            Content = new LoginPage();
         }
 
-        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        //private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
+        //{
+        //    Close();
+        //}
+
+        //private void MenuItem_Click_Add(object sender, RoutedEventArgs e)
+        //{
+        //    ContentFrame.Navigate(new AddPage());
+        //}
     }
 }

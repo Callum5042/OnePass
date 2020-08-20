@@ -16,21 +16,13 @@ using System.Windows.Shapes;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
+    /// Interaction logic for AddPage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class AddPage : Page
     {
-        public LoginPage()
+        public AddPage()
         {
             InitializeComponent();
-        }
-
-        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var window = Application.Current.MainWindow as MainWindow;
-            window.Content = new ViewPage();
-
-            //(Application.Current as App).IsLoggedIn = true;
         }
     }
 }

@@ -14,6 +14,8 @@ namespace OnePass
     /// </summary>
     public partial class App : Application
     {
+        public bool IsLoggedIn { get; set; } = false;
+
         public App()
         {
 
