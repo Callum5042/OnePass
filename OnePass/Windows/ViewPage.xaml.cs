@@ -61,22 +61,33 @@ namespace OnePass.Windows
                     var popupText = new TextBlock
                     {
                         Text = "Password copied to clipboard",
-                        Background = Brushes.White,
+                        Background = Brushes.GhostWhite,
                         Foreground = Brushes.Black,
+                        Margin = new Thickness(3),
                     };
 
                     var border = new Border()
                     {
                         Child = popupText,
                         BorderThickness = new Thickness(1),
-                        BorderBrush = Brushes.Black
+                        BorderBrush = Brushes.Gray,
+                        CornerRadius = new CornerRadius(3)
                     };
+
+                    var panel = new StackPanel();
+                    panel.Background = Brushes.GhostWhite;
+
+                    panel.Children.Add(border);
+
 
                     var codePopup = new Popup
                     {
-                        Child = border,
+                        Child = panel,
                         Placement = PlacementMode.Mouse,
-                        IsOpen = true
+                        AllowsTransparency = true,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        IsOpen = true,
                     };
 
                     await Task.Delay(1000);

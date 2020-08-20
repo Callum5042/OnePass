@@ -41,9 +41,9 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Product data">
 
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Login}" Header="Login" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password" />
 
                 </GridView>
             </ListView.View>
