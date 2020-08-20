@@ -1,0 +1,36 @@
+﻿<Window x:Class="OnePass.Windows.AuthorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OnePass.Windows"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Title="ProductAuthorWindow" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow">
+
+    <StackPanel Margin="10,0,10,10">
+        
+        <Label>Name</Label>
+        <TextBox></TextBox>
+        
+        <Label>Login</Label>
+        <TextBox></TextBox>
+        
+        <Label>Password</Label>
+        <TextBox></TextBox>
+
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0">Add Product</Button>
+            <Separator Grid.Column="1" Margin="10,0,10,0"></Separator>
+            <Button Grid.Column="2">Generate Password</Button>
+        </Grid>
+
+    </StackPanel>
+
+</Window>
