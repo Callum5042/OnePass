@@ -5,7 +5,9 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OnePass.Windows
 {
@@ -46,13 +48,75 @@ namespace OnePass.Windows
             window.ShowDialog();
         }
 
-        private void OnMouseLeftReleased_Test(object sender, MouseButtonEventArgs e)
+        private async void OnMouseLeftDown_CopyPassword(object sender, MouseButtonEventArgs e)
         {
-            var item = sender as ListViewItem;
+            if (e.ClickCount == 2)
+            {
+                var item = sender as ListViewItem;
+                if (item?.IsSelected == true)
+                {
+                    var content = item.Content as Product;
+                    Clipboard.SetText(content.Password);
+
+                    var popupText = new TextBlock
+                    {
+                        Text = "Password copied to clipboard",
+                        Background = Brushes.White,
+                        Foreground = Brushes.Black,
+                    };
+
+                    var border = new Border()
+                    {
+                        Child = popupText,
+                        BorderThickness = new Thickness(1),
+                        BorderBrush = Brushes.Black
+                    };
+
+                    var codePopup = new Popup
+                    {
+                        Child = border,
+                        Placement = PlacementMode.Mouse,
+                        IsOpen = true
+                    };
+
+                    await Task.Delay(1000);
+                    codePopup.IsOpen = false;
+                }
+            }
+        }
+
+        private async void MenuItem_OnClick_Refresh(object sender, RoutedEventArgs e)
+        {
+            await UpdateProductListAsync();
+        }
+
+        private void OnClick_UpdateProduct(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = LoginDataListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+
             if (item?.IsSelected == true)
             {
-                var content = item.Content as Product;
-                MessageBox.Show($"{content.Password}");
+                var app = Application.Current as App;
+                var window = app.GetService<UpdateProductWindow>();
+                window.Product = item.Content as Product;
+
+                window.ShowDialog();
+            }
+        }
+
+        private void OnClick_DeleteProduct(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = LoginDataListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+
+            if (item?.IsSelected == true)
+            {
+                var result = MessageBox.Show("Are you sure you want to delete this product?\nOnce deleted it cannot be recovered", "Delete Product", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
     }

@@ -12,5 +12,16 @@
         <Label>Welcome</Label>
         <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Click="LoginButton_OnClick"/>
 
+        <!--<Button HorizontalAlignment="Left" 
+        Width="150" Margin="20,10,0,0" Click="DisplayPopup">
+            <StackPanel>
+                <TextBlock>Display Your Popup Text</TextBlock>
+                <Popup Name="myPopup">
+                    <TextBlock Name="myPopupText" Background="LightBlue" Foreground="Blue">Popup Text</TextBlock>
+                </Popup>
+            </StackPanel>
+        </Button>-->
+
+
     </Grid>
 </Page>

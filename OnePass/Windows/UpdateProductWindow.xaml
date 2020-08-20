@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OnePass.Windows"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="ProductAuthorWindow" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" Loaded="OnLoaded">
+        Title="Update Product" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" Loaded="OnLoaded">
 
     <StackPanel Margin="10,0,10,10">
 
@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="SubmitButton" Grid.Column="0">Product</Button>
+            <Button x:Name="SubmitButton" Grid.Column="0" Click="OnClick_UpdateProduct">Update Product</Button>
             <Separator Grid.Column="1" Margin="10,0,10,0"></Separator>
             <Button x:Name="GeneratePasswordButton" Grid.Column="2">Generate Password</Button>
         </Grid>

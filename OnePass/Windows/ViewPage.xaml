@@ -14,6 +14,7 @@
         <Menu x:Name="Menubar" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
+                <MenuItem Header="_Refresh" Click="MenuItem_OnClick_Refresh"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
@@ -22,8 +23,22 @@
 
         <!-- Product list -->
         <ListView x:Name="LoginDataListView">
-            <ListView.View>
 
+            <ListView.Resources>
+                <ContextMenu x:Key="resourceContextMenu">
+                    <MenuItem Header="Update" Click="OnClick_UpdateProduct"></MenuItem>
+                    <MenuItem Header="Delete" Click="OnClick_DeleteProduct"></MenuItem>
+                </ContextMenu>
+            </ListView.Resources>
+            
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="OnMouseLeftDown_CopyPassword" />
+                    <Setter Property="ContextMenu" Value="{StaticResource resourceContextMenu}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.View>
                 <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Product data">
 
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name"/>
@@ -31,15 +46,7 @@
                     <GridViewColumn DisplayMemberBinding="{Binding Path=CensoredPassword}" Header="Password"/>
 
                 </GridView>
-
             </ListView.View>
-            <ListView.ItemContainerStyle>
-                
-                <Style TargetType="ListViewItem">
-                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="OnMouseLeftReleased_Test" />
-                </Style>
-
-            </ListView.ItemContainerStyle>
 
         </ListView>
 

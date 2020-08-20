@@ -1,32 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OnePass.Infrastructure;
+using OnePass.Services;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
     /// <summary>
     /// Interaction logic for UpdateProductWindow.xaml
     /// </summary>
+    [Inject]
     public partial class UpdateProductWindow : Window
     {
+        public Product Product { get; set; }
+
         public UpdateProductWindow()
         {
             InitializeComponent();
+            Owner = Application.Current.MainWindow;
+            ShowInTaskbar = false;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void OnClick_UpdateProduct(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -4,6 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp5.0</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Description>One pass to rule them all</Description>
+    <Authors>Callum Anning</Authors>
   </PropertyGroup>
 
   <ItemGroup>
