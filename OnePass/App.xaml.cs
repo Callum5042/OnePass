@@ -1,14 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OnePass.Infrastructure;
-using OnePass.Services.DataAccess;
-using OnePass.Windows;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using OnePass.Infrastructure;
 using System.Windows;
 
 namespace OnePass
@@ -21,6 +11,10 @@ namespace OnePass
         private readonly ServiceBuilder _serviceBuilder = new ServiceBuilder();
 
         public bool IsLoggedIn { get; set; } = false;
+
+        public string MasterPassword { get; set; } = "password123";
+
+        public string FileName { get; set; } = "data.bin";
 
         public App()
         {

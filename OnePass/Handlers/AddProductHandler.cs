@@ -1,24 +1,33 @@
 ﻿using OnePass.Infrastructure;
 using OnePass.Services;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OnePass.Handlers
 {
     [Inject(typeof(IAddProductHandler))]
     public class AddProductHandler : IAddProductHandler
     {
-        public AddProductHandler()
+        private readonly IEncryptor _encryptor;
+
+        public AddProductHandler(IEncryptor encryptor)
         {
+            _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
         }
 
         public async Task AddProduct(Product model)
         {
             var products = await ReadJsonAsync();
             products.Add(model);
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                products[i].Id = i;
+            }
 
             await SaveJsonAsync(new ProductRoot()
             {
@@ -28,10 +37,8 @@ namespace OnePass.Handlers
 
         private async Task<IList<Product>> ReadJsonAsync()
         {
-            // Read data
-            using var file = File.OpenRead(@"data.json");
-            using var reader = new StreamReader(file);
-            var json = await reader.ReadToEndAsync();
+            var app = (Application.Current as App);
+            var json = await _encryptor.DecryptAsync(app.FileName, app.MasterPassword);
 
             var products = JsonSerializer.Deserialize<ProductRoot>(json);
             return products.Products.ToList();
@@ -41,9 +48,8 @@ namespace OnePass.Handlers
         {
             var json = JsonSerializer.Serialize(root);
 
-            using var file = File.OpenWrite(@"data.json");
-            using var writer = new StreamWriter(file);
-            await writer.WriteAsync(json);
+            var app = (Application.Current as App);
+            await _encryptor.EncryptAsync(app.FileName, app.MasterPassword, json);
         }
     }
 }
