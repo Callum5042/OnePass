@@ -1,8 +1,5 @@
 ﻿using OnePass.Infrastructure;
 using OnePass.Services;
-using OnePass.Services.DataAccess;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,11 +11,8 @@ namespace OnePass.Handlers
     [Inject(typeof(IAddProductHandler))]
     public class AddProductHandler : IAddProductHandler
     {
-        private readonly OnePassContext _context;
-
-        public AddProductHandler(OnePassContext context)
+        public AddProductHandler()
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task AddProduct(Product product)

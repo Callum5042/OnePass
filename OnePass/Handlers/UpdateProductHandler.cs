@@ -1,7 +1,5 @@
 ﻿using OnePass.Infrastructure;
 using OnePass.Services;
-using OnePass.Services.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,34 +11,16 @@ namespace OnePass.Handlers
     [Inject(typeof(IUpdateProductHandler))]
     public class UpdateProductHandler : IUpdateProductHandler
     {
-        private readonly OnePassContext _context;
-
-        public UpdateProductHandler(OnePassContext context)
+        public UpdateProductHandler()
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task UpdateAsync(int productId, Product product)
         {
-            //var dbProduct = await _context.Products.FindAsync(productId);
-            //if (dbProduct == null)
-            //{
-            //    throw new InvalidOperationException();
-            //}
-
-            //dbProduct.Name = product.Name;
-            //dbProduct.Login = product.Login;
-            //dbProduct.Password = product.Password;
-
-            //await _context.SaveChangesAsync();
-
-
             var products = await ReadJsonAsync();
 
             var toUpdate = products.First(x => x.Name == x.Name);
             toUpdate = product;
-
-            //var x = products.Remove(toRemove);
 
             await SaveJsonAsync(new ProductRoot()
             {

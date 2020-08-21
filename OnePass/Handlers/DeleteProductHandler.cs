@@ -1,7 +1,5 @@
 ﻿using OnePass.Infrastructure;
 using OnePass.Services;
-using OnePass.Services.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,11 +11,8 @@ namespace OnePass.Handlers
     [Inject(typeof(IDeleteProductHandler))]
     public class DeleteProductHandler : IDeleteProductHandler
     {
-        private readonly OnePassContext _context;
-
-        public DeleteProductHandler(OnePassContext context)
+        public DeleteProductHandler()
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task DeleteProductAsync(Product product)
