@@ -1,1 +1,10 @@
-{"Products":[{"Id":0,"Name":"TestSite","Login":"Callum","Password":"password_123","CensoredPassword":"************"}]}
+{
+  "Products": [
+    {
+      "Id": 1,
+      "Name": "Fuck",
+      "Login": "You",
+      "Password": "password_123"
+    }
+  ]
+}

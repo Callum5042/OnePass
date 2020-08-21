@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using OnePass.Services;
+using System.Threading.Tasks;
 
 namespace OnePass.Handlers
 {
     public interface IDeleteProductHandler
     {
-        Task DeleteProductAsync(int productId);
+        Task DeleteProductAsync(Product product);
     }
 }

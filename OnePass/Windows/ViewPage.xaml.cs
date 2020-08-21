@@ -2,11 +2,11 @@
 using OnePass.Infrastructure;
 using OnePass.Services;
 using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -21,17 +21,26 @@ namespace OnePass.Windows
         private readonly IViewProductHandler _handler;
         private readonly IDeleteProductHandler _deleteProductHandler;
 
+        public ObservableCollection<Product> Products { get; set; } = new ObservableCollection<Product>();
+
         public ViewPage(IViewProductHandler handler, IDeleteProductHandler deleteProductHandler)
         {
             InitializeComponent();
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
             _deleteProductHandler = deleteProductHandler ?? throw new ArgumentNullException(nameof(deleteProductHandler));
+
+            LoginDataListView.ItemsSource = Products;
         }
 
         public async Task UpdateProductListAsync()
         {
-            LoginDataListView.ItemsSource = await _handler.GetAllProductsAsync();
-            LoginDataListView.Items.Refresh();
+            Products.Clear();
+
+            var list = await _handler.GetAllProductsAsync();
+            foreach (var item in list)
+            {
+                Products.Add(item);
+            }
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -137,8 +146,8 @@ namespace OnePass.Windows
                 {
                     if (item.Content is Product product)
                     {
-                        await _deleteProductHandler.DeleteProductAsync(product.Id);
-                        await UpdateProductListAsync();
+                        await _deleteProductHandler.DeleteProductAsync(product);
+                        Products.Remove(product);
                     }
                 }
             }

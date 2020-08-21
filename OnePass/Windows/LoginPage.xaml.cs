@@ -32,10 +32,5 @@ namespace OnePass.Windows
 
             window.Content = app.GetService<ViewPage>();
         }
-
-        private void DisplayPopup(object sender, RoutedEventArgs e)
-        {
-            //myPopup.IsOpen = true;
-        }
     }
 }

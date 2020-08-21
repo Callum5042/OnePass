@@ -32,16 +32,10 @@ namespace OnePass.Windows
             };
 
             await _handler.AddProduct(product);
-
             Close();
 
-            if (Application.Current.MainWindow is MainWindow window)
-            {
-                if (window.Content is ViewPage viewPage)
-                {
-                    await viewPage.UpdateProductListAsync();
-                }
-            }
+            var view = (Application.Current.MainWindow.Content as ViewPage);
+            view.Products.Add(product);
         }
     }
 }
