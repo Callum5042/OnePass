@@ -20,7 +20,9 @@ namespace OnePass.Handlers
             var products = await ReadJsonAsync();
 
             var toUpdate = products.First(x => x.Name == x.Name);
-            toUpdate = product;
+            toUpdate.Name = product.Name;
+            toUpdate.Login = product.Login;
+            toUpdate.Password = product.Password;
 
             await SaveJsonAsync(new ProductRoot()
             {

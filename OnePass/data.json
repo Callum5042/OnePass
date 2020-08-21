@@ -2,9 +2,21 @@
   "Products": [
     {
       "Id": 1,
-      "Name": "Fuck",
-      "Login": "You",
-      "Password": "password_123"
+      "Name": "TestName",
+      "Login": "TestLogin",
+      "Password": "password123"
+    },
+    {
+      "Id": 2,
+      "Name": "room",
+      "Login": "kidnap",
+      "Password": "ball"
+    },
+    {
+      "Id": 3,
+      "Name": "silk",
+      "Login": "way",
+      "Password": "anniversary"
     }
   ]
 }
