@@ -5,6 +5,6 @@ namespace OnePass.Handlers
 {
     public interface IDeleteProductHandler
     {
-        Task DeleteProductAsync(Product product);
+        Task DeleteProductAsync(Product model);
     }
 }

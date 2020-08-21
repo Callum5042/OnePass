@@ -15,10 +15,10 @@ namespace OnePass.Handlers
         {
         }
 
-        public async Task AddProduct(Product product)
+        public async Task AddProduct(Product model)
         {
             var products = await ReadJsonAsync();
-            products.Add(product);
+            products.Add(model);
 
             await SaveJsonAsync(new ProductRoot()
             {

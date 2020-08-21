@@ -37,7 +37,7 @@ namespace OnePass.Windows
             Product.Login = LoginTextbox.Text;
             Product.Password = PasswordTextbox.Text;
 
-            await _handler.UpdateAsync(Product.Id, Product);
+            await _handler.UpdateAsync(Product);
             Close();
         }
     }

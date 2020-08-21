@@ -15,12 +15,12 @@ namespace OnePass.Handlers
         {
         }
 
-        public async Task DeleteProductAsync(Product product)
+        public async Task DeleteProductAsync(Product model)
         {
             var products = await ReadJsonAsync();
 
-            var toRemove = products.First(x => x.Name == x.Name);
-            var x = products.Remove(toRemove);
+            var product = products.First(x => x.Name == model.Name);
+            var x = products.Remove(product);
 
             await SaveJsonAsync(new ProductRoot()
             {

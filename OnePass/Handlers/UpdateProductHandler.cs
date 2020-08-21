@@ -15,14 +15,14 @@ namespace OnePass.Handlers
         {
         }
 
-        public async Task UpdateAsync(int productId, Product product)
+        public async Task UpdateAsync(Product model)
         {
             var products = await ReadJsonAsync();
 
-            var toUpdate = products.First(x => x.Name == x.Name);
-            toUpdate.Name = product.Name;
-            toUpdate.Login = product.Login;
-            toUpdate.Password = product.Password;
+            var product = products.First(x => x.Name == x.Name);
+            product.Name = model.Name;
+            product.Login = model.Login;
+            product.Password = model.Password;
 
             await SaveJsonAsync(new ProductRoot()
             {
