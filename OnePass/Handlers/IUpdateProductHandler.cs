@@ -1,10 +1,11 @@
 ﻿using OnePass.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OnePass.Handlers
 {
     public interface IUpdateProductHandler
     {
-        Task UpdateAsync(Product model);
+        Task<IEnumerable<Product>> UpdateAsync(Product model);
     }
 }

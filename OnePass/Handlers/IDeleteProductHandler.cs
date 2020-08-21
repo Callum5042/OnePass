@@ -1,10 +1,11 @@
 ﻿using OnePass.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OnePass.Handlers
 {
     public interface IDeleteProductHandler
     {
-        Task DeleteProductAsync(Product model);
+        Task<IEnumerable<Product>> DeleteProductAsync(Product model);
     }
 }

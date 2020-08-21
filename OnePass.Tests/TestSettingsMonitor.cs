@@ -1,17 +1,14 @@
 ﻿using OnePass.Services;
 
-namespace OnePass.Tests.Handlers
+namespace OnePass.Tests
 {
-    public partial class ViewProductHandlerTests
+    public class TestSettingsMonitor : ISettingsMonitor
     {
-        public class TestSettingsMonitor : ISettingsMonitor
+        public TestSettingsMonitor(OnePassSettings current)
         {
-            public TestSettingsMonitor(OnePassSettings current)
-            {
-                Current = current;
-            }
-
-            public OnePassSettings Current { get; set; }
+            Current = current;
         }
+
+        public OnePassSettings Current { get; set; }
     }
 }

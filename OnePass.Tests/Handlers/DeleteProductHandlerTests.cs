@@ -1,18 +1,19 @@
 ﻿using OnePass.Handlers;
 using OnePass.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace OnePass.Tests.Handlers
 {
-    public class ViewProductHandlerTests
+    public class DeleteProductHandlerTests
     {
         [Fact]
-        public async Task GetAllProductsAsync()
+        public async Task DeleteProductAsync()
         {
-            var filename = "viewdata.bin";
+            var filename = "deletedata.bin";
 
             // Arrange
             var root = new ProductRoot()
@@ -21,6 +22,7 @@ namespace OnePass.Tests.Handlers
                 {
                     new Product()
                     {
+                        Id = 1,
                         Name = "Callum",
                         Login = "Login",
                         Password = "password"
@@ -34,12 +36,14 @@ namespace OnePass.Tests.Handlers
             await encryptor.EncryptAsync(filename, "TestPassword", json);
 
             // Act
+            var product = root.Products.First();
+
             var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = "TestPassword" });
-            var handler = new ViewProductHandler(encryptor, settings);
-            var result = await handler.GetAllProductsAsync();
+            var handler = new DeleteProductHandler(encryptor, settings);
+            var result = await handler.DeleteProductAsync(product);
 
             // Assert
-            Assert.Single(result);
+            Assert.Empty(result);
         }
     }
 }

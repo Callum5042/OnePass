@@ -20,7 +20,7 @@ namespace OnePass.Handlers
             _settingsMonitor = settingsMonitor;
         }
 
-        public async Task AddProduct(Product model)
+        public async Task<IEnumerable<Product>> AddProduct(Product model)
         {
             var products = await ReadJsonAsync();
             products.Add(model);
@@ -34,6 +34,8 @@ namespace OnePass.Handlers
             {
                 Products = products
             });
+
+            return products;
         }
 
         private async Task<IList<Product>> ReadJsonAsync()
