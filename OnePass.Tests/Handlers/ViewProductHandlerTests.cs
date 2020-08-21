@@ -1,6 +1,7 @@
 ﻿using OnePass.Handlers;
 using OnePass.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,17 +16,17 @@ namespace OnePass.Tests.Handlers
             var filename = "viewdata.bin";
 
             // Arrange
+            var model = new Product()
+            {
+                Id = 1,
+                Name = "Callum",
+                Login = "Login",
+                Password = "password"
+            };
+
             var root = new ProductRoot()
             {
-                Products = new List<Product>()
-                {
-                    new Product()
-                    {
-                        Name = "Callum",
-                        Login = "Login",
-                        Password = "password"
-                    }
-                }
+                Products = new List<Product>() { model }
             };
 
             var json = JsonSerializer.Serialize(root);
@@ -40,6 +41,12 @@ namespace OnePass.Tests.Handlers
 
             // Assert
             Assert.Single(result);
+
+            var product = result.First();
+            Assert.Equal(model.Id, product.Id);
+            Assert.Equal(model.Name, product.Name);
+            Assert.Equal(model.Login, product.Login);
+            Assert.Equal(model.Password, product.Password);
         }
     }
 }

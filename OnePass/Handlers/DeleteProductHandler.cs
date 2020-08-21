@@ -29,7 +29,7 @@ namespace OnePass.Handlers
 
             for (int i = 0; i < products.Count; i++)
             {
-                products[i].Id = i;
+                products[i].Id = i + 1;
             }
 
             await SaveJsonAsync(new ProductRoot()

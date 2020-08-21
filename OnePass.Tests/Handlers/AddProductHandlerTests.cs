@@ -1,9 +1,7 @@
 ﻿using OnePass.Handlers;
 using OnePass.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,6 +40,12 @@ namespace OnePass.Tests.Handlers
 
             // Assert
             Assert.Single(result);
+
+            var product = result.First();
+            Assert.Equal(1, product.Id);
+            Assert.Equal(model.Name, product.Name);
+            Assert.Equal(model.Login, product.Login);
+            Assert.Equal(model.Password, product.Password);
         }
     }
 }
