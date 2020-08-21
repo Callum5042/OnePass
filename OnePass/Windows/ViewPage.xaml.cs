@@ -19,11 +19,13 @@ namespace OnePass.Windows
     public partial class ViewPage : Page
     {
         private readonly IViewProductHandler _handler;
+        private readonly IDeleteProductHandler _deleteProductHandler;
 
-        public ViewPage(IViewProductHandler handler)
+        public ViewPage(IViewProductHandler handler, IDeleteProductHandler deleteProductHandler)
         {
             InitializeComponent();
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            _deleteProductHandler = deleteProductHandler ?? throw new ArgumentNullException(nameof(deleteProductHandler));
         }
 
         public async Task UpdateProductListAsync()
@@ -123,17 +125,21 @@ namespace OnePass.Windows
             }
         }
 
-        private void OnClick_DeleteProduct(object sender, RoutedEventArgs e)
+        private async void OnClick_DeleteProduct(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
             var item = LoginDataListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
 
             if (item?.IsSelected == true)
             {
-                var result = MessageBox.Show("Are you sure you want to delete this product?\nOnce deleted it cannot be recovered", "Delete Product", MessageBoxButton.YesNo);
+                var result = MessageBox.Show("Are you sure you want to delete this product?\nOnce deleted it cannot be recovered", "Delete Product", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    throw new NotImplementedException();
+                    if (item.Content is Product product)
+                    {
+                        await _deleteProductHandler.DeleteProductAsync(product.Id);
+                        await UpdateProductListAsync();
+                    }
                 }
             }
         }
