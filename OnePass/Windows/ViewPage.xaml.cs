@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -28,6 +29,7 @@ namespace OnePass.Windows
         public async Task UpdateProductListAsync()
         {
             LoginDataListView.ItemsSource = await _handler.GetAllProductsAsync();
+            LoginDataListView.Items.Refresh();
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -57,43 +59,48 @@ namespace OnePass.Windows
                 {
                     var content = item.Content as Product;
                     Clipboard.SetText(content.Password);
-
-                    var popupText = new TextBlock
-                    {
-                        Text = "Password copied to clipboard",
-                        Background = Brushes.GhostWhite,
-                        Foreground = Brushes.Black,
-                        Margin = new Thickness(3),
-                    };
-
-                    var border = new Border()
-                    {
-                        Child = popupText,
-                        BorderThickness = new Thickness(1),
-                        BorderBrush = Brushes.Gray,
-                        CornerRadius = new CornerRadius(3)
-                    };
-
-                    var panel = new StackPanel();
-                    panel.Background = Brushes.GhostWhite;
-
-                    panel.Children.Add(border);
-
-
-                    var codePopup = new Popup
-                    {
-                        Child = panel,
-                        Placement = PlacementMode.Mouse,
-                        AllowsTransparency = true,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        IsOpen = true,
-                    };
-
-                    await Task.Delay(1000);
-                    codePopup.IsOpen = false;
+                    await CreatePopup("Password copied to clipboard");
                 }
             }
+        }
+
+        private static async Task CreatePopup(string text)
+        {
+            var popupText = new TextBlock
+            {
+                Text = text,
+                Background = Brushes.GhostWhite,
+                Foreground = Brushes.Black,
+                Margin = new Thickness(3),
+            };
+
+            var border = new Border()
+            {
+                Child = popupText,
+                BorderThickness = new Thickness(1),
+                BorderBrush = Brushes.Gray,
+                CornerRadius = new CornerRadius(3)
+            };
+
+            var panel = new StackPanel
+            {
+                Background = Brushes.GhostWhite
+            };
+
+            panel.Children.Add(border);
+
+            var codePopup = new Popup
+            {
+                Child = panel,
+                Placement = PlacementMode.Mouse,
+                AllowsTransparency = true,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                IsOpen = true,
+            };
+
+            await Task.Delay(1000);
+            codePopup.IsOpen = false;
         }
 
         private async void MenuItem_OnClick_Refresh(object sender, RoutedEventArgs e)

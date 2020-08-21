@@ -13,11 +13,11 @@
         <Label>Name</Label>
         <TextBox x:Name="NameTextbox"></TextBox>
 
-        <Label x:Name="LoginTextbox">Login</Label>
-        <TextBox></TextBox>
+        <Label>Login</Label>
+        <TextBox x:Name="LoginTextbox"></TextBox>
 
-        <Label x:Name="PasswordTextbox">Password</Label>
-        <TextBox></TextBox>
+        <Label>Password</Label>
+        <TextBox x:Name="PasswordTextbox"></TextBox>
 
         <Grid Margin="0,10,0,0">
             <Grid.ColumnDefinitions>

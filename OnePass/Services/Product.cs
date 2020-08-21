@@ -1,4 +1,6 @@
-﻿namespace OnePass.Services
+﻿using System.ComponentModel;
+
+namespace OnePass.Services
 {
     public class Product
     {
