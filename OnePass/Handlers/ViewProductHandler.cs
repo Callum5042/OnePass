@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace OnePass.Handlers
 {
@@ -18,7 +17,7 @@ namespace OnePass.Handlers
         public ViewProductHandler(IEncryptor encryptor, ISettingsMonitor settingsMonitor)
         {
             _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
-            _settingsMonitor = settingsMonitor;
+            _settingsMonitor = settingsMonitor ?? throw new ArgumentNullException(nameof(settingsMonitor));
         }
 
         public Task<List<Product>> GetAllProductsAsync()
