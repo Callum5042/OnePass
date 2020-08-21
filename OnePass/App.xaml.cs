@@ -1,4 +1,5 @@
 ﻿using OnePass.Infrastructure;
+using OnePass.Services;
 using System.Windows;
 
 namespace OnePass
@@ -10,14 +11,10 @@ namespace OnePass
     {
         private readonly ServiceBuilder _serviceBuilder = new ServiceBuilder();
 
-        public bool IsLoggedIn { get; set; } = false;
-
-        public string MasterPassword { get; set; } = "password123";
-
-        public string FileName { get; set; } = "data.bin";
-
         public App()
         {
+            var settings = GetService<ISettingsMonitor>();
+            settings.Current.Test = "Test from App";
         }
 
         public T GetService<T>()

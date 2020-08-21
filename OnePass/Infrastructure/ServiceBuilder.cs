@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using OnePass.Handlers;
+using OnePass.Services;
 using OnePass.Services.DataAccess;
 using System;
 using System.Linq;
@@ -26,6 +28,8 @@ namespace OnePass.Infrastructure
         {
             services.AddDbContext<OnePassContext>();
             InjectServices(services);
+
+            services.AddSingleton<ISettingsMonitor, SettingsMonitor>();
         }
 
         private void InjectServices(IServiceCollection services)

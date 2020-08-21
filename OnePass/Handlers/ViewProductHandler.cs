@@ -13,10 +13,12 @@ namespace OnePass.Handlers
     public class ViewProductHandler : IViewProductHandler
     {
         private readonly IEncryptor _encryptor;
+        private readonly ISettingsMonitor _settingsMonitor;
 
-        public ViewProductHandler(IEncryptor encryptor)
+        public ViewProductHandler(IEncryptor encryptor, ISettingsMonitor settingsMonitor)
         {
             _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
+            _settingsMonitor = settingsMonitor;
         }
 
         public Task<List<Product>> GetAllProductsAsync()
@@ -26,8 +28,7 @@ namespace OnePass.Handlers
 
         private async Task<List<Product>> ReadJsonAsync()
         {
-            var app = (Application.Current as App);
-            var json = await _encryptor.DecryptAsync(app.FileName, app.MasterPassword);
+            var json = await _encryptor.DecryptAsync(_settingsMonitor.Current.FileName, _settingsMonitor.Current.MasterPassword);
 
             var root = JsonSerializer.Deserialize<ProductRoot>(json);
             return root.Products.ToList();
