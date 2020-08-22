@@ -45,8 +45,8 @@ namespace OnePass.Windows
         {
             var password = _passwordGenerator.Generate(new PasswordGeneratorOptions()
             {
-                MinLength = 8,
-                MaxLength = 16,
+                MinLength = 256,
+                MaxLength = 256,
                 Uppercase = true,
                 Lowercase = true,
                 Numbers = true,

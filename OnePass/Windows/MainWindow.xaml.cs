@@ -11,7 +11,8 @@ namespace OnePass.Windows
         {
             InitializeComponent();
 
-            Content = new LoginPage();
+            var app = Application.Current as App;
+            Content = app.GetService<LoginPage>();
         }
     }
 }

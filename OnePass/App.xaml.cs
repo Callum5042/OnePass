@@ -13,8 +13,6 @@ namespace OnePass
 
         public App()
         {
-            var settings = GetService<ISettingsMonitor>();
-            settings.Current.Test = "Test from App";
         }
 
         public T GetService<T>()

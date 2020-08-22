@@ -18,7 +18,7 @@
                 <Separator></Separator>
                 <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
-            <MenuItem Header="Add Product"></MenuItem>
+            <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
         </Menu>
 
         <!-- Product list -->
