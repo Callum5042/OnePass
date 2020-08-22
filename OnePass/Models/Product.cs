@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace OnePass.Services
+namespace OnePass.Models
 {
     public class Product : INotifyPropertyChanged
     {

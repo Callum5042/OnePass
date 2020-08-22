@@ -1,5 +1,6 @@
 ﻿using OnePass.Handlers;
 using OnePass.Infrastructure;
+using OnePass.Models;
 using OnePass.Services;
 using System;
 using System.Windows;

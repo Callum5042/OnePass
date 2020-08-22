@@ -28,7 +28,7 @@
 
             <Button x:Name="SubmitButton" Grid.Column="0" Click="OnClick_AddProduct">Add Product</Button>
             <Separator Grid.Column="1" Margin="10,0,10,0"></Separator>
-            <Button x:Name="GeneratePasswordButton" Grid.Column="2">Generate Password</Button>
+            <Button x:Name="GeneratePasswordButton" Grid.Column="2" Click="OnClick_GeneratePassword">Generate Password</Button>
         </Grid>
 
     </StackPanel>

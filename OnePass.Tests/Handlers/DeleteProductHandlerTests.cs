@@ -1,4 +1,5 @@
 ﻿using OnePass.Handlers;
+using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,13 @@ namespace OnePass.Tests.Handlers
                         Name = "Callum",
                         Login = "Login",
                         Password = "password"
+                    },
+                    new Product()
+                    {
+                        Id = 2,
+                        Name = "Callum",
+                        Login = "Login",
+                        Password = "password"
                     }
                 }
             };
@@ -43,7 +51,7 @@ namespace OnePass.Tests.Handlers
             var result = await handler.DeleteProductAsync(product);
 
             // Assert
-            Assert.Empty(result);
+            Assert.Single(result);
         }
     }
 }
