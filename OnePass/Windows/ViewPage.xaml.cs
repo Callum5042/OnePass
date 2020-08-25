@@ -135,6 +135,13 @@ namespace OnePass.Windows
             }
         }
 
+        private void MenuItem_Click_About(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+            var window = app.GetService<AboutWindow>();
+            window.ShowDialog();
+        }
+
         private async void OnClick_DeleteProduct(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;

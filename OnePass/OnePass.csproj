@@ -6,6 +6,8 @@
     <UseWPF>true</UseWPF>
     <Description>One pass to rule them all</Description>
     <Authors>Callum Anning</Authors>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <PackageReleaseNotes>Beta</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
