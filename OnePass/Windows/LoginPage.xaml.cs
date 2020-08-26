@@ -25,10 +25,11 @@ namespace OnePass.Windows
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var password = PasswordTextbox.Text;
+            var password = PasswordTextbox.Password;
 
             if (!IsValid(password))
             {
+                MessageBox.Show("Invalid Password", "Invalid");
                 return;
             }
 
