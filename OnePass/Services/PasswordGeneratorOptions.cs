@@ -17,5 +17,7 @@ namespace OnePass.Services
         public int MaxLength { get; set; }
 
         public IEnumerable<char> ExcludeSymbolList { get; set; }
+
+        public int? SymbolAmount { get; set; }
     }
 }

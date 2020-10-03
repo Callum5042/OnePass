@@ -45,12 +45,13 @@ namespace OnePass.Windows
         {
             var password = _passwordGenerator.Generate(new PasswordGeneratorOptions()
             {
-                MinLength = 8,
-                MaxLength = 8,
+                MinLength = 10,
+                MaxLength = 14,
                 Uppercase = true,
                 Lowercase = true,
                 Numbers = true,
-                Symbols = true
+                Symbols = true,
+                SymbolAmount = 1
             });
 
             PasswordTextbox.Text = password;
