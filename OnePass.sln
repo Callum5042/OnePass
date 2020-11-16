@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnePass", "OnePass\OnePass.csproj", "{32AAC323-A456-42C1-9ACA-C79A9DE560ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePass.Tests", "OnePass.Tests\OnePass.Tests.csproj", "{18EA203C-2154-418A-92E0-AC5C39A1D6C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnePass.Tests", "OnePass.Tests\OnePass.Tests.csproj", "{18EA203C-2154-418A-92E0-AC5C39A1D6C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

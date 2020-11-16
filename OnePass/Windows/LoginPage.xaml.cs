@@ -35,7 +35,6 @@ namespace OnePass.Windows
 
             _settingsMonitor.Current.MasterPassword = password;
 
-
             // Redirect to view page
             var app = Application.Current as App;
             var window = Application.Current.MainWindow as MainWindow;

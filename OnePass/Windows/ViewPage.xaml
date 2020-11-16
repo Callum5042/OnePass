@@ -20,6 +20,7 @@
             </MenuItem>
             <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
             <MenuItem Header="About" Click="MenuItem_Click_About"></MenuItem>
+            <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword"></MenuItem>
         </Menu>
 
         <!-- Product list -->

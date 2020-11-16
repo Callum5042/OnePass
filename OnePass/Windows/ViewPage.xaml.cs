@@ -142,6 +142,13 @@ namespace OnePass.Windows
             window.ShowDialog();
         }
 
+        private void MenuItem_Click_ChangePassword(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+            var window = app.GetService<ChangePasswordWindow>();
+            window.ShowDialog();
+        }
+
         private async void OnClick_DeleteProduct(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;

@@ -20,7 +20,7 @@ namespace OnePass.Services
 
             var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
-            using var msEncrypt = File.Open(file, FileMode.Create);
+            using var msEncrypt = File.Open(file, FileMode.OpenOrCreate);
             using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
             using var swEncrypt = new StreamWriter(csEncrypt);
             await swEncrypt.WriteAsync(data);
