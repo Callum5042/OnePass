@@ -18,8 +18,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '5.0'
-    includePreviewVersions: true
+    version: '5.x'
 
 - task: VSBuild@1
   inputs:
