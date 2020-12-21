@@ -15,17 +15,16 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '5.0'
-    includePreviewVersions: true
+    version: '5.x'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    feedsToUse: 'select'
+    vstsFeed: '3e812210-512f-48b2-aa4c-15ac454ff157'
 
 - task: VSBuild@1
   inputs:
