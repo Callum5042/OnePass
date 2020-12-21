@@ -1,4 +1,5 @@
-﻿using OnePass.Infrastructure;
+﻿using OnePass.Handlers;
+using OnePass.Infrastructure;
 using OnePass.Services;
 using System;
 using System.Collections.Generic;
@@ -23,58 +24,31 @@ namespace OnePass.Windows
     [Inject]
     public partial class ChangePasswordWindow : Window
     {
-        private readonly ISettingsMonitor _settingsMonitor;
-        private readonly IEncryptor _encryptor;
+        private readonly IChangePasswordHandler _changePasswordHandler;
 
-        public ChangePasswordWindow(ISettingsMonitor settingsMonitor, IEncryptor encryptor)
+        public ChangePasswordWindow(IChangePasswordHandler changePasswordHandler)
         {
             InitializeComponent();
             Owner = Application.Current.MainWindow;
             ShowInTaskbar = false;
 
-            _settingsMonitor = settingsMonitor ?? throw new ArgumentNullException(nameof(settingsMonitor));
-            _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
+            _changePasswordHandler = changePasswordHandler ?? throw new ArgumentNullException(nameof(changePasswordHandler));
         }
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            var oldPass = oldPassTextbox.Text;
-            var newPass = newPassTextbox.Text;
-            var repeatPass = repeatPassTextbox.Text;
+            var oldPassword = oldPassTextbox.Text;
+            var newPassword = newPassTextbox.Text;
+            var repeatPassword = repeatPassTextbox.Text;
 
-            if (newPass != repeatPass)
+            if (newPassword != repeatPassword)
             {
                 MessageBox.Show("Passwords do not match");
                 return;
             }
 
-            if (_settingsMonitor.Current.MasterPassword == oldPass)
-            {
-                _settingsMonitor.Current.MasterPassword = newPass;
-
-                // Hash new password
-                await HashPassword(newPass);
-
-                // Decrypt and Encrypt data with new master password
-                var json = await _encryptor.DecryptAsync(_settingsMonitor.Current.FileName, oldPass);
-                await _encryptor.EncryptAsync(_settingsMonitor.Current.FileName, newPass, json);
-
-                MessageBox.Show("Password has been changed");
-            }
-            else
-            {
-                MessageBox.Show("Current password is invalid");
-            }
-        }
-
-        private async Task HashPassword(string password)
-        {
-            using var sha = SHA256.Create();
-            var entered_bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password + _settingsMonitor.Current.Salt));
-            var entered_str = Encoding.UTF8.GetString(entered_bytes);
-
-            _settingsMonitor.Current.Hash = entered_str;
-            await _settingsMonitor.SaveAsync();
+            var message = await _changePasswordHandler.ChangePassword(oldPassword, newPassword);
+            MessageBox.Show(message);
         }
     }
 }

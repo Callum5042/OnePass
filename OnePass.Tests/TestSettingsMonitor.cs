@@ -14,7 +14,7 @@ namespace OnePass.Tests
 
         public Task SaveAsync()
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
