@@ -23,7 +23,7 @@ namespace OnePass.Windows
             _settingsMonitor = settingsMonitor ?? throw new ArgumentNullException(nameof(settingsMonitor));
 
             var version = GetType().Assembly.GetName().Version;
-            Version.Text = $"Version: {version.ToString(3)}";
+            VersionTextblock.Text = $"Version: {version.ToString(3)}";
         }
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
