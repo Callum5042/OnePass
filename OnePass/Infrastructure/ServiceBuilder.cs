@@ -19,7 +19,8 @@ namespace OnePass.Infrastructure
 
         public T GetService<T>()
         {
-            return _serviceProvider.GetService<T>();
+            using var scope = _serviceProvider.CreateScope();
+            return scope.ServiceProvider.GetService<T>();
         }
 
         private void ConfigureServices(IServiceCollection services)
