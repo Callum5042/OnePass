@@ -2,6 +2,7 @@
 using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,6 +16,12 @@ namespace OnePass.Tests.Handlers
         public async Task GetAllProductsAsync()
         {
             var filename = "updatedata.bin";
+            var password = "TestPassword";
+
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+            }
 
             // Arrange
             var root = new ProductRoot()
@@ -34,7 +41,7 @@ namespace OnePass.Tests.Handlers
             var json = JsonSerializer.Serialize(root);
 
             var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, "TestPassword", json);
+            await encryptor.EncryptAsync(filename, password, json);
 
             // Act
             var model = new Product()
@@ -45,7 +52,7 @@ namespace OnePass.Tests.Handlers
                 Password = "UpdatedPassword"
             };
 
-            var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = "TestPassword" });
+            var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
             var handler = new UpdateProductHandler(encryptor, settings);
             var result = await handler.UpdateAsync(model);
 
