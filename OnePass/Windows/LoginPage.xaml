@@ -8,9 +8,10 @@
       d:DesignHeight="480" d:DesignWidth="640"
       Title="LoginPage">
 
-    <StackPanel Margin="50,50,50,50">
+    <StackPanel Margin="50,50,50,50" FocusManager.FocusedElement="{Binding ElementName=PasswordTextbox}">
 
-        <TextBlock VerticalAlignment="Stretch" HorizontalAlignment="Center">OnePass</TextBlock>
+        <TextBlock x:Name="Title" VerticalAlignment="Stretch" HorizontalAlignment="Center">OnePass</TextBlock>
+        <TextBlock x:Name="Version" VerticalAlignment="Stretch" HorizontalAlignment="Center">OnePass</TextBlock>
 
         <Label Content="Password" Width="120" Margin="0,20,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <PasswordBox x:Name="PasswordTextbox" Width="120" />
