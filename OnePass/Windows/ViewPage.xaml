@@ -24,7 +24,7 @@
         </Menu>
 
         <!-- Product list -->
-        <ListView x:Name="LoginDataListView">
+        <ListView x:Name="LoginDataListView" GridViewColumnHeader.Click="LoginDataListView_Click">
 
             <ListView.Resources>
                 <ContextMenu x:Key="resourceContextMenu">
