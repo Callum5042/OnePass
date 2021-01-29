@@ -29,6 +29,10 @@ namespace OnePass.Windows
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
             var password = PasswordTextbox.Password;
+            if (ShowPassword.IsChecked == true)
+            {
+                password = PasswordTextboxShow.Text;
+            }
 
             if (!IsValid(password))
             {
@@ -56,6 +60,22 @@ namespace OnePass.Windows
             }
 
             return true;
+        }
+
+        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            PasswordTextbox.Visibility = Visibility.Collapsed;
+            PasswordTextboxShow.Visibility = Visibility.Visible;
+
+            PasswordTextboxShow.Text = PasswordTextbox.Password;
+        }
+
+        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PasswordTextbox.Visibility = Visibility.Visible;
+            PasswordTextboxShow.Visibility = Visibility.Collapsed;
+
+            PasswordTextbox.Password = PasswordTextboxShow.Text;
         }
     }
 }
