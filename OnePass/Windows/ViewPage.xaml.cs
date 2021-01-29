@@ -181,7 +181,7 @@ namespace OnePass.Windows
             {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
                 {
-                    // Choose direction
+                    // Choose direction  
                     if (headerClicked != _lastHeaderClicked)
                     {
                         direction = ListSortDirection.Ascending;
