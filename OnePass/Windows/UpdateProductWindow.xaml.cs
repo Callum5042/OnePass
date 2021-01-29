@@ -34,12 +34,16 @@ namespace OnePass.Windows
 
         private async void OnClick_UpdateProduct(object sender, RoutedEventArgs e)
         {
-            Product.Name = NameTextbox.Text;
-            Product.Login = LoginTextbox.Text;
-            Product.Password = PasswordTextbox.Text;
+            var result = MessageBox.Show("Update product information?", "Update", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                Product.Name = NameTextbox.Text;
+                Product.Login = LoginTextbox.Text;
+                Product.Password = PasswordTextbox.Text;
 
-            await _handler.UpdateAsync(Product);
-            Close();
+                await _handler.UpdateAsync(Product);
+                Close();
+            }
         }
     }
 }
