@@ -37,9 +37,9 @@ namespace OnePass.Windows
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            var oldPassword = oldPassTextbox.Text;
-            var newPassword = newPassTextbox.Text;
-            var repeatPassword = repeatPassTextbox.Text;
+            var oldPassword = oldPassTextbox.Password;
+            var newPassword = newPassTextbox.Password;
+            var repeatPassword = repeatPassTextbox.Password;
 
             if (newPassword != repeatPassword)
             {
