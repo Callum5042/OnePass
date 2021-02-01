@@ -4,6 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="OnePass" Height="480" Width="640">
+        Title="OnePass" Height="auto" Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen">
 
 </Window>
