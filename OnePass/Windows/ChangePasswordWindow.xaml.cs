@@ -1,5 +1,4 @@
 ﻿using OnePass.Handlers;
-using OnePass.Infrastructure;
 using System;
 using System.Linq;
 using System.Windows;
@@ -9,7 +8,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for ChangePasswordWindow.xaml
     /// </summary>
-    [Inject]
     public partial class ChangePasswordWindow : Window
     {
         private readonly IChangePasswordHandler _changePasswordHandler;

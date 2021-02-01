@@ -1,5 +1,4 @@
-﻿using OnePass.Infrastructure;
-using OnePass.Services;
+﻿using OnePass.Services;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +8,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for LoginPage2.xaml
     /// </summary>
-    [Inject]
     public partial class LoginPage : Page
     {
         private readonly ISettingsMonitor _settingsMonitor;

@@ -47,7 +47,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Content="Create" IsDefault="True" />
+            <Button Grid.Column="0" Content="Create" IsDefault="True" Click="OnClick_CreateAccount" />
             <Button Grid.Column="3" Content="Back" Click="OnClick_NavigateToLogin" />
 
         </Grid>

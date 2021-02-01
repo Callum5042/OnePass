@@ -1,7 +1,5 @@
 ﻿using OnePass.Handlers;
-using OnePass.Infrastructure;
 using OnePass.Models;
-using OnePass.Services;
 using System;
 using System.Linq;
 using System.Windows;
@@ -11,7 +9,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for UpdateProductWindow.xaml
     /// </summary>
-    [Inject]
     public partial class UpdateProductWindow : Window
     {
         private readonly IUpdateProductHandler _handler;
