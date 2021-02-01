@@ -4,17 +4,17 @@ using System.Windows;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LoginWindow.xaml
     /// </summary>
     [Inject]
-    public partial class MainWindow : Window
+    public partial class LoginWindow : Window
     {
-        public MainWindow()
+        public LoginWindow()
         {
             InitializeComponent();
 
             var app = Application.Current as App;
-            Content = app.GetService<ViewPage>();
+            Content = app.GetService<LoginPage>();
         }
     }
 }

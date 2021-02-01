@@ -1,4 +1,5 @@
 ﻿using OnePass.Infrastructure;
+using System.Linq;
 using System.Windows;
 
 namespace OnePass.Windows
@@ -12,7 +13,7 @@ namespace OnePass.Windows
         public AboutWindow()
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
+            Owner = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             ShowInTaskbar = false;
 
             var version = GetType().Assembly.GetName().Version;

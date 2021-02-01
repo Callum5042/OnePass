@@ -1,18 +1,8 @@
 ﻿using OnePass.Infrastructure;
-using System;
-using System.Collections.Generic;
+using OnePass.Services;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
@@ -22,9 +12,14 @@ namespace OnePass.Windows
     [Inject]
     public partial class LoginPage : Page
     {
-        public LoginPage()
+        private readonly ISettingsMonitor _settingsMonitor;
+
+        public LoginPage(ISettingsMonitor settingsMonitor)
         {
             InitializeComponent();
+            _settingsMonitor = settingsMonitor;
+
+            Username.Focus();
         }
 
         private void OnClick_Login(object sender, RoutedEventArgs e)
@@ -34,7 +29,13 @@ namespace OnePass.Windows
 
             if (usernameValid && passwordValid)
             {
-                MessageBox.Show("Verify");
+                var app = Application.Current as App;
+
+                var window = app.GetService<MainWindow>();
+                window.Show();
+
+                var loginWindow = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+                loginWindow.Close();
             }
         }
 
@@ -80,6 +81,8 @@ namespace OnePass.Windows
             {
                 PasswordValidationMessage.Visibility = Visibility.Collapsed;
                 PasswordValidationMessage.Content = string.Empty;
+
+                _settingsMonitor.Current.MasterPassword = password;
                 return true;
             }
         }
@@ -87,7 +90,7 @@ namespace OnePass.Windows
         private void OnClick_CreateAccount(object sender, RoutedEventArgs e)
         {
             var app = Application.Current as App;
-            var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
             window.Content = app.GetService<RegisterAccountPage>();
         }
     }

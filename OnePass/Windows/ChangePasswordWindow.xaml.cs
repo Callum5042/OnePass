@@ -1,20 +1,8 @@
 ﻿using OnePass.Handlers;
 using OnePass.Infrastructure;
-using OnePass.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
@@ -29,7 +17,7 @@ namespace OnePass.Windows
         public ChangePasswordWindow(IChangePasswordHandler changePasswordHandler)
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
+            Owner = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             ShowInTaskbar = false;
 
             _changePasswordHandler = changePasswordHandler ?? throw new ArgumentNullException(nameof(changePasswordHandler));
