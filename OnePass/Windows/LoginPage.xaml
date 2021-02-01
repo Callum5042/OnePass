@@ -8,10 +8,14 @@
       d:DesignHeight="480" d:DesignWidth="640"
       Title="LoginPage">
 
-    <StackPanel Margin="50,50,50,50" FocusManager.FocusedElement="{Binding ElementName=PasswordTextbox}">
-
+    <Page.Resources>
+        
+    </Page.Resources>
+    
+    <StackPanel Margin="50,50,50,50" FocusManager.FocusedElement="{Binding ElementName=PasswordTextbox}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        
         <TextBlock x:Name="TitleTextblock" VerticalAlignment="Stretch" HorizontalAlignment="Center">OnePass</TextBlock>
-        <TextBlock x:Name="VersionTextblock" VerticalAlignment="Stretch" HorizontalAlignment="Center">OnePass</TextBlock>
+        <TextBlock x:Name="VersionTextblock" VerticalAlignment="Stretch" HorizontalAlignment="Center" Text="v0.0.0"/>
 
         <Label Content="Password" Width="120" Margin="0,20,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <PasswordBox x:Name="PasswordTextbox" Width="240" />
@@ -20,6 +24,8 @@
         <CheckBox x:Name="ShowPassword" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked">Show Password</CheckBox>
         
         <Button Click="LoginButton_OnClick" Width="120" Margin="0,10,0,0" VerticalAlignment="Stretch" IsDefault="True">Login</Button>
+        <Button Content="Create Account" Width="120" Margin="0,10,0,0" VerticalAlignment="Stretch" />
+
 
     </StackPanel>
 

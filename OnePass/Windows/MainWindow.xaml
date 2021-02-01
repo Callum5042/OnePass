@@ -5,22 +5,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="OnePass" Height="480" Width="640">
-    
-    
-    
-    <!--<DockPanel>
-        
-        --><!-- Menubar --><!--
-        <Menu x:Name="Menubar" DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="Add" Click="MenuItem_Click_Add"></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
-            </MenuItem>
-        </Menu>
-        
-        <Frame x:Name="ContentFrame" Source="/Windows/LoginPage.xaml" NavigationUIVisibility="Hidden"></Frame>
-
-    </DockPanel>-->
 
 </Window>
