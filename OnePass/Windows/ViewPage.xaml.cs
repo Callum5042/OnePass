@@ -1,5 +1,4 @@
 ﻿using OnePass.Handlers;
-using OnePass.Infrastructure;
 using OnePass.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -18,7 +17,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for ViewPage.xaml
     /// </summary>
-    [Inject]
     public partial class ViewPage : Page
     {
         private readonly IViewProductHandler _handler;

@@ -1,5 +1,4 @@
-﻿using OnePass.Infrastructure;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,7 +7,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for RegisterAccountPage.xaml
     /// </summary>
-    [Inject]
     public partial class RegisterAccountPage : Page
     {
         public RegisterAccountPage()
@@ -21,6 +19,11 @@ namespace OnePass.Windows
             var app = Application.Current as App;
             var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
             window.Content = app.GetService<LoginPage>();
+        }
+
+        private void OnClick_CreateAccount(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
