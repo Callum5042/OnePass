@@ -1,81 +1,94 @@
 ﻿using OnePass.Infrastructure;
-using OnePass.Services;
 using System;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
+    /// Interaction logic for LoginPage2.xaml
     /// </summary>
     [Inject]
     public partial class LoginPage : Page
     {
-        private readonly ISettingsMonitor _settingsMonitor;
-
-        public LoginPage(ISettingsMonitor settingsMonitor)
+        public LoginPage()
         {
             InitializeComponent();
-            _settingsMonitor = settingsMonitor ?? throw new ArgumentNullException(nameof(settingsMonitor));
-
-            var version = GetType().Assembly.GetName().Version;
-            VersionTextblock.Text = $"Version: {version.ToString(3)}";
         }
 
-        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        private void OnClick_Login(object sender, RoutedEventArgs e)
         {
-            var password = PasswordTextbox.Password;
-            if (ShowPassword.IsChecked == true)
+            var usernameValid = ValidateUsernameSyntax();
+            var passwordValid = ValidatePasswordSyntax();
+
+            if (usernameValid && passwordValid)
             {
-                password = PasswordTextboxShow.Text;
+                MessageBox.Show("Verify");
             }
-
-            if (!IsValid(password))
-            {
-                MessageBox.Show("Invalid Password", "Invalid");
-                return;
-            }
-
-            _settingsMonitor.Current.MasterPassword = password;
-
-            // Redirect to view page
-            var app = Application.Current as App;
-            var window = Application.Current.MainWindow as MainWindow;
-            window.Content = app.GetService<ViewPage>();
         }
 
-        private bool IsValid(string password)
+        private void OnTextChanged_ValidateSyntax(object sender, TextChangedEventArgs e)
         {
-            using var sha = SHA256.Create();
-            var entered_bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password + _settingsMonitor.Current.Salt));
-            var entered_str = Encoding.UTF8.GetString(entered_bytes);
+            ValidateUsernameSyntax();
+        }
 
-            if (_settingsMonitor.Current.Hash != entered_str)
+        private bool ValidateUsernameSyntax()
+        {
+            var username = Username.Text;
+
+            UsernameValidationMessage.Visibility = Visibility.Visible;
+            if (string.IsNullOrEmpty(username))
             {
+                UsernameValidationMessage.Content = "Username is required.";
                 return false;
             }
-
-            return true;
+            else
+            {
+                UsernameValidationMessage.Visibility = Visibility.Collapsed;
+                UsernameValidationMessage.Content = string.Empty;
+                return true;
+            }
         }
 
-        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
+        private void OnPasswordChanged_ValidateSyntax(object sender, RoutedEventArgs e)
         {
-            PasswordTextbox.Visibility = Visibility.Collapsed;
-            PasswordTextboxShow.Visibility = Visibility.Visible;
-
-            PasswordTextboxShow.Text = PasswordTextbox.Password;
+            ValidatePasswordSyntax();
         }
 
-        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        private bool ValidatePasswordSyntax()
         {
-            PasswordTextbox.Visibility = Visibility.Visible;
-            PasswordTextboxShow.Visibility = Visibility.Collapsed;
+            var password = Password.Password;
 
-            PasswordTextbox.Password = PasswordTextboxShow.Text;
+            PasswordValidationMessage.Visibility = Visibility.Visible;
+            if (string.IsNullOrEmpty(password))
+            {
+                PasswordValidationMessage.Content = "Password is required.";
+                return false;
+            }
+            else
+            {
+                PasswordValidationMessage.Visibility = Visibility.Collapsed;
+                PasswordValidationMessage.Content = string.Empty;
+                return true;
+            }
+        }
+
+        private void OnClick_CreateAccount(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+            var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            window.Content = app.GetService<RegisterAccountPage>();
         }
     }
 }
