@@ -3,6 +3,7 @@ using OnePass.Infrastructure;
 using OnePass.Models;
 using OnePass.Services;
 using System;
+using System.Linq;
 using System.Windows;
 
 namespace OnePass.Windows
@@ -20,7 +21,7 @@ namespace OnePass.Windows
         public UpdateProductWindow(IUpdateProductHandler handler)
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
+            Owner = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             ShowInTaskbar = false;
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
