@@ -13,14 +13,15 @@
         <!-- Menu -->
         <Menu x:Name="Menubar" DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
-                <MenuItem Header="_Refresh" Click="MenuItem_OnClick_Refresh"></MenuItem>
+                <MenuItem Header="Add Product" Click="MenuItem_Click_Add" />
+                <MenuItem Header="_Refresh" Click="MenuItem_OnClick_Refresh" />
+                <MenuItem Header="Logout" Click="OnClick_Logout" />
                 <Separator></Separator>
                 <MenuItem Header="_Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
-            <MenuItem Header="Add Product" Click="MenuItem_Click_Add"></MenuItem>
-            <MenuItem Header="About" Click="MenuItem_Click_About"></MenuItem>
-            <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword"></MenuItem>
+            <MenuItem Header="Add Product" Click="MenuItem_Click_Add" />
+            <MenuItem Header="About" Click="MenuItem_Click_About" />
+            <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword" />
         </Menu>
 
         <!-- Product list -->
