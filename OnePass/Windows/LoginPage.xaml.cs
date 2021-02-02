@@ -1,5 +1,10 @@
-﻿using OnePass.Services;
+﻿using OnePass.Models;
+using OnePass.Services;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -27,13 +32,47 @@ namespace OnePass.Windows
 
             if (usernameValid && passwordValid)
             {
-                var app = Application.Current as App;
+                var filename = @"usermapping.json";
+                if (File.Exists(filename))
+                {
+                    using var fileRead = File.OpenRead(filename);
+                    using var reader = new StreamReader(fileRead);
 
-                var window = app.GetService<MainWindow>();
-                window.Show();
+                    var readJson = reader.ReadToEnd();
+                    var accountRoot = JsonSerializer.Deserialize<AccountRoot>(readJson);
 
-                var loginWindow = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
-                loginWindow.Close();
+                    var account = accountRoot.Accounts.FirstOrDefault(x => x.Username.Equals(Username.Text));
+                    if (account is null)
+                    {
+                        UsernameValidationMessage.Visibility = Visibility.Visible;
+                        UsernameValidationMessage.Content = "Username not found.";
+                        return;
+                    }
+
+
+                    var hasher = SHA256.Create();
+                    var saltedPassword = Password.Password + account.Salt;
+                    var hashedPasswordBytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
+                    var hashedPassword = Encoding.UTF8.GetString(hashedPasswordBytes);
+
+                    if (account?.Password == hashedPassword)
+                    {
+                        var app = Application.Current as App;
+
+                        var window = app.GetService<MainWindow>();
+                        window.Show();
+
+                        var loginWindow = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+                        loginWindow.Close();
+
+                        return;
+                    }
+                    else
+                    {
+                        PasswordValidationMessage.Visibility = Visibility.Visible;
+                        PasswordValidationMessage.Content = "Password is invalid.";
+                    }
+                }
             }
         }
 
