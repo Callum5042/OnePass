@@ -22,7 +22,18 @@ namespace OnePass.Windows
             InitializeComponent();
             _settingsMonitor = settingsMonitor;
 
-            Username.Focus();
+
+            if (!string.IsNullOrEmpty(_settingsMonitor.Current.RememberUsername))
+            {
+                Username.Text = _settingsMonitor.Current.RememberUsername;
+                RememberUsername.IsChecked = true;
+
+                Password.Focus();
+            }
+            else
+            {
+                Username.Focus();
+            }
         }
 
         private void OnClick_Login(object sender, RoutedEventArgs e)
@@ -57,6 +68,12 @@ namespace OnePass.Windows
 
                     if (account?.Password == hashedPassword)
                     {
+                        if (RememberUsername.IsChecked == true)
+                        {
+                            _settingsMonitor.Current.RememberUsername = Username.Text;
+                            _settingsMonitor.SaveAsync().Wait();
+                        }
+
                         var app = Application.Current as App;
 
                         var window = app.GetService<MainWindow>();

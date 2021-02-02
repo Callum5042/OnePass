@@ -33,7 +33,7 @@
 
         </Grid>
 
-        <CheckBox Content="Remember username"></CheckBox>
+        <CheckBox x:Name="RememberUsername" Content="Remember username"></CheckBox>
 
     </StackPanel>
 
