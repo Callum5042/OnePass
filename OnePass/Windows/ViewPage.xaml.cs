@@ -1,10 +1,9 @@
 ﻿using OnePass.Handlers;
-using OnePass.Infrastructure;
 using OnePass.Models;
-using OnePass.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +17,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for ViewPage.xaml
     /// </summary>
-    [Inject]
     public partial class ViewPage : Page
     {
         private readonly IViewProductHandler _handler;
@@ -53,7 +51,8 @@ namespace OnePass.Windows
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
         {
-            Application.Current.MainWindow.Close();
+            var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+            window.Close();
         }
 
         private void MenuItem_Click_Add(object sender, RoutedEventArgs e)
@@ -140,8 +139,8 @@ namespace OnePass.Windows
         private void MenuItem_Click_About(object sender, RoutedEventArgs e)
         {
             var app = Application.Current as App;
-            var window = app.GetService<AboutWindow>();
-            window.ShowDialog();
+            var aboutWindow = app.GetService<AboutWindow>();
+            aboutWindow.ShowDialog();
         }
 
         private void MenuItem_Click_ChangePassword(object sender, RoutedEventArgs e)
