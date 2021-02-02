@@ -10,34 +10,17 @@
 
     <StackPanel Margin="10">
 
-        <StackPanel.Resources>
-            <Style TargetType="Label" x:Key="DefaultLabel">
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Padding" Value="0,5,5,5"/>
-            </Style>
-            <Style TargetType="Label" x:Key="ValidationLabel">
-                <Setter Property="Foreground" Value="Red" />
-                <Setter Property="Padding" Value="0"/>
-            </Style>
-            <Style TargetType="TextBox">
-                <Setter Property="Padding" Value="2" />
-            </Style>
-            <Style TargetType="PasswordBox">
-                <Setter Property="Padding" Value="2" />
-            </Style>
-        </StackPanel.Resources>
-
         <Label Style="{StaticResource DefaultLabel}" Content="Username" />
-        <TextBox />
-        <Label Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
+        <TextBox x:Name="Username" TextChanged="OnTextChanged_ValidateUsernameSyntax" />
+        <Label x:Name="UsernameValidationLabel" Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
 
         <Label Style="{StaticResource DefaultLabel}" Content="Password" />
-        <PasswordBox />
-        <Label Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
+        <PasswordBox x:Name="Password" />
+        <Label x:Name="PasswordValidationLabel" Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
 
         <Label Style="{StaticResource DefaultLabel}" Content="Repeat Password" />
-        <PasswordBox />
-        <Label Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
+        <PasswordBox x:Name="RepeatPassword" />
+        <Label x:Name="RepeatPasswordValidationLabel" Style="{StaticResource ValidationLabel}" Visibility="Collapsed" />
 
         <Grid Margin="0,10,0,5">
 
