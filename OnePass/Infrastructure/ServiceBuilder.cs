@@ -3,6 +3,8 @@ using OnePass.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace OnePass.Infrastructure
 {
@@ -26,10 +28,12 @@ namespace OnePass.Infrastructure
         private void ConfigureServices(IServiceCollection services)
         {
             InjectServices(services);
+            InjectConventions(services);
+
             services.AddSingleton<ISettingsMonitor, SettingsMonitor>();
         }
 
-        private void InjectServices(IServiceCollection services)
+        private static void InjectServices(IServiceCollection services)
         {
             var assembly = Assembly.GetExecutingAssembly();
             foreach (var type in assembly.GetTypes().Where(x => x.CustomAttributes.Any(a => a.AttributeType == typeof(InjectAttribute))))
@@ -50,6 +54,15 @@ namespace OnePass.Infrastructure
                 {
                     services.AddTransient(type);
                 }
+            }
+        }
+
+        private static void InjectConventions(IServiceCollection services)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            foreach (var type in assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Window)) || x.IsSubclassOf(typeof(Page))))
+            {
+                services.AddTransient(type);
             }
         }
     }

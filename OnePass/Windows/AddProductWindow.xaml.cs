@@ -1,8 +1,8 @@
 ﻿using OnePass.Handlers;
-using OnePass.Infrastructure;
 using OnePass.Models;
 using OnePass.Services;
 using System;
+using System.Linq;
 using System.Windows;
 
 namespace OnePass.Windows
@@ -10,7 +10,6 @@ namespace OnePass.Windows
     /// <summary>
     /// Interaction logic for ProductAuthorWindow.xaml
     /// </summary>
-    [Inject]
     public partial class AddProductWindow : Window
     {
         private readonly IAddProductHandler _handler;
@@ -19,7 +18,7 @@ namespace OnePass.Windows
         public AddProductWindow(IAddProductHandler handler, IPasswordGenerator passwordGenerator)
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
+            Owner = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             ShowInTaskbar = false;
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
             _passwordGenerator = passwordGenerator ?? throw new ArgumentNullException(nameof(passwordGenerator));
