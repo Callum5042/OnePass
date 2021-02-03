@@ -49,7 +49,7 @@ namespace OnePass.Windows
 
             if (usernameValid && passwordValid)
             {
-                var result = await _loginHandler.Login(Username.Text, Password.Password);
+                var result = await _loginHandler.LoginAsync(Username.Text, Password.Password);
 
                 if (result == LoginResult.Success)
                 {
