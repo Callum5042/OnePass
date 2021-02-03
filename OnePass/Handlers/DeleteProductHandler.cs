@@ -1,6 +1,7 @@
-﻿using OnePass.Infrastructure;
+﻿using OnePass.Handlers.Interfaces;
+using OnePass.Infrastructure;
 using OnePass.Models;
-using OnePass.Services;
+using OnePass.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

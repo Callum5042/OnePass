@@ -1,4 +1,5 @@
 ﻿using OnePass.Services;
+using OnePass.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace OnePass.Tests

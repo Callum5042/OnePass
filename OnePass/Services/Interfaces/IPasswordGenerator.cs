@@ -1,4 +1,4 @@
-﻿namespace OnePass.Services
+﻿namespace OnePass.Services.Interfaces
 {
     public interface IPasswordGenerator
     {
