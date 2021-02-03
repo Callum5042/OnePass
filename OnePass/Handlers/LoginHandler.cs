@@ -20,7 +20,7 @@ namespace OnePass.Handlers
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
         }
 
-        public async Task<LoginResult> Login(string username, string password)
+        public async Task<LoginResult> LoginAsync(string username, string password)
         {
             var filename = @"usermapping.json";
             if (File.Exists(filename))

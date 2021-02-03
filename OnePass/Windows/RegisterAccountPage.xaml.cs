@@ -1,4 +1,6 @@
-﻿using OnePass.Models;
+﻿using OnePass.Handlers;
+using OnePass.Handlers.Interfaces;
+using OnePass.Models;
 using System;
 using System.IO;
 using System.Linq;
@@ -15,10 +17,13 @@ namespace OnePass.Windows
     /// </summary>
     public partial class RegisterAccountPage : Page
     {
-        public RegisterAccountPage()
-        {
-            InitializeComponent();
+        private readonly IRegisterAccountHandler _registerAccountHandler;
 
+        public RegisterAccountPage(IRegisterAccountHandler registerAccountHandler)
+        {
+            _registerAccountHandler = registerAccountHandler ?? throw new ArgumentNullException(nameof(registerAccountHandler));
+            
+            InitializeComponent();
             Username.Focus();
         }
 
@@ -29,7 +34,7 @@ namespace OnePass.Windows
             window.Content = app.GetService<LoginPage>();
         }
 
-        private void OnClick_CreateAccount(object sender, RoutedEventArgs e)
+        private async void OnClick_CreateAccount(object sender, RoutedEventArgs e)
         {
             var validUsername = ValidateUsername();
             var validPassword = ValidatePassword();
@@ -37,44 +42,16 @@ namespace OnePass.Windows
 
             if (validUsername && validPassword && validRepeatPassword)
             {
-                var filename = @"usermapping.json";
-                var accountRoot = new AccountRoot();
-                if (File.Exists(filename))
+                var result = await _registerAccountHandler.RegisterAccountAsync(Username.Text, Password.Password);
+                if (result == RegisterAccountResult.Success)
                 {
-                    using var fileRead = File.OpenRead(filename);
-                    using var reader = new StreamReader(fileRead);
-
-                    var readJson = reader.ReadToEnd();
-                    accountRoot = JsonSerializer.Deserialize<AccountRoot>(readJson);
-
-                    if (accountRoot.Accounts.Any(x => x.Username.Equals(Username.Text)))
-                    {
-                        UsernameValidationLabel.Visibility = Visibility.Visible;
-                        UsernameValidationLabel.Content = $"Username '{Username.Text}' already exists.";
-                        return;
-                    }
+                    MessageBox.Show("Account successfully created", "Account Created", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-
-                var salt = Guid.NewGuid().ToString();
-                var hasher = SHA256.Create();
-
-                var saltedPassword = Password.Password + salt;
-                var passwordHash = hasher.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
-
-                accountRoot.Accounts.Add(new Account()
+                else if (result == RegisterAccountResult.UsernameAlreadyExists)
                 {
-                    Username = Username.Text,
-                    Password = Encoding.UTF8.GetString(passwordHash),
-                    Salt = salt,
-                    Filename = "filename.bin"
-                });
-
-                var json = JsonSerializer.Serialize(accountRoot);
-                using var file = File.OpenWrite(filename);
-                using var writer = new StreamWriter(file);
-                writer.WriteLine(json);
-
-                MessageBox.Show("Account successfully created", "Account Created", MessageBoxButton.OK, MessageBoxImage.Information);
+                    UsernameValidationLabel.Visibility = Visibility.Visible;
+                    UsernameValidationLabel.Content = $"Username '{Username.Text}' already exists.";
+                }
             }
         }
 

@@ -4,6 +4,6 @@ namespace OnePass.Handlers.Interfaces
 {
     public interface ILoginHandler
     {
-        Task<LoginResult> Login(string username, string password);
+        Task<LoginResult> LoginAsync(string username, string password);
     }
 }
