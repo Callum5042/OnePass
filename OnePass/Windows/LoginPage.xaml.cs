@@ -1,5 +1,8 @@
-﻿using OnePass.Models;
+﻿using OnePass.Handlers;
+using OnePass.Handlers.Interfaces;
+using OnePass.Models;
 using OnePass.Services.Interfaces;
+using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -16,9 +19,12 @@ namespace OnePass.Windows
     public partial class LoginPage : Page
     {
         private readonly ISettingsMonitor _settingsMonitor;
+        private readonly ILoginHandler _loginHandler;
 
-        public LoginPage(ISettingsMonitor settingsMonitor)
+        public LoginPage(ISettingsMonitor settingsMonitor, ILoginHandler loginHandler)
         {
+            _loginHandler = loginHandler ?? throw new ArgumentNullException(nameof(loginHandler));
+
             InitializeComponent();
             _settingsMonitor = settingsMonitor;
 
@@ -36,59 +42,41 @@ namespace OnePass.Windows
             }
         }
 
-        private void OnClick_Login(object sender, RoutedEventArgs e)
+        private async void OnClick_Login(object sender, RoutedEventArgs e)
         {
             var usernameValid = ValidateUsernameSyntax();
             var passwordValid = ValidatePasswordSyntax();
 
             if (usernameValid && passwordValid)
             {
-                var filename = @"usermapping.json";
-                if (File.Exists(filename))
+                var result = await _loginHandler.Login(Username.Text, Password.Password);
+
+                if (result == LoginResult.Success)
                 {
-                    using var fileRead = File.OpenRead(filename);
-                    using var reader = new StreamReader(fileRead);
-
-                    var readJson = reader.ReadToEnd();
-                    var accountRoot = JsonSerializer.Deserialize<AccountRoot>(readJson);
-
-                    var account = accountRoot.Accounts.FirstOrDefault(x => x.Username.Equals(Username.Text));
-                    if (account is null)
+                    // Save username if checked
+                    if (RememberUsername.IsChecked == true)
                     {
-                        UsernameValidationMessage.Visibility = Visibility.Visible;
-                        UsernameValidationMessage.Content = "Username not found.";
-                        return;
+                        _settingsMonitor.Current.RememberUsername = Username.Text;
+                        _settingsMonitor.SaveAsync().Wait();
                     }
 
+                    // Go to main window
+                    var app = Application.Current as App;
+                    var window = app.GetService<MainWindow>();
+                    window.Show();
 
-                    var hasher = SHA256.Create();
-                    var saltedPassword = Password.Password + account.Salt;
-                    var hashedPasswordBytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
-                    var hashedPassword = Encoding.UTF8.GetString(hashedPasswordBytes);
-
-                    if (account?.Password == hashedPassword)
-                    {
-                        if (RememberUsername.IsChecked == true)
-                        {
-                            _settingsMonitor.Current.RememberUsername = Username.Text;
-                            _settingsMonitor.SaveAsync().Wait();
-                        }
-
-                        var app = Application.Current as App;
-
-                        var window = app.GetService<MainWindow>();
-                        window.Show();
-
-                        var loginWindow = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
-                        loginWindow.Close();
-
-                        return;
-                    }
-                    else
-                    {
-                        PasswordValidationMessage.Visibility = Visibility.Visible;
-                        PasswordValidationMessage.Content = "Password is invalid.";
-                    }
+                    var loginWindow = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+                    loginWindow.Close();
+                }
+                else if (result == LoginResult.InvalidUsername)
+                {
+                    UsernameValidationMessage.Visibility = Visibility.Visible;
+                    UsernameValidationMessage.Content = "Username not found.";
+                }
+                else if (result == LoginResult.InvalidPassword)
+                {
+                    PasswordValidationMessage.Visibility = Visibility.Visible;
+                    PasswordValidationMessage.Content = "Password is invalid.";
                 }
             }
         }
