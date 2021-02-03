@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace OnePass.Services
+namespace OnePass.Services.Interfaces
 {
     public interface IEncryptor
     {

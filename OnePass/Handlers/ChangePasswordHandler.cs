@@ -1,5 +1,6 @@
-﻿using OnePass.Infrastructure;
-using OnePass.Services;
+﻿using OnePass.Handlers.Interfaces;
+using OnePass.Infrastructure;
+using OnePass.Services.Interfaces;
 using System;
 using System.Security.Cryptography;
 using System.Text;
