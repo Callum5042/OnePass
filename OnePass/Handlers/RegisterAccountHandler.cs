@@ -13,8 +13,9 @@ namespace OnePass.Handlers
     [Inject(typeof(IRegisterAccountHandler))]
     public class RegisterAccountHandler : IRegisterAccountHandler
     {
-        const string _filename = @"usermapping.json";
         private readonly IHasher _hasher;
+
+        public string Filename { get; set; } = @"usermapping.json";
 
         public RegisterAccountHandler(IHasher hasher)
         {
@@ -24,7 +25,7 @@ namespace OnePass.Handlers
         public async Task<RegisterAccountResult> RegisterAccountAsync(string username, string password)
         {
             var accountRoot = new AccountRoot();
-            if (File.Exists(_filename))
+            if (File.Exists(Filename))
             {
                 accountRoot = await ConvertJsonAsync();
 
@@ -53,18 +54,18 @@ namespace OnePass.Handlers
             return RegisterAccountResult.Success;
         }
 
-        private static async Task<AccountRoot> ConvertJsonAsync()
+        private async Task<AccountRoot> ConvertJsonAsync()
         {
-            using var fileRead = File.OpenRead(_filename);
+            using var fileRead = File.OpenRead(Filename);
             using var reader = new StreamReader(fileRead);
 
             var readJson = await reader.ReadToEndAsync();
             return JsonSerializer.Deserialize<AccountRoot>(readJson);
         }
 
-        private static async Task SaveJsonAsync(AccountRoot accountRoot)
+        private async Task SaveJsonAsync(AccountRoot accountRoot)
         {
-            using var file = File.OpenWrite(_filename);
+            using var file = File.OpenWrite(Filename);
             using var writer = new StreamWriter(file);
 
             var json = JsonSerializer.Serialize(accountRoot);

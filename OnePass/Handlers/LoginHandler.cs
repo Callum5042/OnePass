@@ -15,6 +15,8 @@ namespace OnePass.Handlers
     {
         private readonly IHasher _hasher;
 
+        public string Filename { get; set; } = @"usermapping.json";
+
         public LoginHandler(IHasher hasher)
         {
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
@@ -22,10 +24,9 @@ namespace OnePass.Handlers
 
         public async Task<LoginResult> LoginAsync(string username, string password)
         {
-            var filename = @"usermapping.json";
-            if (File.Exists(filename))
+            if (File.Exists(Filename))
             {
-                var accountRoot = await ConvertJsonAsync(filename);
+                var accountRoot = await ConvertJsonAsync(Filename);
 
                 // Check to see if account exists within the usermapping.json file
                 var account = accountRoot.Accounts.FirstOrDefault(x => x.Username.Equals(username));
