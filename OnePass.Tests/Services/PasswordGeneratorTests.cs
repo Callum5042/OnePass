@@ -102,6 +102,7 @@ namespace OnePass.Tests.Services
             Assert.Contains(result, x => char.IsLower(x));
         }
 
+        // Test is a bit dodgey and randomly fails - may have to be removed or further investigated
         [Fact]
         public void Generate_UppercaseIsTrueAndLowercaseIsTrueAndNumbersIsTrue_ReturnsAlphanumericMixCasePassword()
         {

@@ -1,6 +1,5 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
-using OnePass.Services.Interfaces;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,22 +9,8 @@ namespace OnePass.Tests.Handlers
 {
     public class LoginHandlerTests
     {
-        private class TestHasher : IHasher
-        {
-            public string ComputeHashToString(string value) => value;
-        }
-
-        private static async Task CreateUserMapping(AccountRoot accountRoot)
-        {
-            using var file = File.OpenWrite(@"usermapping.json");
-            using var writer = new StreamWriter(file);
-
-            var json = JsonSerializer.Serialize(accountRoot);
-            await writer.WriteAsync(json);
-        }
-
         [Fact]
-        public async Task Login_ValidUsernameAndPassword_ReturnsSuccess()
+        public async Task LoginAsync_ValidUsernameAndPassword_ReturnsSuccess()
         {
             // Arrange
             var accountRoot = new AccountRoot();
@@ -35,11 +20,15 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            await CreateUserMapping(accountRoot);
+            var filename = $"{nameof(LoginAsync_ValidUsernameAndPassword_ReturnsSuccess)}.json";
+            using var fileCleanupFactory = new FileCleanupFactory(filename);
+
+            var json = JsonSerializer.Serialize(accountRoot);
+            await fileCleanupFactory.WriteAsync(json);
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher);
+            var handler = new LoginHandler(hasher) { Filename = filename };
             var result = await handler.LoginAsync("username", "password");
 
             // Assert
@@ -47,7 +36,7 @@ namespace OnePass.Tests.Handlers
         }
 
         [Fact]
-        public async Task Login_UserMappingJsonFileDoesntExist_ReturnsInvalidUsername()
+        public async Task LoginAsync_UserMappingJsonFileDoesntExist_ReturnsInvalidUsername()
         {
             // Arrange
             if (File.Exists(@"usermapping.json"))
@@ -65,7 +54,7 @@ namespace OnePass.Tests.Handlers
         }
 
         [Fact]
-        public async Task Login_UsernameDoesntExist_ReturnsInvalidUsername()
+        public async Task LoginAsync_UsernameDoesntExist_ReturnsInvalidUsername()
         {
             // Arrange
             var accountRoot = new AccountRoot();
@@ -75,11 +64,15 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            await CreateUserMapping(accountRoot);
+            var filename = $"{nameof(LoginAsync_UsernameDoesntExist_ReturnsInvalidUsername)}.json";
+            using var fileCleanupFactory = new FileCleanupFactory(filename);
+
+            var json = JsonSerializer.Serialize(accountRoot);
+            await fileCleanupFactory.WriteAsync(json);
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher);
+            var handler = new LoginHandler(hasher) { Filename = filename };
             var result = await handler.LoginAsync("username123", "password");
 
             // Assert
@@ -87,7 +80,7 @@ namespace OnePass.Tests.Handlers
         }
 
         [Fact]
-        public async Task Login_PasswordDoesNotMatch_ReturnsInvalidPassword()
+        public async Task LoginAsync_PasswordDoesNotMatch_ReturnsInvalidPassword()
         {
             // Arrange
             var accountRoot = new AccountRoot();
@@ -97,11 +90,15 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            await CreateUserMapping(accountRoot);
+            var filename = $"{nameof(LoginAsync_PasswordDoesNotMatch_ReturnsInvalidPassword)}.json";
+            using var fileCleanupFactory = new FileCleanupFactory(filename);
+
+            var json = JsonSerializer.Serialize(accountRoot);
+            await fileCleanupFactory.WriteAsync(json);
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher);
+            var handler = new LoginHandler(hasher) { Filename = filename };
             var result = await handler.LoginAsync("username", "password123");
 
             // Assert
