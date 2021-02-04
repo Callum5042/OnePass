@@ -1,6 +1,7 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
 using OnePass.Models;
+using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
 using System.IO;
@@ -14,12 +15,14 @@ namespace OnePass.Handlers
     public class LoginHandler : ILoginHandler
     {
         private readonly IHasher _hasher;
+        private readonly OnePassRepository _onePassRepository;
 
         public string Filename { get; set; } = @"usermapping.json";
 
-        public LoginHandler(IHasher hasher)
+        public LoginHandler(IHasher hasher, OnePassRepository onePassRepository)
         {
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
+            _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
         public async Task<LoginResult> LoginAsync(string username, string password)
@@ -40,6 +43,9 @@ namespace OnePass.Handlers
                 var hash = _hasher.ComputeHashToString(saltedPassword);
                 if (hash == account.Password)
                 {
+                    _onePassRepository.Filename = account.Filename;
+                    _onePassRepository.MasterPassword = password;
+
                     return LoginResult.Success;
                 }
                 else

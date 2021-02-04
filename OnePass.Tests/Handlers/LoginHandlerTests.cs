@@ -1,5 +1,6 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
+using OnePass.Services;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -28,11 +29,13 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher) { Filename = filename };
+            var onePassRepository = new OnePassRepository();
+            var handler = new LoginHandler(hasher, onePassRepository) { Filename = filename };
             var result = await handler.LoginAsync("username", "password");
 
             // Assert
             Assert.Equal(LoginResult.Success, result);
+            Assert.Equal("password", onePassRepository.MasterPassword);
         }
 
         [Fact]
@@ -46,7 +49,7 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher);
+            var handler = new LoginHandler(hasher, new OnePassRepository());
             var result = await handler.LoginAsync("username", "password");
 
             // Assert
@@ -72,7 +75,7 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher) { Filename = filename };
+            var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username123", "password");
 
             // Assert
@@ -98,7 +101,7 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new LoginHandler(hasher) { Filename = filename };
+            var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username", "password123");
 
             // Assert

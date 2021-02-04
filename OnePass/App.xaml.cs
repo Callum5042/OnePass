@@ -1,4 +1,5 @@
 ﻿using OnePass.Infrastructure;
+using System;
 using System.Windows;
 
 namespace OnePass
@@ -17,6 +18,12 @@ namespace OnePass
         public T GetService<T>()
         {
             return _serviceBuilder.GetService<T>();
+        }
+
+        private void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Environment.Exit(0);
         }
     }
 }

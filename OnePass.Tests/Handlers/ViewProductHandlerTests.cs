@@ -43,8 +43,8 @@ namespace OnePass.Tests.Handlers
             await encryptor.EncryptAsync(filename, password, json);
 
             // Act
-            var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
-            var handler = new ViewProductHandler(encryptor, settings);
+            var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
+            var handler = new ViewProductHandler(encryptor, onePassRepository);
             var result = await handler.GetAllProductsAsync();
 
             // Assert

@@ -1,6 +1,7 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
 using OnePass.Models;
+using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,12 @@ namespace OnePass.Handlers
     public class ViewProductHandler : IViewProductHandler
     {
         private readonly IEncryptor _encryptor;
-        private readonly ISettingsMonitor _settingsMonitor;
+        private readonly OnePassRepository _onePassRepository;
 
-        public ViewProductHandler(IEncryptor encryptor, ISettingsMonitor settingsMonitor)
+        public ViewProductHandler(IEncryptor encryptor, OnePassRepository onePassRepository)
         {
             _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
-            _settingsMonitor = settingsMonitor ?? throw new ArgumentNullException(nameof(settingsMonitor));
+            _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
         public Task<List<Product>> GetAllProductsAsync()
@@ -29,7 +30,10 @@ namespace OnePass.Handlers
 
         private async Task<List<Product>> ReadJsonAsync()
         {
-            var json = await _encryptor.DecryptAsync(_settingsMonitor.Current.FileName, _settingsMonitor.Current.MasterPassword);
+            var filename = _onePassRepository.Filename;
+            var password = _onePassRepository.MasterPassword;
+
+            var json = await _encryptor.DecryptAsync(filename, password);
 
             var root = JsonSerializer.Deserialize<ProductRoot>(json);
             return root.Products.ToList();
