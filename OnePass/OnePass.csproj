@@ -25,9 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="data.bin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -26,12 +26,13 @@ namespace OnePass.Infrastructure
             return scope.ServiceProvider.GetService<T>();
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             InjectServices(services);
             InjectConventions(services);
 
             services.AddSingleton<ISettingsMonitor, SettingsMonitor>();
+            services.AddSingleton<OnePassRepository, OnePassRepository>();
         }
 
         private static void InjectServices(IServiceCollection services)
