@@ -43,6 +43,7 @@ namespace OnePass.Handlers
                 var hash = _hasher.ComputeHashToString(saltedPassword);
                 if (hash == account.Password)
                 {
+                    _onePassRepository.Username = account.Username;
                     _onePassRepository.Filename = account.Filename;
                     _onePassRepository.MasterPassword = password;
 
