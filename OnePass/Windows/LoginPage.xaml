@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:OnePass.Windows"
       mc:Ignorable="d" 
       d:DesignHeight="400" d:DesignWidth="300"
-      Title="LoginPage2">
+      Title="LoginPage2" Loaded="OnLoaded_CheckRemeberUsername">
 
     <StackPanel Margin="10">
 
