@@ -46,7 +46,7 @@ namespace OnePass.Services
             return str;
         }
 
-        private (byte[] Key, byte[] IV) GetKeyAndIv(string password)
+        private static (byte[] Key, byte[] IV) GetKeyAndIv(string password)
         {
             var sha2 = new SHA256CryptoServiceProvider();
 

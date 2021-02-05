@@ -18,11 +18,6 @@ namespace OnePass.Tests.Handlers
             var filename = "updatedata.bin";
             var password = "TestPassword";
 
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
-
             // Arrange
             var root = new ProductRoot()
             {
@@ -40,8 +35,8 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, password, json);
+            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
+            await encryptCleanupFactory.Encrypt(password, json);
 
             // Act
             var model = new Product()
@@ -52,6 +47,7 @@ namespace OnePass.Tests.Handlers
                 Password = "UpdatedPassword"
             };
 
+            var encryptor = new Encryptor();
             var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
             var handler = new UpdateProductHandler(encryptor, settings);
             var result = await handler.UpdateAsync(model);

@@ -2,7 +2,6 @@
 using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,11 +16,6 @@ namespace OnePass.Tests.Handlers
         {
             var filename = "deletedata.bin";
             var password = "TestPassword";
-
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
 
             // Arrange
             var root = new ProductRoot()
@@ -47,12 +41,13 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, password, json);
+            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
+            await encryptCleanupFactory.Encrypt(password, json);
 
             // Act
             var product = root.Products.First();
 
+            var encryptor = new Encryptor();
             var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
             var handler = new DeleteProductHandler(encryptor, settings);
             var result = await handler.DeleteProductAsync(product);
