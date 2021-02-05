@@ -43,7 +43,7 @@ namespace OnePass.Handlers
             var account = new Account()
             {
                 Username = username,
-                Password = password,
+                Password = hash,
                 Salt = salt,
                 Filename = $"{username}.bin"
             };
