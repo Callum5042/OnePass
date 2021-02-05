@@ -1,5 +1,6 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
+using OnePass.Services;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -27,7 +28,8 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new RegisterAccountHandler(hasher) { Filename = filename };
+            var encryptor = new Encryptor();
+            var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
             var result = await handler.RegisterAccountAsync("username123", "password");
 
             // Assert
@@ -53,7 +55,8 @@ namespace OnePass.Tests.Handlers
 
             // Act
             var hasher = new TestHasher();
-            var handler = new RegisterAccountHandler(hasher) { Filename = filename };
+            var encryptor = new Encryptor();
+            var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
             var result = await handler.RegisterAccountAsync("username", "password");
 
             // Assert

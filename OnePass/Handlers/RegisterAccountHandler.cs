@@ -3,6 +3,7 @@ using OnePass.Infrastructure;
 using OnePass.Models;
 using OnePass.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -14,12 +15,14 @@ namespace OnePass.Handlers
     public class RegisterAccountHandler : IRegisterAccountHandler
     {
         private readonly IHasher _hasher;
+        private readonly IEncryptor _encryptor;
 
         public string Filename { get; set; } = @"usermapping.json";
 
-        public RegisterAccountHandler(IHasher hasher)
+        public RegisterAccountHandler(IHasher hasher, IEncryptor encryptor)
         {
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
+            _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
         }
 
         public async Task<RegisterAccountResult> RegisterAccountAsync(string username, string password)
@@ -50,6 +53,13 @@ namespace OnePass.Handlers
 
             accountRoot.Accounts.Add(account);
             await SaveJsonAsync(accountRoot);
+
+            var json = JsonSerializer.Serialize(new ProductRoot()
+            {
+                Products = new List<Product>()
+            });
+
+            await _encryptor.EncryptAsync(account.Filename, password, json);
 
             return RegisterAccountResult.Success;
         }
