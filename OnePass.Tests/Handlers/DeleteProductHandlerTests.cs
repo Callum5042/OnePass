@@ -48,8 +48,8 @@ namespace OnePass.Tests.Handlers
             var product = root.Products.First();
 
             var encryptor = new Encryptor();
-            var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
-            var handler = new DeleteProductHandler(encryptor, settings);
+            var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
+            var handler = new DeleteProductHandler(encryptor, onePassRepository);
             var result = await handler.DeleteProductAsync(product);
 
             // Assert

@@ -38,8 +38,11 @@ namespace OnePass.Windows
             await _handler.AddProduct(product);
             Close();
 
-            var view = (Application.Current.MainWindow.Content as ViewPage);
-            view.Products.Add(product);
+            var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (window?.Content is ViewPage viewPage)
+            {
+                viewPage.Products.Add(product);
+            }
         }
 
         private void OnClick_GeneratePassword(object sender, RoutedEventArgs e)
