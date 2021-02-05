@@ -23,6 +23,8 @@ namespace OnePass
 
         private async void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+            MessageBox.Show(e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
             using var file = File.OpenWrite(@"errorlog.txt");
             using (var writer = new StreamWriter(file))
             {
@@ -30,7 +32,6 @@ namespace OnePass
                 await writer.WriteLineAsync(e.Exception.StackTrace);
             }
 
-            MessageBox.Show(e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(0);
         }
     }

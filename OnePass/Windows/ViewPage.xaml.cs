@@ -50,12 +50,6 @@ namespace OnePass.Windows
             await UpdateProductListAsync();
         }
 
-        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
-        {
-            var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
-            window.Close();
-        }
-
         private void MenuItem_Click_Add(object sender, RoutedEventArgs e)
         {
             var app = Application.Current as App;
