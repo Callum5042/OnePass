@@ -1,5 +1,6 @@
 ﻿using OnePass.Infrastructure;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace OnePass
@@ -20,8 +21,15 @@ namespace OnePass
             return _serviceBuilder.GetService<T>();
         }
 
-        private void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private async void OnUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+            using var file = File.OpenWrite(@"errorlog.txt");
+            using (var writer = new StreamWriter(file))
+            {
+                await writer.WriteLineAsync($"Exception ({DateTime.Now}): {e.Exception.Message}");
+                await writer.WriteLineAsync(e.Exception.StackTrace);
+            }
+
             MessageBox.Show(e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(0);
         }
