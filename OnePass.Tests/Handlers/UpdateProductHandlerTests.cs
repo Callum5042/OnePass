@@ -48,8 +48,8 @@ namespace OnePass.Tests.Handlers
             };
 
             var encryptor = new Encryptor();
-            var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
-            var handler = new UpdateProductHandler(encryptor, settings);
+            var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
+            var handler = new UpdateProductHandler(encryptor, onePassRepository);
             var result = await handler.UpdateAsync(model);
 
             // Assert
