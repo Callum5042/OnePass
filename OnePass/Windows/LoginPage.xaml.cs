@@ -1,13 +1,11 @@
 ﻿using OnePass.Handlers;
 using OnePass.Handlers.Interfaces;
 using OnePass.Models;
-using OnePass.Services.Interfaces;
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,26 +17,13 @@ namespace OnePass.Windows
     public partial class LoginPage : Page
     {
         private readonly ILoginHandler _loginHandler;
+        private const string _filename = @"usermapping.json";
 
         public LoginPage(ILoginHandler loginHandler)
         {
             _loginHandler = loginHandler ?? throw new ArgumentNullException(nameof(loginHandler));
 
             InitializeComponent();
-
-            //if (!string.IsNullOrEmpty(_settingsMonitor.Current.RememberUsername))
-            //{
-            //    Username.Text = _settingsMonitor.Current.RememberUsername;
-            //    RememberUsername.IsChecked = true;
-
-            //    Password.Focus();
-            //}
-            //else
-            //{
-            //    Username.Focus();
-            //}
-
-            Username.Focus();
         }
 
         private async void OnClick_Login(object sender, RoutedEventArgs e)
@@ -55,8 +40,10 @@ namespace OnePass.Windows
                     // Save username if checked
                     if (RememberUsername.IsChecked == true)
                     {
-                        //_settingsMonitor.Current.RememberUsername = Username.Text;
-                        //_settingsMonitor.SaveAsync().Wait();
+                        var accountRoot = await ConvertJsonAsync();
+                        accountRoot.RememberUsername = Username.Text;
+
+                        await SaveJsonAsync(accountRoot);
                     }
 
                     // Go to main window
@@ -131,6 +118,47 @@ namespace OnePass.Windows
             var app = Application.Current as App;
             var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
             window.Content = app.GetService<RegisterAccountPage>();
+        }
+
+        private async void OnLoaded_CheckRemeberUsername(object sender, RoutedEventArgs e)
+        {
+            // Check if username has been remembered
+            if (File.Exists(_filename))
+            {
+                var accountRoot = await ConvertJsonAsync();
+                if (string.IsNullOrWhiteSpace(accountRoot.RememberUsername))
+                {
+                    Username.Focus();
+                }
+                else
+                {
+                    Username.Text = accountRoot.RememberUsername;
+                    RememberUsername.IsChecked = true;
+                    Password.Focus();
+                }
+            }
+            else
+            {
+                Username.Focus();
+            }
+        }
+
+        private static async Task<AccountRoot> ConvertJsonAsync()
+        {
+            using var fileRead = File.OpenRead(_filename);
+            using var reader = new StreamReader(fileRead);
+
+            var readJson = await reader.ReadToEndAsync();
+            return JsonSerializer.Deserialize<AccountRoot>(readJson);
+        }
+
+        private static async Task SaveJsonAsync(AccountRoot accountRoot)
+        {
+            using var file = File.OpenWrite(_filename);
+            using var writer = new StreamWriter(file);
+
+            var json = JsonSerializer.Serialize(accountRoot);
+            await writer.WriteLineAsync(json);
         }
     }
 }
