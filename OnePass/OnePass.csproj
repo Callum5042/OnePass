@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <Description>One pass to rule them all</Description>
     <Authors>Callum Anning</Authors>
-    <AssemblyVersion>0.6.0.0</AssemblyVersion>
+    <AssemblyVersion>0.7.0.0</AssemblyVersion>
     <PackageReleaseNotes>Beta</PackageReleaseNotes>
-    <FileVersion>0.6.0.0</FileVersion>
-    <Version>0.6.0</Version>
+    <FileVersion>0.7.0.0</FileVersion>
+    <Version>0.7.0</Version>
     <ApplicationIcon>OnePassIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
