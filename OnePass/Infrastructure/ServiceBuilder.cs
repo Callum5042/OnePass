@@ -31,7 +31,6 @@ namespace OnePass.Infrastructure
             InjectServices(services);
             InjectConventions(services);
 
-            services.AddSingleton<ISettingsMonitor, SettingsMonitor>();
             services.AddSingleton<OnePassRepository, OnePassRepository>();
         }
 

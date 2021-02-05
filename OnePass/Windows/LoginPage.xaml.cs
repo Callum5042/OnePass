@@ -14,32 +14,31 @@ using System.Windows.Controls;
 namespace OnePass.Windows
 {
     /// <summary>
-    /// Interaction logic for LoginPage2.xaml
+    /// Interaction logic for LoginPage.xaml
     /// </summary>
     public partial class LoginPage : Page
     {
-        private readonly ISettingsMonitor _settingsMonitor;
         private readonly ILoginHandler _loginHandler;
 
-        public LoginPage(ISettingsMonitor settingsMonitor, ILoginHandler loginHandler)
+        public LoginPage(ILoginHandler loginHandler)
         {
             _loginHandler = loginHandler ?? throw new ArgumentNullException(nameof(loginHandler));
 
             InitializeComponent();
-            _settingsMonitor = settingsMonitor;
 
+            //if (!string.IsNullOrEmpty(_settingsMonitor.Current.RememberUsername))
+            //{
+            //    Username.Text = _settingsMonitor.Current.RememberUsername;
+            //    RememberUsername.IsChecked = true;
 
-            if (!string.IsNullOrEmpty(_settingsMonitor.Current.RememberUsername))
-            {
-                Username.Text = _settingsMonitor.Current.RememberUsername;
-                RememberUsername.IsChecked = true;
+            //    Password.Focus();
+            //}
+            //else
+            //{
+            //    Username.Focus();
+            //}
 
-                Password.Focus();
-            }
-            else
-            {
-                Username.Focus();
-            }
+            Username.Focus();
         }
 
         private async void OnClick_Login(object sender, RoutedEventArgs e)
@@ -56,8 +55,8 @@ namespace OnePass.Windows
                     // Save username if checked
                     if (RememberUsername.IsChecked == true)
                     {
-                        _settingsMonitor.Current.RememberUsername = Username.Text;
-                        _settingsMonitor.SaveAsync().Wait();
+                        //_settingsMonitor.Current.RememberUsername = Username.Text;
+                        //_settingsMonitor.SaveAsync().Wait();
                     }
 
                     // Go to main window
@@ -123,8 +122,6 @@ namespace OnePass.Windows
             {
                 PasswordValidationMessage.Visibility = Visibility.Collapsed;
                 PasswordValidationMessage.Content = string.Empty;
-
-                _settingsMonitor.Current.MasterPassword = password;
                 return true;
             }
         }
