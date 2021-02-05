@@ -2,7 +2,6 @@
 using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,11 +16,6 @@ namespace OnePass.Tests.Handlers
         {
             var filename = "viewdata.bin";
             var password = "TestPassword";
-
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
 
             // Arrange
             var model = new Product()
@@ -38,11 +32,11 @@ namespace OnePass.Tests.Handlers
             };
 
             var json = JsonSerializer.Serialize(root);
-
-            var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, password, json);
+            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
+            await encryptCleanupFactory.Encrypt(password, json);
 
             // Act
+            var encryptor = new Encryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
             var handler = new ViewProductHandler(encryptor, onePassRepository);
             var result = await handler.GetAllProductsAsync();

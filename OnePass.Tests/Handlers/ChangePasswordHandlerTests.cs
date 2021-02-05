@@ -2,7 +2,6 @@
 using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,11 +17,6 @@ namespace OnePass.Tests.Handlers
             var password = "TestPassword";
             var newPassword = "NewTestPassword";
 
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
-
             // Arrange
             var root = new ProductRoot()
             {
@@ -31,10 +25,11 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, password, json);
+            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
+            await encryptCleanupFactory.Encrypt(password, json);
 
             // Act
+            var encryptor = new Encryptor();
             var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
             var handler = new ChangePasswordHandler(encryptor, settings);
             var result = await handler.ChangePassword(password, newPassword);
@@ -47,14 +42,9 @@ namespace OnePass.Tests.Handlers
         [Fact]
         public async Task ChangePassword_MasterDoNotPasswordMatches_ReturnFailedString()
         {
-            var filename = "changedata.bin";
+            var filename = "changedata2.bin";
             var password = "TestPassword";
             var newPassword = "NewTestPassword";
-
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
 
             // Arrange
             var root = new ProductRoot()
@@ -64,10 +54,11 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            var encryptor = new Encryptor();
-            await encryptor.EncryptAsync(filename, password, json);
+            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
+            await encryptCleanupFactory.Encrypt(password, json);
 
             // Act
+            var encryptor = new Encryptor();
             var settings = new TestSettingsMonitor(new OnePassSettings() { FileName = filename, MasterPassword = password });
             var handler = new ChangePasswordHandler(encryptor, settings);
             var result = await handler.ChangePassword(newPassword, newPassword);

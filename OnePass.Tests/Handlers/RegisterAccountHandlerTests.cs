@@ -6,7 +6,7 @@ using Xunit;
 
 namespace OnePass.Tests.Handlers
 {
-    public partial class RegisterAccountHandlerTests
+    public class RegisterAccountHandlerTests
     {
         [Fact]
         public async Task RegisterAccountAsync_UsernameDoesNotExist_ReturnSuccess()
