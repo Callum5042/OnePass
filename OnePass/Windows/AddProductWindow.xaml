@@ -6,31 +6,32 @@
         xmlns:local="clr-namespace:OnePass.Windows"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Add Product" Height="400" Width="400" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow">
+        Title="Add Product" Height="400" Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStyle="SingleBorderWindow">
 
     <StackPanel Margin="10,0,10,10">
-        
-        <Label>Name</Label>
+
+        <Label Style="{StaticResource DefaultLabel}" Content="Name" />
         <TextBox x:Name="NameTextbox"></TextBox>
-        
-        <Label>Login</Label>
+
+        <Label Style="{StaticResource DefaultLabel}" Content="Login" />
         <TextBox x:Name="LoginTextbox"></TextBox>
-        
-        <Label>Password</Label>
+
+        <Label Style="{StaticResource DefaultLabel}" Content="Password" />
         <TextBox x:Name="PasswordTextbox"></TextBox>
 
-        <Grid Margin="0,10,0,0">
+        <Grid Margin="0,10,0,5">
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="SubmitButton" Grid.Column="0" Click="OnClick_AddProduct">Add Product</Button>
-            <Separator Grid.Column="1" Margin="10,0,10,0"></Separator>
-            <Button x:Name="GeneratePasswordButton" Grid.Column="2" Click="OnClick_GeneratePassword">Generate Password</Button>
-        </Grid>
+            <Button x:Name="SubmitButton" Grid.Column="0" Content="Update" IsDefault="True" Click="OnClick_AddProduct" />
+            <Button x:Name="GeneratePasswordButton" Grid.Column="3" Content="Generate Password" Click="OnClick_GeneratePassword" />
 
+        </Grid>
+        
     </StackPanel>
 
 </Window>
