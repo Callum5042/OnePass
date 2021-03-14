@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="SubmitButton" Grid.Column="0" Content="Update" IsDefault="True" Click="OnClick_AddProduct" />
+            <Button x:Name="SubmitButton" Grid.Column="0" Content="Add" IsDefault="True" Click="OnClick_AddProduct" />
             <Button x:Name="GeneratePasswordButton" Grid.Column="3" Content="Generate Password" Click="OnClick_GeneratePassword" />
 
         </Grid>
