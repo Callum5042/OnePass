@@ -27,7 +27,7 @@ namespace OnePass.Handlers
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
         }
 
-        public async Task<string> ChangePassword(string oldPassword, string newPassword)
+        public async Task<bool> ChangePassword(string oldPassword, string newPassword)
         {
             if (_onePassRepository.MasterPassword == oldPassword)
             {
@@ -40,12 +40,10 @@ namespace OnePass.Handlers
                 var json = await _encryptor.DecryptAsync(_onePassRepository.Filename, oldPassword);
                 await _encryptor.EncryptAsync(_onePassRepository.Filename, newPassword, json);
 
-                return "Password has been changed";
+                return true;
             }
-            else
-            {
-                return "Current password is invalid";
-            }
+
+            return false;
         }
 
         private async Task HashPassword(string password)
