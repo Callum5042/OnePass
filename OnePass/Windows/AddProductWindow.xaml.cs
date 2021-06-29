@@ -45,6 +45,7 @@ namespace OnePass.Windows
                 };
 
                 await _handler.AddProduct(product);
+                IsContentModified = false;
                 Close();
 
                 var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
