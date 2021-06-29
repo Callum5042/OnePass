@@ -127,7 +127,7 @@ namespace OnePass.Windows
             else
             {
                 NameValidationMessage.Content = string.Empty;
-                NameValidationMessage.Visibility = Visibility.Hidden;
+                NameValidationMessage.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -142,7 +142,7 @@ namespace OnePass.Windows
             else
             {
                 LoginValidationMessage.Content = string.Empty;
-                LoginValidationMessage.Visibility = Visibility.Hidden;
+                LoginValidationMessage.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -157,7 +157,7 @@ namespace OnePass.Windows
             else
             {
                 PasswordValidationMessage.Content = string.Empty;
-                PasswordValidationMessage.Visibility = Visibility.Hidden;
+                PasswordValidationMessage.Visibility = Visibility.Collapsed;
             }
         }
 
