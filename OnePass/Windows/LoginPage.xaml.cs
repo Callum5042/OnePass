@@ -57,12 +57,12 @@ namespace OnePass.Windows
                 else if (result == LoginResult.InvalidUsername)
                 {
                     UsernameValidationMessage.Visibility = Visibility.Visible;
-                    UsernameValidationMessage.Content = "Username not found.";
+                    UsernameValidationMessage.Content = "'Username' not found.";
                 }
                 else if (result == LoginResult.InvalidPassword)
                 {
                     PasswordValidationMessage.Visibility = Visibility.Visible;
-                    PasswordValidationMessage.Content = "Password is invalid.";
+                    PasswordValidationMessage.Content = "'Password' is invalid.";
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace OnePass.Windows
             UsernameValidationMessage.Visibility = Visibility.Visible;
             if (string.IsNullOrEmpty(username))
             {
-                UsernameValidationMessage.Content = "Username is required.";
+                UsernameValidationMessage.Content = "'Username' is required.";
                 return false;
             }
             else
@@ -102,7 +102,7 @@ namespace OnePass.Windows
             PasswordValidationMessage.Visibility = Visibility.Visible;
             if (string.IsNullOrEmpty(password))
             {
-                PasswordValidationMessage.Content = "Password is required.";
+                PasswordValidationMessage.Content = "'Password' is required.";
                 return false;
             }
             else

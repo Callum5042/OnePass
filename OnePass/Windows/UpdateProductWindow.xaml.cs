@@ -4,6 +4,7 @@ using OnePass.Models;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace OnePass.Windows
 {
@@ -33,15 +34,90 @@ namespace OnePass.Windows
 
         private async void OnClick_UpdateProduct(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Update product information?", "Update", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
-            {
-                Product.Name = NameTextbox.Text;
-                Product.Login = LoginTextbox.Text;
-                Product.Password = PasswordTextbox.Text;
+            var valid = Validate();
 
-                await _handler.UpdateAsync(Product);
-                Close();
+            if (valid)
+            {
+                var result = MessageBox.Show("Update product information?", "Update", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    Product.Name = NameTextbox.Text;
+                    Product.Login = LoginTextbox.Text;
+                    Product.Password = PasswordTextbox.Text;
+
+                    await _handler.UpdateAsync(Product);
+                    Close();
+                }
+            }
+        }
+
+        private bool Validate()
+        {
+            var isValid = true;
+
+            if (string.IsNullOrWhiteSpace(NameTextbox.Text))
+            {
+                NameValidationMessage.Content = "'Name' is required.";
+                NameValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(LoginTextbox.Text))
+            {
+                LoginValidationMessage.Content = "'Login' is required.";
+                LoginValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(PasswordTextbox.Text))
+            {
+                PasswordValidationMessage.Content = "'Password' is required.";
+                PasswordValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private void OnTextChanged_NameTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(NameTextbox.Text))
+            {
+                NameValidationMessage.Content = "'Name' is required.";
+                NameValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                NameValidationMessage.Content = string.Empty;
+                NameValidationMessage.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void OnTextChanged_LoginTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(LoginTextbox.Text))
+            {
+                LoginValidationMessage.Content = "'Login' is required.";
+                LoginValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LoginValidationMessage.Content = string.Empty;
+                LoginValidationMessage.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void OnTextChanged_PasswordTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(PasswordTextbox.Text))
+            {
+                PasswordValidationMessage.Content = "'Password' is required.";
+                PasswordValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                PasswordValidationMessage.Content = string.Empty;
+                PasswordValidationMessage.Visibility = Visibility.Hidden;
             }
         }
     }

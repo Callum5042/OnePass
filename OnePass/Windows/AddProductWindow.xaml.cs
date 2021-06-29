@@ -6,6 +6,7 @@ using OnePass.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace OnePass.Windows
 {
@@ -24,24 +25,31 @@ namespace OnePass.Windows
             ShowInTaskbar = false;
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
             _passwordGenerator = passwordGenerator ?? throw new ArgumentNullException(nameof(passwordGenerator));
+
+            NameTextbox.Focus();
         }
 
         private async void OnClick_AddProduct(object sender, RoutedEventArgs e)
         {
-            var product = new Product()
-            {
-                Name = NameTextbox.Text,
-                Login = LoginTextbox.Text,
-                Password = PasswordTextbox.Text
-            };
+            var isValid = Validate();
 
-            await _handler.AddProduct(product);
-            Close();
-
-            var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (window?.Content is ViewPage viewPage)
+            if (isValid)
             {
-                viewPage.Products.Add(product);
+                var product = new Product()
+                {
+                    Name = NameTextbox.Text,
+                    Login = LoginTextbox.Text,
+                    Password = PasswordTextbox.Text
+                };
+
+                await _handler.AddProduct(product);
+                Close();
+
+                var window = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (window?.Content is ViewPage viewPage)
+                {
+                    viewPage.Products.Add(product);
+                }
             }
         }
 
@@ -59,6 +67,76 @@ namespace OnePass.Windows
             });
 
             PasswordTextbox.Text = password;
+        }
+
+        private bool Validate()
+        {
+            var isValid = true;
+
+            if (string.IsNullOrWhiteSpace(NameTextbox.Text))
+            {
+                NameValidationMessage.Content = "'Name' is required.";
+                NameValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(LoginTextbox.Text))
+            {
+                LoginValidationMessage.Content = "'Login' is required.";
+                LoginValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(PasswordTextbox.Text))
+            {
+                PasswordValidationMessage.Content = "'Password' is required.";
+                PasswordValidationMessage.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private void OnTextChanged_NameTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(NameTextbox.Text))
+            {
+                NameValidationMessage.Content = "'Name' is required.";
+                NameValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                NameValidationMessage.Content = string.Empty;
+                NameValidationMessage.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void OnTextChanged_LoginTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(LoginTextbox.Text))
+            {
+                LoginValidationMessage.Content = "'Login' is required.";
+                LoginValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LoginValidationMessage.Content = string.Empty;
+                LoginValidationMessage.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void OnTextChanged_PasswordTextbox(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(PasswordTextbox.Text))
+            {
+                PasswordValidationMessage.Content = "'Password' is required.";
+                PasswordValidationMessage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                PasswordValidationMessage.Content = string.Empty;
+                PasswordValidationMessage.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
