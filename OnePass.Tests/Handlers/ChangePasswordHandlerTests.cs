@@ -49,8 +49,7 @@ namespace OnePass.Tests.Handlers
             var result = await handler.ChangePassword(password, newPassword);
 
             // Assert
-            Assert.Equal("Password has been changed", result);
-            //Assert.Equal(settings.Current.MasterPassword, newPassword);
+            Assert.True(result);
         }
 
         [Fact]
@@ -79,8 +78,7 @@ namespace OnePass.Tests.Handlers
             var result = await handler.ChangePassword(newPassword, newPassword);
 
             // Assert
-            Assert.Equal("Current password is invalid", result);
-            //Assert.Equal(settings.Current.MasterPassword, password);
+            Assert.False(result);
         }
     }
 }

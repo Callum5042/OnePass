@@ -4,6 +4,7 @@ using OnePass.Models;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,10 @@ namespace OnePass.Windows
             _loginHandler = loginHandler ?? throw new ArgumentNullException(nameof(loginHandler));
 
             InitializeComponent();
+
+            // Set version
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            VersionLabel.Content = $"v{version.ToString(3)}";
         }
 
         private async void OnClick_Login(object sender, RoutedEventArgs e)
@@ -57,12 +62,12 @@ namespace OnePass.Windows
                 else if (result == LoginResult.InvalidUsername)
                 {
                     UsernameValidationMessage.Visibility = Visibility.Visible;
-                    UsernameValidationMessage.Content = "Username not found.";
+                    UsernameValidationMessage.Content = "'Username' not found.";
                 }
                 else if (result == LoginResult.InvalidPassword)
                 {
                     PasswordValidationMessage.Visibility = Visibility.Visible;
-                    PasswordValidationMessage.Content = "Password is invalid.";
+                    PasswordValidationMessage.Content = "'Password' is invalid.";
                 }
             }
         }
@@ -79,7 +84,7 @@ namespace OnePass.Windows
             UsernameValidationMessage.Visibility = Visibility.Visible;
             if (string.IsNullOrEmpty(username))
             {
-                UsernameValidationMessage.Content = "Username is required.";
+                UsernameValidationMessage.Content = "'Username' is required.";
                 return false;
             }
             else
@@ -102,7 +107,7 @@ namespace OnePass.Windows
             PasswordValidationMessage.Visibility = Visibility.Visible;
             if (string.IsNullOrEmpty(password))
             {
-                PasswordValidationMessage.Content = "Password is required.";
+                PasswordValidationMessage.Content = "'Password' is required.";
                 return false;
             }
             else

@@ -32,6 +32,7 @@ namespace OnePass.Windows
             _deleteProductHandler = deleteProductHandler ?? throw new ArgumentNullException(nameof(deleteProductHandler));
 
             LoginDataListView.ItemsSource = Products;
+            Sort("Name", ListSortDirection.Ascending);
         }
 
         public async Task UpdateProductListAsync()
