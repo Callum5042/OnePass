@@ -4,6 +4,7 @@ using OnePass.Models;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,10 @@ namespace OnePass.Windows
             _loginHandler = loginHandler ?? throw new ArgumentNullException(nameof(loginHandler));
 
             InitializeComponent();
+
+            // Set version
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            VersionLabel.Content = $"v{version.ToString(3)}";
         }
 
         private async void OnClick_Login(object sender, RoutedEventArgs e)
