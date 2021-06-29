@@ -20,6 +20,8 @@ namespace OnePass.Windows
 
         private bool IsNewPasswordGenerated { get; set; }
 
+        private bool IsContentModified { get; set; }
+
         public Product Product { get; set; }
 
         public UpdateProductWindow(IUpdateProductHandler handler, IPasswordGenerator passwordGenerator)
@@ -37,6 +39,9 @@ namespace OnePass.Windows
             NameTextbox.Text = Product.Name;
             LoginTextbox.Text = Product.Login;
             PasswordTextbox.Text = Product.Password;
+
+            // Set to false once content is loaded
+            IsContentModified = false;
         }
 
         private async void OnClick_UpdateProduct(object sender, RoutedEventArgs e)
@@ -112,6 +117,7 @@ namespace OnePass.Windows
 
         private void OnTextChanged_NameTextbox(object sender, TextChangedEventArgs e)
         {
+            IsContentModified = true;
             if (string.IsNullOrWhiteSpace(NameTextbox.Text))
             {
                 NameValidationMessage.Content = "'Name' is required.";
@@ -126,6 +132,7 @@ namespace OnePass.Windows
 
         private void OnTextChanged_LoginTextbox(object sender, TextChangedEventArgs e)
         {
+            IsContentModified = true;
             if (string.IsNullOrWhiteSpace(LoginTextbox.Text))
             {
                 LoginValidationMessage.Content = "'Login' is required.";
@@ -140,6 +147,7 @@ namespace OnePass.Windows
 
         private void OnTextChanged_PasswordTextbox(object sender, TextChangedEventArgs e)
         {
+            IsContentModified = true;
             if (string.IsNullOrWhiteSpace(PasswordTextbox.Text))
             {
                 PasswordValidationMessage.Content = "'Password' is required.";
@@ -149,6 +157,19 @@ namespace OnePass.Windows
             {
                 PasswordValidationMessage.Content = string.Empty;
                 PasswordValidationMessage.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void OnClosing_Window(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (IsContentModified)
+            {
+                var msg = MessageBox.Show("Exit without saving changes?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (msg == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
         }
     }
