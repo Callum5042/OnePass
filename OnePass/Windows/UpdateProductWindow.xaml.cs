@@ -58,6 +58,7 @@ namespace OnePass.Windows
                     Product.Password = PasswordTextbox.Text;
 
                     await _handler.UpdateAsync(Product);
+                    IsContentModified = false;
                     Close();
                 }
             }
