@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OnePass.Windows"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Update Product" Height="400" Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStyle="SingleBorderWindow" Loaded="OnLoaded">
+        Title="Update Product" Height="400" Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStyle="SingleBorderWindow" Loaded="OnLoaded" Closing="OnClosing_Window">
 
     <StackPanel Margin="10,0,10,10">
 
