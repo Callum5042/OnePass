@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OnePass.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "-decrypt -file \"encrypted_file.bin\" -password \"super\""
+    }
+  }
+}
