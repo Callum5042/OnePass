@@ -1,8 +1,7 @@
 {
   "profiles": {
     "OnePass.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "-decrypt -file \"SUPER.bin\""
+      "commandName": "Project"
     }
   }
 }
