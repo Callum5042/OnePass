@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace OnePass.CLI.Commands
 {
@@ -6,9 +7,11 @@ namespace OnePass.CLI.Commands
     {
         public CommandType CommandType => CommandType.Help;
 
-        public void Execute(Arguments arguments)
+        public Task ExecuteAsync(Arguments arguments)
         {
             Console.WriteLine("=== OnePass CLI - Help ===");
+
+            return Task.CompletedTask;
         }
     }
 }
