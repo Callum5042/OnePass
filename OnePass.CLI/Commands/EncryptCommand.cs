@@ -1,6 +1,7 @@
 ﻿using OnePass.Services;
 using System;
 using System.IO.Abstractions;
+using System.Threading.Tasks;
 
 namespace OnePass.CLI.Commands
 {
@@ -17,11 +18,11 @@ namespace OnePass.CLI.Commands
 
         public CommandType CommandType => CommandType.Encrypt;
 
-        public void Execute(Arguments arguments)
+        public async Task ExecuteAsync(Arguments arguments)
         {
             using var file = _fileSystem.File.OpenRead(arguments.File);
             using var output = _fileSystem.File.Create("encrypted.txt");
-            _fileEncryptor.Encrypt(file, output, "super");
+            await _fileEncryptor.EncryptAsync(file, output, "super");
         }
     }
 }

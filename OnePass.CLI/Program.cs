@@ -4,12 +4,13 @@ using OnePass.Services;
 using System;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnePass.CLI
 {
     public class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var serviceCollection = BuildServices();
             var service = serviceCollection.BuildServiceProvider();
@@ -21,12 +22,12 @@ namespace OnePass.CLI
 
                 var resolver = service.GetRequiredService<CommandResolver>();
                 var command = resolver.Resolve(arguments.CommandType);
-                command.Execute(arguments);
+                await command.ExecuteAsync(arguments);
             }
             catch (ArgumentException)
             {
                 var helpCommand = service.GetServices<ICommand>().OfType<HelpCommand>().First();
-                helpCommand.Execute(new Arguments() { CommandType = CommandType.Help });
+                await helpCommand.ExecuteAsync(new Arguments() { CommandType = CommandType.Help });
             }
             catch (Exception e)
             {

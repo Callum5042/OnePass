@@ -3,13 +3,14 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OnePass.Services
 {
     [Inject]
     public class FileEncryptor : IFileEncryptor
     {
-        public void Encrypt(Stream input, Stream output, string password)
+        public async Task EncryptAsync(Stream input, Stream output, string password)
         {
             // Encryption Key
             var (Key, IV) = GetKeyAndIv("super");
@@ -21,10 +22,10 @@ namespace OnePass.Services
             // Encrypt file
             using var decryptor = aes.CreateEncryptor(aes.Key, aes.IV);
             using var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read);
-            cryptoStream.CopyTo(output);
+            await cryptoStream.CopyToAsync(output);
         }
 
-        public void Decrypt(Stream input, Stream output, string password)
+        public async Task DecryptAsync(Stream input, Stream output, string password)
         {
             // Encrypted key
             var (Key, IV) = GetKeyAndIv("super");
@@ -36,7 +37,7 @@ namespace OnePass.Services
             // Decrypt file
             using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
             using var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read);
-            cryptoStream.CopyTo(output);
+            await cryptoStream.CopyToAsync(output);
         }
 
         private static (byte[] Key, byte[] IV) GetKeyAndIv(string password)
