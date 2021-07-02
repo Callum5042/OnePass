@@ -6,13 +6,51 @@ namespace OnePass.CLI
     {
         public Arguments Parse(string[] args)
         {
-            var commandType = Enum.Parse<CommandType>(args[0].Remove(0, 1), true);
-
-            return new Arguments()
+            try
             {
-                CommandType = commandType,
-                File = args[2]
-            };
+                var commandType = Enum.Parse<CommandType>(args[0].Remove(0, 1), true);
+                var file = ParseFile(args);
+                var password = ParsePassword(args);
+
+                return new Arguments()
+                {
+                    CommandType = commandType,
+                    File = file,
+                    Password = password
+                };
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new ArgumentException();
+            }
+        }
+
+        private static string ParseFile(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Equals("-file"))
+                {
+                    var password = args[i + 1];
+                    return password.Replace("\"", string.Empty);
+                }
+            }
+
+            throw new ArgumentException("Could not parse file");
+        }
+
+        private static string ParsePassword(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Equals("-password"))
+                {
+                    var password = args[i + 1];
+                    return password.Replace("\"", string.Empty);
+                }
+            }
+
+            throw new ArgumentException("Could not parse file");
         }
     }
 }
