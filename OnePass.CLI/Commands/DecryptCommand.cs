@@ -20,10 +20,8 @@ namespace OnePass.CLI.Commands
         public void Execute(Arguments arguments)
         {
             using var file = _fileSystem.File.OpenRead(arguments.File);
-            using var stream = _fileEncryptor.Decrypt(file, "super");
-
-            using var outputfile = _fileSystem.File.Create("decrypted_file.json");
-            stream.CopyTo(outputfile);
+            using var output = _fileSystem.File.Create("encrypted.txt");
+            _fileEncryptor.Decrypt(file, output, "super");
         }
     }
 }

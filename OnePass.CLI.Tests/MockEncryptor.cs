@@ -5,9 +5,14 @@ namespace OnePass.CLI.Tests
 {
     public class MockEncryptor : IFileEncryptor
     {
-        public Stream Decrypt(Stream stream, string password)
+        public void Encrypt(Stream input, Stream output, string password)
         {
-            return stream;
+            input.CopyTo(output);
+        }
+
+        public void Decrypt(Stream input, Stream output, string password)
+        {
+            input.CopyTo(output);
         }
     }
 }
