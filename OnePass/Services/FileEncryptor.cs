@@ -9,17 +9,34 @@ namespace OnePass.Services
     [Inject]
     public class FileEncryptor : IFileEncryptor
     {
-        public Stream Decrypt(Stream stream, string password)
+        public void Encrypt(Stream input, Stream output, string password)
         {
-            var (Key, IV) = GetKeyAndIv(password);
+            // Encryption Key
+            var (Key, IV) = GetKeyAndIv("super");
 
             using var aes = Aes.Create();
             aes.Key = Key;
             aes.IV = IV;
 
-            var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            var cryptoStream = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
-            return cryptoStream;
+            // Encrypt file
+            using var decryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read);
+            cryptoStream.CopyTo(output);
+        }
+
+        public void Decrypt(Stream input, Stream output, string password)
+        {
+            // Encrypted key
+            var (Key, IV) = GetKeyAndIv("super");
+
+            using var aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = IV;
+
+            // Decrypt file
+            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using var cryptoStream = new CryptoStream(input, decryptor, CryptoStreamMode.Read);
+            cryptoStream.CopyTo(output);
         }
 
         private static (byte[] Key, byte[] IV) GetKeyAndIv(string password)

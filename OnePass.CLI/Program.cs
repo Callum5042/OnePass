@@ -3,6 +3,7 @@ using OnePass.CLI.Commands;
 using OnePass.Services;
 using System;
 using System.IO.Abstractions;
+using System.Linq;
 
 namespace OnePass.CLI
 {
@@ -24,7 +25,7 @@ namespace OnePass.CLI
             }
             catch (ArgumentException)
             {
-                var helpCommand = service.GetRequiredService<HelpCommand>();
+                var helpCommand = service.GetServices<ICommand>().OfType<HelpCommand>().First();
                 helpCommand.Execute(new Arguments() { CommandType = CommandType.Help });
             }
             catch (Exception e)

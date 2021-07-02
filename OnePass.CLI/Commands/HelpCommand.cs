@@ -8,7 +8,7 @@ namespace OnePass.CLI.Commands
 
         public void Execute(Arguments arguments)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("=== OnePass CLI - Help ===");
         }
     }
 }
