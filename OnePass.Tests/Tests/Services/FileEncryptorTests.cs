@@ -1,6 +1,7 @@
 ﻿using OnePass.Services;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OnePass.Tests.Tests.Services
@@ -8,7 +9,7 @@ namespace OnePass.Tests.Tests.Services
     public class FileEncryptorTests
     {
         [Fact]
-        public void Encrypt()
+        public async Task EncryptAsync()
         {
             // Arrange
             using var input = new MemoryStream();
@@ -21,7 +22,7 @@ namespace OnePass.Tests.Tests.Services
             var encryptor = new FileEncryptor();
 
             using var output = new MemoryStream();
-            encryptor.Encrypt(input, output, "password");
+            await encryptor.EncryptAsync(input, output, "password");
 
             var content = output.ToArray();
 
@@ -36,7 +37,7 @@ namespace OnePass.Tests.Tests.Services
         }
 
         [Fact]
-        public void Decrypt()
+        public async Task DecryptAsync()
         {
             // Arrange
             var encryptedContent = new byte[]
@@ -53,7 +54,7 @@ namespace OnePass.Tests.Tests.Services
             // Act
             var encryptor = new FileEncryptor();
             using var output = new MemoryStream();
-            encryptor.Decrypt(input, output, "password");
+            await encryptor.DecryptAsync(input, output, "password");
 
             var content = Encoding.UTF8.GetString(output.ToArray());
 

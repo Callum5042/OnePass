@@ -1,18 +1,19 @@
 ﻿using OnePass.Services;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OnePass.CLI.Tests
 {
     public class MockEncryptor : IFileEncryptor
     {
-        public void Encrypt(Stream input, Stream output, string password)
+        public Task EncryptAsync(Stream input, Stream output, string password)
         {
-            input.CopyTo(output);
+            return input.CopyToAsync(output);
         }
 
-        public void Decrypt(Stream input, Stream output, string password)
+        public Task DecryptAsync(Stream input, Stream output, string password)
         {
-            input.CopyTo(output);
+            return input.CopyToAsync(output);
         }
     }
 }

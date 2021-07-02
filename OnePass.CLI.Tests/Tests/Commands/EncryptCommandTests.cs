@@ -26,7 +26,7 @@ namespace OnePass.CLI.Tests.Tests.Commands
             });
 
             var command = new EncryptCommand(mockFileSystem, fileEncryptor);
-            command.Execute(arguments);
+            command.ExecuteAsync(arguments);
 
             // Assert
             Assert.Equal(2, mockFileSystem.AllFiles.Count());
