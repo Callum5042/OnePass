@@ -9,7 +9,7 @@ namespace OnePass.CLI.Tests.Tests
         public void Parse_DecryptArguments_ReturnArguments()
         {
             // Arrange
-            var argument = "-decrypt -password \"super\" -file \"testing.bin\"";
+            var argument = "-decrypt -password super -file testing.bin";
             var args = argument.Split(" ");
 
             // Act
@@ -19,13 +19,15 @@ namespace OnePass.CLI.Tests.Tests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(CommandType.Decrypt, result.CommandType);
+            Assert.Equal("super", result.Password);
+            Assert.Equal("testing.bin", result.File);
         }
 
         [Fact]
         public void Parse_EncryptArguments_ReturnArguments()
         {
             // Arrange
-            var argument = "-encrypt -password \"super\" -file \"testing.bin\"";
+            var argument = "-encrypt -file \"testing.bin\" -password \"super\"";
             var args = argument.Split(" ");
 
             // Act
@@ -35,6 +37,8 @@ namespace OnePass.CLI.Tests.Tests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(CommandType.Encrypt, result.CommandType);
+            Assert.Equal("super", result.Password);
+            Assert.Equal("testing.bin", result.File);
         }
 
         [Fact]
@@ -42,6 +46,18 @@ namespace OnePass.CLI.Tests.Tests
         {
             // Arrange
             var argument = "-endw";
+            var args = argument.Split(" ");
+
+            // Act & Assert
+            var parser = GetService<ArgumentsParser>();
+            Assert.Throws<ArgumentException>(() => parser.Parse(args));
+        }
+
+        [Fact]
+        public void Parse_MissingPassword_ThrowsArgumentException()
+        {
+            // Arrange
+            var argument = "-decrypt -file testing.bin -password";
             var args = argument.Split(" ");
 
             // Act & Assert
