@@ -6,7 +6,7 @@ using Xunit;
 
 namespace OnePass.CLI.Tests.Tests.Commands
 {
-    public class DecryptCommandTests : TestSetup
+    public class EncryptCommandTests : TestSetup
     {
         [Fact]
         public void Execute()
@@ -14,7 +14,7 @@ namespace OnePass.CLI.Tests.Tests.Commands
             // Arrange
             var arguments = new Arguments()
             {
-                CommandType = CommandType.Decrypt,
+                CommandType = CommandType.Encrypt,
                 File = "test.bin"
             };
 
@@ -25,7 +25,7 @@ namespace OnePass.CLI.Tests.Tests.Commands
                 { arguments.File, new MockFileData("Testing") }
             });
 
-            var command = new DecryptCommand(mockFileSystem, fileEncryptor);
+            var command = new EncryptCommand(mockFileSystem, fileEncryptor);
             command.Execute(arguments);
 
             // Assert

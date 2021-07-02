@@ -4,6 +4,8 @@ namespace OnePass.Services
 {
     public interface IFileEncryptor
     {
-        Stream Decrypt(Stream stream, string password);
+        void Encrypt(Stream input, Stream output, string password);
+
+        void Decrypt(Stream input, Stream output, string password);
     }
 }
