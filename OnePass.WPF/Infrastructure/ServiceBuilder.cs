@@ -2,6 +2,7 @@
 using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -33,6 +34,9 @@ namespace OnePass.Infrastructure
 
             services.AddTransient<IEncryptor, Encryptor>();
             services.AddSingleton<OnePassRepository, OnePassRepository>();
+
+            services.AddTransient<IFileEncryptor, FileEncryptor>();
+            services.AddTransient<IFileSystem, FileSystem>();
         }
 
         private static void InjectServices(IServiceCollection services)

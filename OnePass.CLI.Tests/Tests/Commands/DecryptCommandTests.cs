@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OnePass.CLI.Tests.Tests.Commands
@@ -9,7 +10,7 @@ namespace OnePass.CLI.Tests.Tests.Commands
     public class DecryptCommandTests : TestSetup
     {
         [Fact]
-        public void Execute()
+        public async Task Execute()
         {
             // Arrange
             var arguments = new Arguments()
@@ -26,7 +27,7 @@ namespace OnePass.CLI.Tests.Tests.Commands
             });
 
             var command = new DecryptCommand(mockFileSystem, fileEncryptor);
-            command.ExecuteAsync(arguments);
+            await command.ExecuteAsync(arguments);
 
             // Assert
             Assert.Equal(2, mockFileSystem.AllFiles.Count());

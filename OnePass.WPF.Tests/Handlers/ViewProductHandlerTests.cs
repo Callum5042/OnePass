@@ -1,7 +1,9 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
 using OnePass.Services;
+using OnePass.WPF.Tests;
 using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace OnePass.Tests.Handlers
         [Fact]
         public async Task GetAllProductsAsync()
         {
-            var filename = "viewdata.bin";
+            var filename = "data.bin";
             var password = "TestPassword";
 
             // Arrange
@@ -31,14 +33,17 @@ namespace OnePass.Tests.Handlers
                 Products = new List<Product>() { model }
             };
 
-            var json = JsonSerializer.Serialize(root);
-            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
-            await encryptCleanupFactory.Encrypt(password, json);
+            var data = JsonSerializer.Serialize(root);
 
             // Act
-            var encryptor = new Encryptor();
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(data) }
+            });
+
+            var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
-            var handler = new ViewProductHandler(encryptor, onePassRepository);
+            var handler = new ViewProductHandler(fileSystem, encryptor, onePassRepository);
             var result = await handler.GetAllProductsAsync();
 
             // Assert

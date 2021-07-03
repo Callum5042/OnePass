@@ -28,7 +28,7 @@ namespace OnePass.Tests.Handlers
             await fileCleanupFactory.WriteAsync(json);
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var onePassRepository = new OnePassRepository();
             var handler = new LoginHandler(hasher, onePassRepository) { Filename = filename };
             var result = await handler.LoginAsync("username", "password");
@@ -48,7 +48,7 @@ namespace OnePass.Tests.Handlers
             }
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var handler = new LoginHandler(hasher, new OnePassRepository());
             var result = await handler.LoginAsync("username", "password");
 
@@ -74,7 +74,7 @@ namespace OnePass.Tests.Handlers
             await fileCleanupFactory.WriteAsync(json);
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username123", "password");
 
@@ -100,7 +100,7 @@ namespace OnePass.Tests.Handlers
             await fileCleanupFactory.WriteAsync(json);
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username", "password123");
 

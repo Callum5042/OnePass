@@ -44,7 +44,7 @@ namespace OnePass.Tests.Handlers
             // Act
             var encryptor = new Encryptor();
             var onePassRepository = new OnePassRepository() { Username = "username", Filename = filename, MasterPassword = password };
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var handler = new ChangePasswordHandler(encryptor, onePassRepository, hasher) { Filename = filename_usermapping };
             var result = await handler.ChangePassword(password, newPassword);
 
@@ -73,7 +73,7 @@ namespace OnePass.Tests.Handlers
             // Act
             var encryptor = new Encryptor();
             var onePassRepository = new OnePassRepository() { Username = "username", Filename = filename, MasterPassword = password };
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var handler = new ChangePasswordHandler(encryptor, onePassRepository, hasher);
             var result = await handler.ChangePassword(newPassword, newPassword);
 
