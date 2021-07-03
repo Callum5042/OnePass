@@ -5,6 +5,7 @@ using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,20 +15,22 @@ namespace OnePass.Handlers
     [Inject(typeof(ILoginHandler))]
     public class LoginHandler : ILoginHandler
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IHasher _hasher;
         private readonly OnePassRepository _onePassRepository;
 
         public string Filename { get; set; } = @"usermapping.json";
 
-        public LoginHandler(IHasher hasher, OnePassRepository onePassRepository)
+        public LoginHandler(IFileSystem fileSystem, IHasher hasher, OnePassRepository onePassRepository)
         {
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
         public async Task<LoginResult> LoginAsync(string username, string password)
         {
-            if (File.Exists(Filename))
+            if (_fileSystem.File.Exists(Filename))
             {
                 var accountRoot = await ConvertJsonAsync(Filename);
 
@@ -60,9 +63,9 @@ namespace OnePass.Handlers
             }
         }
 
-        private static async Task<AccountRoot> ConvertJsonAsync(string filename)
+        private async Task<AccountRoot> ConvertJsonAsync(string filename)
         {
-            using var fileRead = File.OpenRead(filename);
+            using var fileRead = _fileSystem.File.OpenRead(filename);
             using var reader = new StreamReader(fileRead);
 
             var readJson = await reader.ReadToEndAsync();
