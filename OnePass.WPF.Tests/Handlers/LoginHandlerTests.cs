@@ -1,7 +1,8 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
 using OnePass.Services;
-using System.IO;
+using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -21,16 +22,18 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var filename = $"{nameof(LoginAsync_ValidUsernameAndPassword_ReturnsSuccess)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename);
-
+            var filename = "usermapping.json";
             var json = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json);
 
             // Act
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
             var hasher = new MockHasher();
             var onePassRepository = new OnePassRepository();
-            var handler = new LoginHandler(hasher, onePassRepository) { Filename = filename };
+            var handler = new LoginHandler(fileSystem, hasher, onePassRepository) { Filename = filename };
             var result = await handler.LoginAsync("username", "password");
 
             // Assert
@@ -41,15 +44,10 @@ namespace OnePass.Tests.Handlers
         [Fact]
         public async Task LoginAsync_UserMappingJsonFileDoesntExist_ReturnsInvalidUsername()
         {
-            // Arrange
-            if (File.Exists(@"usermapping.json"))
-            {
-                File.Delete(@"usermapping.json");
-            }
-
             // Act
+            var fileSystem = new MockFileSystem();
             var hasher = new MockHasher();
-            var handler = new LoginHandler(hasher, new OnePassRepository());
+            var handler = new LoginHandler(fileSystem, hasher, new OnePassRepository());
             var result = await handler.LoginAsync("username", "password");
 
             // Assert
@@ -67,15 +65,17 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var filename = $"{nameof(LoginAsync_UsernameDoesntExist_ReturnsInvalidUsername)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename);
-
+            var filename = "usermapping.json";
             var json = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json);
 
             // Act
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
             var hasher = new MockHasher();
-            var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
+            var handler = new LoginHandler(fileSystem, hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username123", "password");
 
             // Assert
@@ -93,15 +93,17 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var filename = $"{nameof(LoginAsync_PasswordDoesNotMatch_ReturnsInvalidPassword)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename);
-
+            var filename = "usermapping.json";
             var json = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json);
 
             // Act
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
             var hasher = new MockHasher();
-            var handler = new LoginHandler(hasher, new OnePassRepository()) { Filename = filename };
+            var handler = new LoginHandler(fileSystem, hasher, new OnePassRepository()) { Filename = filename };
             var result = await handler.LoginAsync("username", "password123");
 
             // Assert

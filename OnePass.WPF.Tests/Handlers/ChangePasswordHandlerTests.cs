@@ -1,7 +1,10 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
 using OnePass.Services;
+using OnePass.WPF.Tests;
 using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,20 +16,14 @@ namespace OnePass.Tests.Handlers
         [Fact]
         public async Task ChangePassword_MasterPasswordMatches_UpdatesAndEncryptFilesWithMasterPassword()
         {
-            var filename = "changedata.bin";
+            var filename = "data.bin";
             var password = "TestPassword";
             var newPassword = "NewTestPassword";
 
             // Arrange
-            var root = new ProductRoot()
-            {
-                Products = new List<Product>()
-            };
 
-            var json = JsonSerializer.Serialize(root);
-
-            var filename_usermapping = $"{nameof(ChangePassword_MasterPasswordMatches_UpdatesAndEncryptFilesWithMasterPassword)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename_usermapping);
+            // Setup usermapping
+            var usermapping = "usermapping.json";
 
             var accountRoot = new AccountRoot();
             accountRoot.Accounts.Add(new Account()
@@ -35,21 +32,38 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var json_usermapping = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json_usermapping);
+            var usermappingJson = JsonSerializer.Serialize(accountRoot);
 
-            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
-            await encryptCleanupFactory.Encrypt(password, json);
+            // Add data.bin
+            var root = new ProductRoot() { Products = new List<Product>() };
+            var json = JsonSerializer.Serialize(root);
 
             // Act
-            var encryptor = new Encryptor();
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { usermapping, new MockFileData(usermappingJson) },
+                { filename, new MockFileData(json) },
+            });
+
+            var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Username = "username", Filename = filename, MasterPassword = password };
             var hasher = new MockHasher();
-            var handler = new ChangePasswordHandler(encryptor, onePassRepository, hasher) { Filename = filename_usermapping };
+            var handler = new ChangePasswordHandler(fileSystem, encryptor, onePassRepository, hasher) { Filename = usermapping };
             var result = await handler.ChangePassword(password, newPassword);
 
             // Assert
             Assert.True(result);
+
+            var outputUsermappingJson = fileSystem.File.ReadAllText(usermapping);
+            var outputUsermapping = JsonSerializer.Deserialize<AccountRoot>(outputUsermappingJson);
+
+            Assert.NotNull(outputUsermapping);
+            var user = outputUsermapping.Accounts.First();
+            Assert.Equal(newPassword, user.Password);
+
+            var file = fileSystem.File.ReadAllText(filename);
+            var products = JsonSerializer.Deserialize<ProductRoot>(file);
+            Assert.NotNull(products);
         }
 
         [Fact]
@@ -67,14 +81,16 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
-            await encryptCleanupFactory.Encrypt(password, json);
-
             // Act
-            var encryptor = new Encryptor();
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
+            var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Username = "username", Filename = filename, MasterPassword = password };
             var hasher = new MockHasher();
-            var handler = new ChangePasswordHandler(encryptor, onePassRepository, hasher);
+            var handler = new ChangePasswordHandler(fileSystem, encryptor, onePassRepository, hasher);
             var result = await handler.ChangePassword(newPassword, newPassword);
 
             // Assert
