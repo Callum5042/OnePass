@@ -2,7 +2,7 @@
 
 namespace OnePass.Tests
 {
-    public class TestHasher : IHasher
+    public class MockHasher : IHasher
     {
         public string ComputeHashToString(string value)
         {

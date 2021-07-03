@@ -1,7 +1,9 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
 using OnePass.Services;
+using OnePass.WPF.Tests;
 using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,9 +14,9 @@ namespace OnePass.Tests.Handlers
     public class AddProductHandlerTests
     {
         [Fact]
-        public async Task GetAllProductsAsync()
+        public async Task AddProductAsync()
         {
-            var filename = "adddata.bin";
+            var filename = "data.bin";
             var password = "TestPassword";
 
             // Arrange
@@ -25,9 +27,6 @@ namespace OnePass.Tests.Handlers
 
             var json = JsonSerializer.Serialize(root);
 
-            using var encryptCleanupFactory = new EncryptorCleanupFactory(filename);
-            await encryptCleanupFactory.Encrypt(password, json);
-
             // Act
             var model = new Product()
             {
@@ -36,15 +35,22 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             };
 
-            var encryptor = new Encryptor();
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
+            var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
-            var handler = new AddProductHandler(encryptor, onePassRepository);
-            var result = await handler.AddProduct(model);
+            var handler = new AddProductHandler(fileSystem, encryptor, onePassRepository);
+            var result = await handler.AddProductAsync(model);
 
             // Assert
-            Assert.Single(result);
+            var outputJson = fileSystem.File.ReadAllText(filename);
+            var output = JsonSerializer.Deserialize<ProductRoot>(outputJson);
 
-            var product = result.First();
+            var product = output.Products.First();
+            Assert.NotNull(product);
             Assert.Equal(1, product.Id);
             Assert.Equal(model.Name, product.Name);
             Assert.Equal(model.Login, product.Login);

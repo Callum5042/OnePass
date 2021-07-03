@@ -19,9 +19,9 @@ namespace OnePass.CLI
                     Password = password
                 };
             }
-            catch (IndexOutOfRangeException)
+            catch (IndexOutOfRangeException e)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Could not parse file", e);
             }
         }
 
