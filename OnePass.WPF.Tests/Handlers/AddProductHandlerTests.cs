@@ -43,7 +43,7 @@ namespace OnePass.Tests.Handlers
             var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
             var handler = new AddProductHandler(fileSystem, encryptor, onePassRepository);
-            var result = await handler.AddProductAsync(model);
+            await handler.AddProductAsync(model);
 
             // Assert
             var outputJson = fileSystem.File.ReadAllText(filename);

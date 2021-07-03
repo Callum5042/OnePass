@@ -1,11 +1,14 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
 using OnePass.Models;
+using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -14,13 +17,15 @@ namespace OnePass.Handlers
     [Inject(typeof(IRegisterAccountHandler))]
     public class RegisterAccountHandler : IRegisterAccountHandler
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IHasher _hasher;
-        private readonly IEncryptor _encryptor;
+        private readonly IFileEncryptor _encryptor;
 
         public string Filename { get; set; } = @"usermapping.json";
 
-        public RegisterAccountHandler(IHasher hasher, IEncryptor encryptor)
+        public RegisterAccountHandler(IFileSystem fileSystem, IHasher hasher, IFileEncryptor encryptor)
         {
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
             _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
         }
@@ -28,7 +33,7 @@ namespace OnePass.Handlers
         public async Task<RegisterAccountResult> RegisterAccountAsync(string username, string password)
         {
             var accountRoot = new AccountRoot();
-            if (File.Exists(Filename))
+            if (_fileSystem.File.Exists(Filename))
             {
                 accountRoot = await ConvertJsonAsync();
 
@@ -59,14 +64,17 @@ namespace OnePass.Handlers
                 Products = new List<Product>()
             });
 
-            await _encryptor.EncryptAsync(account.Filename, password, json);
+            var buffer = Encoding.UTF8.GetBytes(json);
+            using var memory = new MemoryStream(buffer);
+            using var file = _fileSystem.File.OpenWrite(account.Filename);
+            await _encryptor.EncryptAsync(memory, file, password);
 
             return RegisterAccountResult.Success;
         }
 
         private async Task<AccountRoot> ConvertJsonAsync()
         {
-            using var fileRead = File.OpenRead(Filename);
+            using var fileRead = _fileSystem.File.OpenRead(Filename);
             using var reader = new StreamReader(fileRead);
 
             var readJson = await reader.ReadToEndAsync();
@@ -75,7 +83,7 @@ namespace OnePass.Handlers
 
         private async Task SaveJsonAsync(AccountRoot accountRoot)
         {
-            using var file = File.OpenWrite(Filename);
+            using var file = _fileSystem.File.OpenWrite(Filename);
             using var writer = new StreamWriter(file);
 
             var json = JsonSerializer.Serialize(accountRoot);

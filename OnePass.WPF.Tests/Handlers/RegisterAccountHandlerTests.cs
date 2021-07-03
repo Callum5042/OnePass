@@ -1,6 +1,8 @@
 ﻿using OnePass.Handlers;
 using OnePass.Models;
-using OnePass.Services;
+using OnePass.WPF.Tests;
+using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,20 +22,30 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var filename = $"{nameof(RegisterAccountAsync_UsernameDoesNotExist_ReturnSuccess)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename);
-
+            var filename = "usermapping.json";
             var json = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json);
 
             // Act
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
             var hasher = new MockHasher();
-            var encryptor = new Encryptor();
-            var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
-            var result = await handler.RegisterAccountAsync("username123", "password");
+            var encryptor = new MockEncryptor();
+            var handler = new RegisterAccountHandler(fileSystem, hasher, encryptor) { Filename = filename };
+
+            var username = "username123";
+            var result = await handler.RegisterAccountAsync(username, "password");
 
             // Assert
             Assert.Equal(RegisterAccountResult.Success, result);
+
+            var outputJson = fileSystem.File.ReadAllText($"{username}.bin");
+            var output = JsonSerializer.Deserialize<ProductRoot>(outputJson);
+
+            Assert.NotNull(output);
+            Assert.Empty(output.Products);
         }
 
         [Fact]
@@ -47,16 +59,18 @@ namespace OnePass.Tests.Handlers
                 Password = "password"
             });
 
-            var filename = $"{nameof(RegisterAccountAsync_UsernamealreadyExists_ReturnUsernameAlreadyExists)}.json";
-            using var fileCleanupFactory = new FileCleanupFactory(filename);
-
+            var filename = "usermapping.json";
             var json = JsonSerializer.Serialize(accountRoot);
-            await fileCleanupFactory.WriteAsync(json);
 
             // Act
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { filename, new MockFileData(json) }
+            });
+
             var hasher = new MockHasher();
-            var encryptor = new Encryptor();
-            var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
+            var encryptor = new MockEncryptor();
+            var handler = new RegisterAccountHandler(fileSystem, hasher, encryptor) { Filename = filename };
             var result = await handler.RegisterAccountAsync("username", "password");
 
             // Assert
