@@ -27,7 +27,7 @@ namespace OnePass.Tests.Handlers
             await fileCleanupFactory.WriteAsync(json);
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var encryptor = new Encryptor();
             var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
             var result = await handler.RegisterAccountAsync("username123", "password");
@@ -54,7 +54,7 @@ namespace OnePass.Tests.Handlers
             await fileCleanupFactory.WriteAsync(json);
 
             // Act
-            var hasher = new TestHasher();
+            var hasher = new MockHasher();
             var encryptor = new Encryptor();
             var handler = new RegisterAccountHandler(hasher, encryptor) { Filename = filename };
             var result = await handler.RegisterAccountAsync("username", "password");
