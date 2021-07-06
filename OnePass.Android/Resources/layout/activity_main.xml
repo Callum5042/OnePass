@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:backgroundTint="?android:attr/colorAccent"
         android:layout_margin="@dimen/fab_margin"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
