@@ -8,6 +8,7 @@ using AndroidX.AppCompat.App;
 using Google.Android.Material.FloatingActionButton;
 using Google.Android.Material.Snackbar;
 using Android.Content.PM;
+using AndroidX.RecyclerView.Widget;
 
 namespace OnePass.Android
 {
@@ -25,6 +26,14 @@ namespace OnePass.Android
             // Add floating action button
             var addFab = FindViewById<FloatingActionButton>(Resource.Id.add_fab);
             addFab.Click += AddFab_Click;
+
+            // Recycler View
+            var recyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
+
+            var mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.SetLayoutManager(mLayoutManager);
+
+            recyclerView.SetAdapter(new ProductAdapter());
         }
 
         private void AddFab_Click(object sender, EventArgs e)
