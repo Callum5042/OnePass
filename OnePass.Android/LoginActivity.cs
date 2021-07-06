@@ -19,9 +19,24 @@ namespace OnePass.Android
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_login);
 
             // Create your application here
+            var loginButton = FindViewById<Button>(Resource.Id.login_button);
+            loginButton.Click += LoginButton_Click;
+
+            SetVersionNumber();
+        }
+
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(MainActivity));
+            StartActivity(intent);
+        }
+
+        private void SetVersionNumber()
+        {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var versionLabel = FindViewById<TextView>(Resource.Id.login_version);
             versionLabel.Text = $"v{version.ToString(3)}";
