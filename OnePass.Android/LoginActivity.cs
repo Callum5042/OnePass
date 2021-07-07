@@ -14,13 +14,15 @@ using System.Text;
 namespace OnePass.Android
 {
     [Activity(Label = "OnePass", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class LoginActivity : AppCompatActivity
+    public class LoginActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_login);
+
+            var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
 
             // Create your application here
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
