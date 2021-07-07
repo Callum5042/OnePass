@@ -1,19 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
   <item
+         android:id="@+id/menu_settings"
+         android:icon="@android:drawable/ic_dialog_alert"
+         android:showAsAction="never"
+         android:title="Settings" />
+  
+  <!--<item
+         android:id="@+id/menu_settings"
+         android:icon="@android:drawable/ic_menu_search"
+         android:showAsAction="ifRoom"
+         android:title="Search" />-->
+
+  <!--<item
        android:id="@+id/menu_edit"
-       android:icon="@mipmap/ic_action_content_create"
-       android:showAsAction="ifRoom"
+       android:icon="@drawable/option"
+       android:showAsAction="always"
        android:title="Edit" />
   <item
        android:id="@+id/menu_save"
-       android:icon="@mipmap/ic_action_content_save"
+       android:icon="@mipmap/ic_action_content_create"
        android:showAsAction="ifRoom"
        android:title="Save" />
   <item
        android:id="@+id/menu_preferences"
        android:showAsAction="never"
-       android:title="Preferences" />
+       android:title="Preferences" />-->
 </menu>
 
 <!-- Code to implement into Activity:
