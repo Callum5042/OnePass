@@ -2629,454 +2629,457 @@ namespace OnePass.Android
 			public const int suggestionRowLayout = 2130903775;
 			
 			// aapt resource value: 0x7F0302E0
-			public const int switchMinWidth = 2130903776;
+			public const int swipeRefreshLayoutProgressSpinnerBackgroundColor = 2130903776;
 			
 			// aapt resource value: 0x7F0302E1
-			public const int switchPadding = 2130903777;
+			public const int switchMinWidth = 2130903777;
 			
 			// aapt resource value: 0x7F0302E2
-			public const int switchStyle = 2130903778;
+			public const int switchPadding = 2130903778;
 			
 			// aapt resource value: 0x7F0302E3
-			public const int switchTextAppearance = 2130903779;
+			public const int switchStyle = 2130903779;
 			
 			// aapt resource value: 0x7F0302E4
-			public const int tabBackground = 2130903780;
+			public const int switchTextAppearance = 2130903780;
 			
 			// aapt resource value: 0x7F0302E5
-			public const int tabContentStart = 2130903781;
+			public const int tabBackground = 2130903781;
 			
 			// aapt resource value: 0x7F0302E6
-			public const int tabGravity = 2130903782;
+			public const int tabContentStart = 2130903782;
 			
 			// aapt resource value: 0x7F0302E7
-			public const int tabIconTint = 2130903783;
+			public const int tabGravity = 2130903783;
 			
 			// aapt resource value: 0x7F0302E8
-			public const int tabIconTintMode = 2130903784;
+			public const int tabIconTint = 2130903784;
 			
 			// aapt resource value: 0x7F0302E9
-			public const int tabIndicator = 2130903785;
+			public const int tabIconTintMode = 2130903785;
 			
 			// aapt resource value: 0x7F0302EA
-			public const int tabIndicatorAnimationDuration = 2130903786;
+			public const int tabIndicator = 2130903786;
 			
 			// aapt resource value: 0x7F0302EB
-			public const int tabIndicatorAnimationMode = 2130903787;
+			public const int tabIndicatorAnimationDuration = 2130903787;
 			
 			// aapt resource value: 0x7F0302EC
-			public const int tabIndicatorColor = 2130903788;
+			public const int tabIndicatorAnimationMode = 2130903788;
 			
 			// aapt resource value: 0x7F0302ED
-			public const int tabIndicatorFullWidth = 2130903789;
+			public const int tabIndicatorColor = 2130903789;
 			
 			// aapt resource value: 0x7F0302EE
-			public const int tabIndicatorGravity = 2130903790;
+			public const int tabIndicatorFullWidth = 2130903790;
 			
 			// aapt resource value: 0x7F0302EF
-			public const int tabIndicatorHeight = 2130903791;
+			public const int tabIndicatorGravity = 2130903791;
 			
 			// aapt resource value: 0x7F0302F0
-			public const int tabInlineLabel = 2130903792;
+			public const int tabIndicatorHeight = 2130903792;
 			
 			// aapt resource value: 0x7F0302F1
-			public const int tabMaxWidth = 2130903793;
+			public const int tabInlineLabel = 2130903793;
 			
 			// aapt resource value: 0x7F0302F2
-			public const int tabMinWidth = 2130903794;
+			public const int tabMaxWidth = 2130903794;
 			
 			// aapt resource value: 0x7F0302F3
-			public const int tabMode = 2130903795;
+			public const int tabMinWidth = 2130903795;
 			
 			// aapt resource value: 0x7F0302F4
-			public const int tabPadding = 2130903796;
+			public const int tabMode = 2130903796;
 			
 			// aapt resource value: 0x7F0302F5
-			public const int tabPaddingBottom = 2130903797;
+			public const int tabPadding = 2130903797;
 			
 			// aapt resource value: 0x7F0302F6
-			public const int tabPaddingEnd = 2130903798;
+			public const int tabPaddingBottom = 2130903798;
 			
 			// aapt resource value: 0x7F0302F7
-			public const int tabPaddingStart = 2130903799;
+			public const int tabPaddingEnd = 2130903799;
 			
 			// aapt resource value: 0x7F0302F8
-			public const int tabPaddingTop = 2130903800;
+			public const int tabPaddingStart = 2130903800;
 			
 			// aapt resource value: 0x7F0302F9
-			public const int tabRippleColor = 2130903801;
+			public const int tabPaddingTop = 2130903801;
 			
 			// aapt resource value: 0x7F0302FA
-			public const int tabSelectedTextColor = 2130903802;
+			public const int tabRippleColor = 2130903802;
 			
 			// aapt resource value: 0x7F0302FB
-			public const int tabStyle = 2130903803;
+			public const int tabSelectedTextColor = 2130903803;
 			
 			// aapt resource value: 0x7F0302FC
-			public const int tabTextAppearance = 2130903804;
+			public const int tabStyle = 2130903804;
 			
 			// aapt resource value: 0x7F0302FD
-			public const int tabTextColor = 2130903805;
+			public const int tabTextAppearance = 2130903805;
 			
 			// aapt resource value: 0x7F0302FE
-			public const int tabUnboundedRipple = 2130903806;
+			public const int tabTextColor = 2130903806;
 			
 			// aapt resource value: 0x7F0302FF
-			public const int targetId = 2130903807;
+			public const int tabUnboundedRipple = 2130903807;
 			
 			// aapt resource value: 0x7F030300
-			public const int telltales_tailColor = 2130903808;
+			public const int targetId = 2130903808;
 			
 			// aapt resource value: 0x7F030301
-			public const int telltales_tailScale = 2130903809;
+			public const int telltales_tailColor = 2130903809;
 			
 			// aapt resource value: 0x7F030302
-			public const int telltales_velocityMode = 2130903810;
+			public const int telltales_tailScale = 2130903810;
 			
 			// aapt resource value: 0x7F030303
-			public const int textAllCaps = 2130903811;
+			public const int telltales_velocityMode = 2130903811;
 			
 			// aapt resource value: 0x7F030304
-			public const int textAppearanceBody1 = 2130903812;
+			public const int textAllCaps = 2130903812;
 			
 			// aapt resource value: 0x7F030305
-			public const int textAppearanceBody2 = 2130903813;
+			public const int textAppearanceBody1 = 2130903813;
 			
 			// aapt resource value: 0x7F030306
-			public const int textAppearanceButton = 2130903814;
+			public const int textAppearanceBody2 = 2130903814;
 			
 			// aapt resource value: 0x7F030307
-			public const int textAppearanceCaption = 2130903815;
+			public const int textAppearanceButton = 2130903815;
 			
 			// aapt resource value: 0x7F030308
-			public const int textAppearanceHeadline1 = 2130903816;
+			public const int textAppearanceCaption = 2130903816;
 			
 			// aapt resource value: 0x7F030309
-			public const int textAppearanceHeadline2 = 2130903817;
+			public const int textAppearanceHeadline1 = 2130903817;
 			
 			// aapt resource value: 0x7F03030A
-			public const int textAppearanceHeadline3 = 2130903818;
+			public const int textAppearanceHeadline2 = 2130903818;
 			
 			// aapt resource value: 0x7F03030B
-			public const int textAppearanceHeadline4 = 2130903819;
+			public const int textAppearanceHeadline3 = 2130903819;
 			
 			// aapt resource value: 0x7F03030C
-			public const int textAppearanceHeadline5 = 2130903820;
+			public const int textAppearanceHeadline4 = 2130903820;
 			
 			// aapt resource value: 0x7F03030D
-			public const int textAppearanceHeadline6 = 2130903821;
+			public const int textAppearanceHeadline5 = 2130903821;
 			
 			// aapt resource value: 0x7F03030E
-			public const int textAppearanceLargePopupMenu = 2130903822;
+			public const int textAppearanceHeadline6 = 2130903822;
 			
 			// aapt resource value: 0x7F03030F
-			public const int textAppearanceLineHeightEnabled = 2130903823;
+			public const int textAppearanceLargePopupMenu = 2130903823;
 			
 			// aapt resource value: 0x7F030310
-			public const int textAppearanceListItem = 2130903824;
+			public const int textAppearanceLineHeightEnabled = 2130903824;
 			
 			// aapt resource value: 0x7F030311
-			public const int textAppearanceListItemSecondary = 2130903825;
+			public const int textAppearanceListItem = 2130903825;
 			
 			// aapt resource value: 0x7F030312
-			public const int textAppearanceListItemSmall = 2130903826;
+			public const int textAppearanceListItemSecondary = 2130903826;
 			
 			// aapt resource value: 0x7F030313
-			public const int textAppearanceOverline = 2130903827;
+			public const int textAppearanceListItemSmall = 2130903827;
 			
 			// aapt resource value: 0x7F030314
-			public const int textAppearancePopupMenuHeader = 2130903828;
+			public const int textAppearanceOverline = 2130903828;
 			
 			// aapt resource value: 0x7F030315
-			public const int textAppearanceSearchResultSubtitle = 2130903829;
+			public const int textAppearancePopupMenuHeader = 2130903829;
 			
 			// aapt resource value: 0x7F030316
-			public const int textAppearanceSearchResultTitle = 2130903830;
+			public const int textAppearanceSearchResultSubtitle = 2130903830;
 			
 			// aapt resource value: 0x7F030317
-			public const int textAppearanceSmallPopupMenu = 2130903831;
+			public const int textAppearanceSearchResultTitle = 2130903831;
 			
 			// aapt resource value: 0x7F030318
-			public const int textAppearanceSubtitle1 = 2130903832;
+			public const int textAppearanceSmallPopupMenu = 2130903832;
 			
 			// aapt resource value: 0x7F030319
-			public const int textAppearanceSubtitle2 = 2130903833;
+			public const int textAppearanceSubtitle1 = 2130903833;
 			
 			// aapt resource value: 0x7F03031A
-			public const int textColorAlertDialogListItem = 2130903834;
+			public const int textAppearanceSubtitle2 = 2130903834;
 			
 			// aapt resource value: 0x7F03031B
-			public const int textColorSearchUrl = 2130903835;
+			public const int textColorAlertDialogListItem = 2130903835;
 			
 			// aapt resource value: 0x7F03031C
-			public const int textEndPadding = 2130903836;
+			public const int textColorSearchUrl = 2130903836;
 			
 			// aapt resource value: 0x7F03031D
-			public const int textInputLayoutFocusedRectEnabled = 2130903837;
+			public const int textEndPadding = 2130903837;
 			
 			// aapt resource value: 0x7F03031E
-			public const int textInputStyle = 2130903838;
+			public const int textInputLayoutFocusedRectEnabled = 2130903838;
 			
 			// aapt resource value: 0x7F03031F
-			public const int textLocale = 2130903839;
+			public const int textInputStyle = 2130903839;
 			
 			// aapt resource value: 0x7F030320
-			public const int textStartPadding = 2130903840;
+			public const int textLocale = 2130903840;
 			
 			// aapt resource value: 0x7F030321
-			public const int theme = 2130903841;
+			public const int textStartPadding = 2130903841;
 			
 			// aapt resource value: 0x7F030322
-			public const int themeLineHeight = 2130903842;
+			public const int theme = 2130903842;
 			
 			// aapt resource value: 0x7F030323
-			public const int thickness = 2130903843;
+			public const int themeLineHeight = 2130903843;
 			
 			// aapt resource value: 0x7F030324
-			public const int thumbColor = 2130903844;
+			public const int thickness = 2130903844;
 			
 			// aapt resource value: 0x7F030325
-			public const int thumbElevation = 2130903845;
+			public const int thumbColor = 2130903845;
 			
 			// aapt resource value: 0x7F030326
-			public const int thumbRadius = 2130903846;
+			public const int thumbElevation = 2130903846;
 			
 			// aapt resource value: 0x7F030327
-			public const int thumbStrokeColor = 2130903847;
+			public const int thumbRadius = 2130903847;
 			
 			// aapt resource value: 0x7F030328
-			public const int thumbStrokeWidth = 2130903848;
+			public const int thumbStrokeColor = 2130903848;
 			
 			// aapt resource value: 0x7F030329
-			public const int thumbTextPadding = 2130903849;
+			public const int thumbStrokeWidth = 2130903849;
 			
 			// aapt resource value: 0x7F03032A
-			public const int thumbTint = 2130903850;
+			public const int thumbTextPadding = 2130903850;
 			
 			// aapt resource value: 0x7F03032B
-			public const int thumbTintMode = 2130903851;
+			public const int thumbTint = 2130903851;
 			
 			// aapt resource value: 0x7F03032C
-			public const int tickColor = 2130903852;
+			public const int thumbTintMode = 2130903852;
 			
 			// aapt resource value: 0x7F03032D
-			public const int tickColorActive = 2130903853;
+			public const int tickColor = 2130903853;
 			
 			// aapt resource value: 0x7F03032E
-			public const int tickColorInactive = 2130903854;
+			public const int tickColorActive = 2130903854;
 			
 			// aapt resource value: 0x7F03032F
-			public const int tickMark = 2130903855;
+			public const int tickColorInactive = 2130903855;
 			
 			// aapt resource value: 0x7F030330
-			public const int tickMarkTint = 2130903856;
+			public const int tickMark = 2130903856;
 			
 			// aapt resource value: 0x7F030331
-			public const int tickMarkTintMode = 2130903857;
+			public const int tickMarkTint = 2130903857;
 			
 			// aapt resource value: 0x7F030332
-			public const int tickVisible = 2130903858;
+			public const int tickMarkTintMode = 2130903858;
 			
 			// aapt resource value: 0x7F030333
-			public const int tint = 2130903859;
+			public const int tickVisible = 2130903859;
 			
 			// aapt resource value: 0x7F030334
-			public const int tintMode = 2130903860;
+			public const int tint = 2130903860;
 			
 			// aapt resource value: 0x7F030335
-			public const int title = 2130903861;
+			public const int tintMode = 2130903861;
 			
 			// aapt resource value: 0x7F030336
-			public const int titleEnabled = 2130903862;
+			public const int title = 2130903862;
 			
 			// aapt resource value: 0x7F030337
-			public const int titleMargin = 2130903863;
+			public const int titleEnabled = 2130903863;
 			
 			// aapt resource value: 0x7F030338
-			public const int titleMarginBottom = 2130903864;
+			public const int titleMargin = 2130903864;
 			
 			// aapt resource value: 0x7F030339
-			public const int titleMarginEnd = 2130903865;
-			
-			// aapt resource value: 0x7F03033C
-			public const int titleMargins = 2130903868;
+			public const int titleMarginBottom = 2130903865;
 			
 			// aapt resource value: 0x7F03033A
-			public const int titleMarginStart = 2130903866;
-			
-			// aapt resource value: 0x7F03033B
-			public const int titleMarginTop = 2130903867;
+			public const int titleMarginEnd = 2130903866;
 			
 			// aapt resource value: 0x7F03033D
-			public const int titleTextAppearance = 2130903869;
+			public const int titleMargins = 2130903869;
+			
+			// aapt resource value: 0x7F03033B
+			public const int titleMarginStart = 2130903867;
+			
+			// aapt resource value: 0x7F03033C
+			public const int titleMarginTop = 2130903868;
 			
 			// aapt resource value: 0x7F03033E
-			public const int titleTextColor = 2130903870;
+			public const int titleTextAppearance = 2130903870;
 			
 			// aapt resource value: 0x7F03033F
-			public const int titleTextStyle = 2130903871;
+			public const int titleTextColor = 2130903871;
 			
 			// aapt resource value: 0x7F030340
-			public const int toolbarId = 2130903872;
+			public const int titleTextStyle = 2130903872;
 			
 			// aapt resource value: 0x7F030341
-			public const int toolbarNavigationButtonStyle = 2130903873;
+			public const int toolbarId = 2130903873;
 			
 			// aapt resource value: 0x7F030342
-			public const int toolbarStyle = 2130903874;
+			public const int toolbarNavigationButtonStyle = 2130903874;
 			
 			// aapt resource value: 0x7F030343
-			public const int tooltipForegroundColor = 2130903875;
+			public const int toolbarStyle = 2130903875;
 			
 			// aapt resource value: 0x7F030344
-			public const int tooltipFrameBackground = 2130903876;
+			public const int tooltipForegroundColor = 2130903876;
 			
 			// aapt resource value: 0x7F030345
-			public const int tooltipStyle = 2130903877;
+			public const int tooltipFrameBackground = 2130903877;
 			
 			// aapt resource value: 0x7F030346
-			public const int tooltipText = 2130903878;
+			public const int tooltipStyle = 2130903878;
 			
 			// aapt resource value: 0x7F030347
-			public const int touchAnchorId = 2130903879;
+			public const int tooltipText = 2130903879;
 			
 			// aapt resource value: 0x7F030348
-			public const int touchAnchorSide = 2130903880;
+			public const int touchAnchorId = 2130903880;
 			
 			// aapt resource value: 0x7F030349
-			public const int touchRegionId = 2130903881;
+			public const int touchAnchorSide = 2130903881;
 			
 			// aapt resource value: 0x7F03034A
-			public const int track = 2130903882;
+			public const int touchRegionId = 2130903882;
 			
 			// aapt resource value: 0x7F03034B
-			public const int trackColor = 2130903883;
+			public const int track = 2130903883;
 			
 			// aapt resource value: 0x7F03034C
-			public const int trackColorActive = 2130903884;
+			public const int trackColor = 2130903884;
 			
 			// aapt resource value: 0x7F03034D
-			public const int trackColorInactive = 2130903885;
+			public const int trackColorActive = 2130903885;
 			
 			// aapt resource value: 0x7F03034E
-			public const int trackCornerRadius = 2130903886;
+			public const int trackColorInactive = 2130903886;
 			
 			// aapt resource value: 0x7F03034F
-			public const int trackHeight = 2130903887;
+			public const int trackCornerRadius = 2130903887;
 			
 			// aapt resource value: 0x7F030350
-			public const int trackThickness = 2130903888;
+			public const int trackHeight = 2130903888;
 			
 			// aapt resource value: 0x7F030351
-			public const int trackTint = 2130903889;
+			public const int trackThickness = 2130903889;
 			
 			// aapt resource value: 0x7F030352
-			public const int trackTintMode = 2130903890;
+			public const int trackTint = 2130903890;
 			
 			// aapt resource value: 0x7F030353
-			public const int transitionDisable = 2130903891;
+			public const int trackTintMode = 2130903891;
 			
 			// aapt resource value: 0x7F030354
-			public const int transitionEasing = 2130903892;
+			public const int transitionDisable = 2130903892;
 			
 			// aapt resource value: 0x7F030355
-			public const int transitionFlags = 2130903893;
+			public const int transitionEasing = 2130903893;
 			
 			// aapt resource value: 0x7F030356
-			public const int transitionPathRotate = 2130903894;
+			public const int transitionFlags = 2130903894;
 			
 			// aapt resource value: 0x7F030357
-			public const int transitionShapeAppearance = 2130903895;
+			public const int transitionPathRotate = 2130903895;
 			
 			// aapt resource value: 0x7F030358
-			public const int triggerId = 2130903896;
+			public const int transitionShapeAppearance = 2130903896;
 			
 			// aapt resource value: 0x7F030359
-			public const int triggerReceiver = 2130903897;
+			public const int triggerId = 2130903897;
 			
 			// aapt resource value: 0x7F03035A
-			public const int triggerSlack = 2130903898;
+			public const int triggerReceiver = 2130903898;
 			
 			// aapt resource value: 0x7F03035B
-			public const int ttcIndex = 2130903899;
+			public const int triggerSlack = 2130903899;
 			
 			// aapt resource value: 0x7F03035C
-			public const int useCompatPadding = 2130903900;
+			public const int ttcIndex = 2130903900;
 			
 			// aapt resource value: 0x7F03035D
-			public const int useMaterialThemeColors = 2130903901;
+			public const int useCompatPadding = 2130903901;
 			
 			// aapt resource value: 0x7F03035E
-			public const int values = 2130903902;
+			public const int useMaterialThemeColors = 2130903902;
 			
 			// aapt resource value: 0x7F03035F
-			public const int verticalOffset = 2130903903;
+			public const int values = 2130903903;
 			
 			// aapt resource value: 0x7F030360
-			public const int viewInflaterClass = 2130903904;
+			public const int verticalOffset = 2130903904;
 			
 			// aapt resource value: 0x7F030361
-			public const int visibilityMode = 2130903905;
+			public const int viewInflaterClass = 2130903905;
 			
 			// aapt resource value: 0x7F030362
-			public const int voiceIcon = 2130903906;
+			public const int visibilityMode = 2130903906;
 			
 			// aapt resource value: 0x7F030363
-			public const int warmth = 2130903907;
+			public const int voiceIcon = 2130903907;
 			
 			// aapt resource value: 0x7F030364
-			public const int waveDecay = 2130903908;
+			public const int warmth = 2130903908;
 			
 			// aapt resource value: 0x7F030365
-			public const int waveOffset = 2130903909;
+			public const int waveDecay = 2130903909;
 			
 			// aapt resource value: 0x7F030366
-			public const int wavePeriod = 2130903910;
+			public const int waveOffset = 2130903910;
 			
 			// aapt resource value: 0x7F030367
-			public const int waveShape = 2130903911;
+			public const int wavePeriod = 2130903911;
 			
 			// aapt resource value: 0x7F030368
-			public const int waveVariesBy = 2130903912;
+			public const int waveShape = 2130903912;
 			
 			// aapt resource value: 0x7F030369
-			public const int windowActionBar = 2130903913;
+			public const int waveVariesBy = 2130903913;
 			
 			// aapt resource value: 0x7F03036A
-			public const int windowActionBarOverlay = 2130903914;
+			public const int windowActionBar = 2130903914;
 			
 			// aapt resource value: 0x7F03036B
-			public const int windowActionModeOverlay = 2130903915;
+			public const int windowActionBarOverlay = 2130903915;
 			
 			// aapt resource value: 0x7F03036C
-			public const int windowFixedHeightMajor = 2130903916;
+			public const int windowActionModeOverlay = 2130903916;
 			
 			// aapt resource value: 0x7F03036D
-			public const int windowFixedHeightMinor = 2130903917;
+			public const int windowFixedHeightMajor = 2130903917;
 			
 			// aapt resource value: 0x7F03036E
-			public const int windowFixedWidthMajor = 2130903918;
+			public const int windowFixedHeightMinor = 2130903918;
 			
 			// aapt resource value: 0x7F03036F
-			public const int windowFixedWidthMinor = 2130903919;
+			public const int windowFixedWidthMajor = 2130903919;
 			
 			// aapt resource value: 0x7F030370
-			public const int windowMinWidthMajor = 2130903920;
+			public const int windowFixedWidthMinor = 2130903920;
 			
 			// aapt resource value: 0x7F030371
-			public const int windowMinWidthMinor = 2130903921;
+			public const int windowMinWidthMajor = 2130903921;
 			
 			// aapt resource value: 0x7F030372
-			public const int windowNoTitle = 2130903922;
+			public const int windowMinWidthMinor = 2130903922;
 			
 			// aapt resource value: 0x7F030373
-			public const int yearSelectedStyle = 2130903923;
+			public const int windowNoTitle = 2130903923;
 			
 			// aapt resource value: 0x7F030374
-			public const int yearStyle = 2130903924;
+			public const int yearSelectedStyle = 2130903924;
 			
 			// aapt resource value: 0x7F030375
-			public const int yearTodayStyle = 2130903925;
+			public const int yearStyle = 2130903925;
+			
+			// aapt resource value: 0x7F030376
+			public const int yearTodayStyle = 2130903926;
 			
 			static Attribute()
 			{
@@ -9748,7 +9751,7 @@ namespace OnePass.Android
 		public partial class Styleable
 		{
 			
-			// aapt resource value: { 0x7F03003C,0x7F030043,0x7F030044,0x7F0300D3,0x7F0300D4,0x7F0300D5,0x7F0300D6,0x7F0300D7,0x7F0300D8,0x7F0300FE,0x7F03010E,0x7F03010F,0x7F030128,0x7F03017C,0x7F030183,0x7F030189,0x7F03018A,0x7F03018D,0x7F030198,0x7F0301AA,0x7F030217,0x7F030258,0x7F030283,0x7F03028A,0x7F03028B,0x7F0302D8,0x7F0302DB,0x7F030335,0x7F03033F }
+			// aapt resource value: { 0x7F03003C,0x7F030043,0x7F030044,0x7F0300D3,0x7F0300D4,0x7F0300D5,0x7F0300D6,0x7F0300D7,0x7F0300D8,0x7F0300FE,0x7F03010E,0x7F03010F,0x7F030128,0x7F03017C,0x7F030183,0x7F030189,0x7F03018A,0x7F03018D,0x7F030198,0x7F0301AA,0x7F030217,0x7F030258,0x7F030283,0x7F03028A,0x7F03028B,0x7F0302D8,0x7F0302DB,0x7F030336,0x7F030340 }
 			public static int[] ActionBar = new int[] {
 					2130903100,
 					2130903107,
@@ -9777,8 +9780,8 @@ namespace OnePass.Android
 					2130903691,
 					2130903768,
 					2130903771,
-					2130903861,
-					2130903871};
+					2130903862,
+					2130903872};
 			
 			// aapt resource value: { 0x10100B3 }
 			public static int[] ActionBarLayout = new int[] {
@@ -9885,14 +9888,14 @@ namespace OnePass.Android
 			public static int[] ActionMenuView = new int[] {
 					-1};
 			
-			// aapt resource value: { 0x7F03003C,0x7F030043,0x7F0300AD,0x7F03017C,0x7F0302DB,0x7F03033F }
+			// aapt resource value: { 0x7F03003C,0x7F030043,0x7F0300AD,0x7F03017C,0x7F0302DB,0x7F030340 }
 			public static int[] ActionMode = new int[] {
 					2130903100,
 					2130903107,
 					2130903213,
 					2130903420,
 					2130903771,
-					2130903871};
+					2130903872};
 			
 			// aapt resource value: 0
 			public const int ActionMode_background = 0;
@@ -10080,12 +10083,12 @@ namespace OnePass.Android
 			// aapt resource value: 7
 			public const int AppBarLayout_statusBarForeground = 7;
 			
-			// aapt resource value: { 0x1010119,0x7F0302C3,0x7F030333,0x7F030334 }
+			// aapt resource value: { 0x1010119,0x7F0302C3,0x7F030334,0x7F030335 }
 			public static int[] AppCompatImageView = new int[] {
 					16843033,
 					2130903747,
-					2130903859,
-					2130903860};
+					2130903860,
+					2130903861};
 			
 			// aapt resource value: 0
 			public const int AppCompatImageView_android_src = 0;
@@ -10099,12 +10102,12 @@ namespace OnePass.Android
 			// aapt resource value: 3
 			public const int AppCompatImageView_tintMode = 3;
 			
-			// aapt resource value: { 0x1010142,0x7F03032F,0x7F030330,0x7F030331 }
+			// aapt resource value: { 0x1010142,0x7F030330,0x7F030331,0x7F030332 }
 			public static int[] AppCompatSeekBar = new int[] {
 					16843074,
-					2130903855,
 					2130903856,
-					2130903857};
+					2130903857,
+					2130903858};
 			
 			// aapt resource value: 0
 			public const int AppCompatSeekBar_android_thumb = 0;
@@ -10149,7 +10152,7 @@ namespace OnePass.Android
 			// aapt resource value: 0
 			public const int AppCompatTextHelper_android_textAppearance = 0;
 			
-			// aapt resource value: { 0x1010034,0x7F030036,0x7F030037,0x7F030038,0x7F030039,0x7F03003A,0x7F030117,0x7F030118,0x7F030119,0x7F03011A,0x7F03011C,0x7F03011D,0x7F03011E,0x7F03011F,0x7F030153,0x7F030169,0x7F030172,0x7F0301C0,0x7F030205,0x7F030303,0x7F03031F }
+			// aapt resource value: { 0x1010034,0x7F030036,0x7F030037,0x7F030038,0x7F030039,0x7F03003A,0x7F030117,0x7F030118,0x7F030119,0x7F03011A,0x7F03011C,0x7F03011D,0x7F03011E,0x7F03011F,0x7F030153,0x7F030169,0x7F030172,0x7F0301C0,0x7F030205,0x7F030304,0x7F030320 }
 			public static int[] AppCompatTextView = new int[] {
 					16842804,
 					2130903094,
@@ -10170,8 +10173,8 @@ namespace OnePass.Android
 					2130903410,
 					2130903488,
 					2130903557,
-					2130903811,
-					2130903839};
+					2130903812,
+					2130903840};
 			
 			// aapt resource value: 0
 			public const int AppCompatTextView_android_textAppearance = 0;
@@ -10236,7 +10239,7 @@ namespace OnePass.Android
 			// aapt resource value: 20
 			public const int AppCompatTextView_textLocale = 20;
 			
-			// aapt resource value: { 0x1010057,0x10100AE,0x7F030000,0x7F030001,0x7F030002,0x7F030003,0x7F030004,0x7F030005,0x7F030006,0x7F030007,0x7F030008,0x7F030009,0x7F03000A,0x7F03000B,0x7F03000C,0x7F03000E,0x7F03000F,0x7F030010,0x7F030011,0x7F030012,0x7F030013,0x7F030014,0x7F030015,0x7F030016,0x7F030017,0x7F030018,0x7F030019,0x7F03001A,0x7F03001B,0x7F03001C,0x7F03001D,0x7F03001E,0x7F03001F,0x7F030020,0x7F030024,0x7F030025,0x7F030026,0x7F030027,0x7F030028,0x7F030035,0x7F03005A,0x7F03006B,0x7F03006C,0x7F03006D,0x7F03006E,0x7F03006F,0x7F030074,0x7F030075,0x7F030081,0x7F03008A,0x7F0300B5,0x7F0300B6,0x7F0300B7,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300BB,0x7F0300C2,0x7F0300C3,0x7F0300C9,0x7F0300E2,0x7F03010B,0x7F03010C,0x7F03010D,0x7F030110,0x7F030112,0x7F030122,0x7F030123,0x7F030125,0x7F030126,0x7F030127,0x7F030189,0x7F030196,0x7F030208,0x7F030209,0x7F03020A,0x7F03020B,0x7F03020E,0x7F03020F,0x7F030210,0x7F030211,0x7F030212,0x7F030213,0x7F030214,0x7F030215,0x7F030216,0x7F03026D,0x7F03026E,0x7F03026F,0x7F030282,0x7F030284,0x7F03028E,0x7F030290,0x7F030291,0x7F030292,0x7F0302A2,0x7F0302A3,0x7F0302A4,0x7F0302A5,0x7F0302C0,0x7F0302C1,0x7F0302E2,0x7F03030E,0x7F030310,0x7F030311,0x7F030312,0x7F030314,0x7F030315,0x7F030316,0x7F030317,0x7F03031A,0x7F03031B,0x7F030341,0x7F030342,0x7F030343,0x7F030344,0x7F030360,0x7F030369,0x7F03036A,0x7F03036B,0x7F03036C,0x7F03036D,0x7F03036E,0x7F03036F,0x7F030370,0x7F030371,0x7F030372 }
+			// aapt resource value: { 0x1010057,0x10100AE,0x7F030000,0x7F030001,0x7F030002,0x7F030003,0x7F030004,0x7F030005,0x7F030006,0x7F030007,0x7F030008,0x7F030009,0x7F03000A,0x7F03000B,0x7F03000C,0x7F03000E,0x7F03000F,0x7F030010,0x7F030011,0x7F030012,0x7F030013,0x7F030014,0x7F030015,0x7F030016,0x7F030017,0x7F030018,0x7F030019,0x7F03001A,0x7F03001B,0x7F03001C,0x7F03001D,0x7F03001E,0x7F03001F,0x7F030020,0x7F030024,0x7F030025,0x7F030026,0x7F030027,0x7F030028,0x7F030035,0x7F03005A,0x7F03006B,0x7F03006C,0x7F03006D,0x7F03006E,0x7F03006F,0x7F030074,0x7F030075,0x7F030081,0x7F03008A,0x7F0300B5,0x7F0300B6,0x7F0300B7,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300BB,0x7F0300C2,0x7F0300C3,0x7F0300C9,0x7F0300E2,0x7F03010B,0x7F03010C,0x7F03010D,0x7F030110,0x7F030112,0x7F030122,0x7F030123,0x7F030125,0x7F030126,0x7F030127,0x7F030189,0x7F030196,0x7F030208,0x7F030209,0x7F03020A,0x7F03020B,0x7F03020E,0x7F03020F,0x7F030210,0x7F030211,0x7F030212,0x7F030213,0x7F030214,0x7F030215,0x7F030216,0x7F03026D,0x7F03026E,0x7F03026F,0x7F030282,0x7F030284,0x7F03028E,0x7F030290,0x7F030291,0x7F030292,0x7F0302A2,0x7F0302A3,0x7F0302A4,0x7F0302A5,0x7F0302C0,0x7F0302C1,0x7F0302E3,0x7F03030F,0x7F030311,0x7F030312,0x7F030313,0x7F030315,0x7F030316,0x7F030317,0x7F030318,0x7F03031B,0x7F03031C,0x7F030342,0x7F030343,0x7F030344,0x7F030345,0x7F030361,0x7F03036A,0x7F03036B,0x7F03036C,0x7F03036D,0x7F03036E,0x7F03036F,0x7F030370,0x7F030371,0x7F030372,0x7F030373 }
 			public static int[] AppCompatTheme = new int[] {
 					16842839,
 					16842926,
@@ -10339,23 +10342,22 @@ namespace OnePass.Android
 					2130903717,
 					2130903744,
 					2130903745,
-					2130903778,
-					2130903822,
-					2130903824,
+					2130903779,
+					2130903823,
 					2130903825,
 					2130903826,
-					2130903828,
+					2130903827,
 					2130903829,
 					2130903830,
 					2130903831,
-					2130903834,
+					2130903832,
 					2130903835,
-					2130903873,
+					2130903836,
 					2130903874,
 					2130903875,
 					2130903876,
-					2130903904,
-					2130903913,
+					2130903877,
+					2130903905,
 					2130903914,
 					2130903915,
 					2130903916,
@@ -10364,7 +10366,8 @@ namespace OnePass.Android
 					2130903919,
 					2130903920,
 					2130903921,
-					2130903922};
+					2130903922,
+					2130903923};
 			
 			// aapt resource value: 2
 			public const int AppCompatTheme_actionBarDivider = 2;
@@ -10747,7 +10750,7 @@ namespace OnePass.Android
 			// aapt resource value: 126
 			public const int AppCompatTheme_windowNoTitle = 126;
 			
-			// aapt resource value: { 0x7F03003D,0x7F030047,0x7F030049,0x7F03018B,0x7F030238,0x7F03025C,0x7F03035F }
+			// aapt resource value: { 0x7F03003D,0x7F030047,0x7F030049,0x7F03018B,0x7F030238,0x7F03025C,0x7F030360 }
 			public static int[] Badge = new int[] {
 					2130903101,
 					2130903111,
@@ -10755,7 +10758,7 @@ namespace OnePass.Android
 					2130903435,
 					2130903608,
 					2130903644,
-					2130903903};
+					2130903904};
 			
 			// aapt resource value: 0
 			public const int Badge_backgroundColor = 0;
@@ -10778,7 +10781,7 @@ namespace OnePass.Android
 			// aapt resource value: 6
 			public const int Badge_verticalOffset = 6;
 			
-			// aapt resource value: { 0x1010139,0x7F030181,0x7F030199,0x7F030241,0x7F0302AD,0x7F0302AF,0x7F03034B,0x7F03034E,0x7F030350 }
+			// aapt resource value: { 0x1010139,0x7F030181,0x7F030199,0x7F030241,0x7F0302AD,0x7F0302AF,0x7F03034C,0x7F03034F,0x7F030351 }
 			public static int[] BaseProgressIndicator = new int[] {
 					16843065,
 					2130903425,
@@ -10786,9 +10789,9 @@ namespace OnePass.Android
 					2130903617,
 					2130903725,
 					2130903727,
-					2130903883,
-					2130903886,
-					2130903888};
+					2130903884,
+					2130903887,
+					2130903889};
 			
 			// aapt resource value: 0
 			public const int BaseProgressIndicator_android_indeterminate = 0;
@@ -11032,7 +11035,7 @@ namespace OnePass.Android
 			// aapt resource value: 12
 			public const int CardView_contentPaddingTop = 12;
 			
-			// aapt resource value: { 0x1010034,0x1010095,0x1010098,0x10100AB,0x101011F,0x101014F,0x10101E5,0x7F030084,0x7F030085,0x7F030088,0x7F030089,0x7F03008B,0x7F03008C,0x7F03008D,0x7F03008F,0x7F030090,0x7F030091,0x7F030092,0x7F030093,0x7F030094,0x7F030095,0x7F03009A,0x7F03009B,0x7F03009C,0x7F03009E,0x7F0300A6,0x7F0300A7,0x7F0300A8,0x7F0300A9,0x7F0300AA,0x7F0300AB,0x7F0300AC,0x7F030133,0x7F030182,0x7F03018E,0x7F030192,0x7F030299,0x7F0302A8,0x7F0302AB,0x7F0302B1,0x7F03031C,0x7F030320 }
+			// aapt resource value: { 0x1010034,0x1010095,0x1010098,0x10100AB,0x101011F,0x101014F,0x10101E5,0x7F030084,0x7F030085,0x7F030088,0x7F030089,0x7F03008B,0x7F03008C,0x7F03008D,0x7F03008F,0x7F030090,0x7F030091,0x7F030092,0x7F030093,0x7F030094,0x7F030095,0x7F03009A,0x7F03009B,0x7F03009C,0x7F03009E,0x7F0300A6,0x7F0300A7,0x7F0300A8,0x7F0300A9,0x7F0300AA,0x7F0300AB,0x7F0300AC,0x7F030133,0x7F030182,0x7F03018E,0x7F030192,0x7F030299,0x7F0302A8,0x7F0302AB,0x7F0302B1,0x7F03031D,0x7F030321 }
 			public static int[] Chip = new int[] {
 					16842804,
 					16842901,
@@ -11074,8 +11077,8 @@ namespace OnePass.Android
 					2130903720,
 					2130903723,
 					2130903729,
-					2130903836,
-					2130903840};
+					2130903837,
+					2130903841};
 			
 			// aapt resource value: { 0x7F030083,0x7F030096,0x7F030097,0x7F030098,0x7F0302A6,0x7F0302B7,0x7F0302B8 }
 			public static int[] ChipGroup = new int[] {
@@ -11275,7 +11278,7 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int ClockHandView_selectorSize = 2;
 			
-			// aapt resource value: { 0x7F0300B1,0x7F0300B2,0x7F0300E0,0x7F03013E,0x7F03013F,0x7F030140,0x7F030141,0x7F030142,0x7F030143,0x7F030144,0x7F03023B,0x7F03029D,0x7F03029F,0x7F0302D3,0x7F030335,0x7F030336,0x7F030340 }
+			// aapt resource value: { 0x7F0300B1,0x7F0300B2,0x7F0300E0,0x7F03013E,0x7F03013F,0x7F030140,0x7F030141,0x7F030142,0x7F030143,0x7F030144,0x7F03023B,0x7F03029D,0x7F03029F,0x7F0302D3,0x7F030336,0x7F030337,0x7F030341 }
 			public static int[] CollapsingToolbarLayout = new int[] {
 					2130903217,
 					2130903218,
@@ -11291,9 +11294,9 @@ namespace OnePass.Android
 					2130903709,
 					2130903711,
 					2130903763,
-					2130903861,
 					2130903862,
-					2130903872};
+					2130903863,
+					2130903873};
 			
 			// aapt resource value: 0
 			public const int CollapsingToolbarLayout_collapsedTitleGravity = 0;
@@ -11391,7 +11394,7 @@ namespace OnePass.Android
 			// aapt resource value: 3
 			public const int CompoundButton_buttonTintMode = 3;
 			
-			// aapt resource value: { 0x10100C4,0x10100D0,0x10100DC,0x10100F4,0x10100F5,0x10100F7,0x10100F8,0x10100F9,0x10100FA,0x101011F,0x1010120,0x101013F,0x1010140,0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103B5,0x10103B6,0x10103FA,0x1010440,0x7F03002D,0x7F03004B,0x7F03004C,0x7F03004D,0x7F030080,0x7F0300CE,0x7F0300CF,0x7F030116,0x7F030155,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030163,0x7F030164,0x7F030165,0x7F030166,0x7F030167,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301CD,0x7F0301CE,0x7F0301CF,0x7F0301D0,0x7F0301D1,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301D8,0x7F0301D9,0x7F0301DA,0x7F0301DB,0x7F0301DC,0x7F0301DD,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301E5,0x7F0301E6,0x7F0301E7,0x7F0301E8,0x7F0301E9,0x7F0301EA,0x7F0301EB,0x7F0301EC,0x7F0301ED,0x7F0301EE,0x7F0301EF,0x7F0301F0,0x7F0301F1,0x7F0301F2,0x7F0301F3,0x7F0301F5,0x7F0301F6,0x7F0301F7,0x7F0301F8,0x7F0301F9,0x7F0301FA,0x7F0301FB,0x7F0301FC,0x7F03024E,0x7F03024F,0x7F030275,0x7F03027C,0x7F030354,0x7F030356,0x7F030361 }
+			// aapt resource value: { 0x10100C4,0x10100D0,0x10100DC,0x10100F4,0x10100F5,0x10100F7,0x10100F8,0x10100F9,0x10100FA,0x101011F,0x1010120,0x101013F,0x1010140,0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103B5,0x10103B6,0x10103FA,0x1010440,0x7F03002D,0x7F03004B,0x7F03004C,0x7F03004D,0x7F030080,0x7F0300CE,0x7F0300CF,0x7F030116,0x7F030155,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030163,0x7F030164,0x7F030165,0x7F030166,0x7F030167,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301CD,0x7F0301CE,0x7F0301CF,0x7F0301D0,0x7F0301D1,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301D8,0x7F0301D9,0x7F0301DA,0x7F0301DB,0x7F0301DC,0x7F0301DD,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301E5,0x7F0301E6,0x7F0301E7,0x7F0301E8,0x7F0301E9,0x7F0301EA,0x7F0301EB,0x7F0301EC,0x7F0301ED,0x7F0301EE,0x7F0301EF,0x7F0301F0,0x7F0301F1,0x7F0301F2,0x7F0301F3,0x7F0301F5,0x7F0301F6,0x7F0301F7,0x7F0301F8,0x7F0301F9,0x7F0301FA,0x7F0301FB,0x7F0301FC,0x7F03024E,0x7F03024F,0x7F030275,0x7F03027C,0x7F030355,0x7F030357,0x7F030362 }
 			public static int[] Constraint = new int[] {
 					16842948,
 					16842960,
@@ -11500,9 +11503,9 @@ namespace OnePass.Android
 					2130903631,
 					2130903669,
 					2130903676,
-					2130903892,
-					2130903894,
-					2130903905};
+					2130903893,
+					2130903895,
+					2130903906};
 			
 			// aapt resource value: { 0x10100C4,0x10100D5,0x10100D6,0x10100D7,0x10100D8,0x10100D9,0x10100DC,0x101011F,0x1010120,0x101013F,0x1010140,0x10103B3,0x10103B4,0x1010440,0x7F03004B,0x7F03004C,0x7F03004D,0x7F030080,0x7F0300CB,0x7F0300CE,0x7F0300CF,0x7F030155,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030163,0x7F030164,0x7F030165,0x7F030166,0x7F030167,0x7F0301C2,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301CD,0x7F0301CE,0x7F0301CF,0x7F0301D0,0x7F0301D1,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301D8,0x7F0301D9,0x7F0301DA,0x7F0301DB,0x7F0301DC,0x7F0301DD,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301E5,0x7F0301E6,0x7F0301E7,0x7F0301E8,0x7F0301E9,0x7F0301EA,0x7F0301EB,0x7F0301EC,0x7F0301ED,0x7F0301EE,0x7F0301EF,0x7F0301F0,0x7F0301F1,0x7F0301F2,0x7F0301F3,0x7F0301F5,0x7F0301F6,0x7F0301F7,0x7F0301F8,0x7F0301F9,0x7F0301FA,0x7F0301FB,0x7F0301FC,0x7F0301FF }
 			public static int[] ConstraintLayout_Layout = new int[] {
@@ -11882,7 +11885,7 @@ namespace OnePass.Android
 			// aapt resource value: 1
 			public const int ConstraintLayout_placeholder_placeholder_emptyVisibility = 1;
 			
-			// aapt resource value: { 0x10100C4,0x10100D0,0x10100DC,0x10100F4,0x10100F5,0x10100F7,0x10100F8,0x10100F9,0x10100FA,0x101011F,0x1010120,0x101013F,0x1010140,0x10101B5,0x10101B6,0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103B5,0x10103B6,0x10103FA,0x1010440,0x7F03002D,0x7F03004B,0x7F03004C,0x7F03004D,0x7F030080,0x7F0300CE,0x7F0300CF,0x7F03010A,0x7F030116,0x7F030155,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030163,0x7F030164,0x7F030165,0x7F030166,0x7F030167,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301CD,0x7F0301CE,0x7F0301CF,0x7F0301D0,0x7F0301D1,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301D8,0x7F0301D9,0x7F0301DA,0x7F0301DB,0x7F0301DC,0x7F0301DD,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301E5,0x7F0301E6,0x7F0301E7,0x7F0301E8,0x7F0301E9,0x7F0301EA,0x7F0301EB,0x7F0301EC,0x7F0301ED,0x7F0301EE,0x7F0301EF,0x7F0301F0,0x7F0301F1,0x7F0301F2,0x7F0301F3,0x7F0301F5,0x7F0301F6,0x7F0301F7,0x7F0301F8,0x7F0301F9,0x7F0301FA,0x7F0301FB,0x7F0301FC,0x7F03024E,0x7F03024F,0x7F030275,0x7F03027C,0x7F030354,0x7F030356 }
+			// aapt resource value: { 0x10100C4,0x10100D0,0x10100DC,0x10100F4,0x10100F5,0x10100F7,0x10100F8,0x10100F9,0x10100FA,0x101011F,0x1010120,0x101013F,0x1010140,0x10101B5,0x10101B6,0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103B5,0x10103B6,0x10103FA,0x1010440,0x7F03002D,0x7F03004B,0x7F03004C,0x7F03004D,0x7F030080,0x7F0300CE,0x7F0300CF,0x7F03010A,0x7F030116,0x7F030155,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030163,0x7F030164,0x7F030165,0x7F030166,0x7F030167,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301CD,0x7F0301CE,0x7F0301CF,0x7F0301D0,0x7F0301D1,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301D8,0x7F0301D9,0x7F0301DA,0x7F0301DB,0x7F0301DC,0x7F0301DD,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301E5,0x7F0301E6,0x7F0301E7,0x7F0301E8,0x7F0301E9,0x7F0301EA,0x7F0301EB,0x7F0301EC,0x7F0301ED,0x7F0301EE,0x7F0301EF,0x7F0301F0,0x7F0301F1,0x7F0301F2,0x7F0301F3,0x7F0301F5,0x7F0301F6,0x7F0301F7,0x7F0301F8,0x7F0301F9,0x7F0301FA,0x7F0301FB,0x7F0301FC,0x7F03024E,0x7F03024F,0x7F030275,0x7F03027C,0x7F030355,0x7F030357 }
 			public static int[] ConstraintSet = new int[] {
 					16842948,
 					16842960,
@@ -11994,8 +11997,8 @@ namespace OnePass.Android
 					2130903631,
 					2130903669,
 					2130903676,
-					2130903892,
-					2130903894};
+					2130903893,
+					2130903895};
 			
 			// aapt resource value: 15
 			public const int ConstraintSet_android_alpha = 15;
@@ -12744,7 +12747,7 @@ namespace OnePass.Android
 			// aapt resource value: 8
 			public const int CustomAttribute_customStringValue = 8;
 			
-			// aapt resource value: { 0x7F030032,0x7F030033,0x7F03004A,0x7F0300B4,0x7F03011B,0x7F030176,0x7F0302BF,0x7F030323 }
+			// aapt resource value: { 0x7F030032,0x7F030033,0x7F03004A,0x7F0300B4,0x7F03011B,0x7F030176,0x7F0302BF,0x7F030324 }
 			public static int[] DrawerArrowToggle = new int[] {
 					2130903090,
 					2130903091,
@@ -12753,7 +12756,7 @@ namespace OnePass.Android
 					2130903323,
 					2130903414,
 					2130903743,
-					2130903843};
+					2130903844};
 			
 			// aapt resource value: 0
 			public const int DrawerArrowToggle_arrowHeadLength = 0;
@@ -12824,7 +12827,7 @@ namespace OnePass.Android
 			// aapt resource value: 5
 			public const int ExtendedFloatingActionButton_shrinkMotionSpec = 5;
 			
-			// aapt resource value: { 0x101000E,0x7F030045,0x7F030046,0x7F030059,0x7F030128,0x7F030133,0x7F03014C,0x7F03014D,0x7F030182,0x7F03018C,0x7F03023A,0x7F030289,0x7F030299,0x7F0302A8,0x7F0302AB,0x7F0302B1,0x7F03035C }
+			// aapt resource value: { 0x101000E,0x7F030045,0x7F030046,0x7F030059,0x7F030128,0x7F030133,0x7F03014C,0x7F03014D,0x7F030182,0x7F03018C,0x7F03023A,0x7F030289,0x7F030299,0x7F0302A8,0x7F0302AB,0x7F0302B1,0x7F03035D }
 			public static int[] FloatingActionButton = new int[] {
 					16842766,
 					2130903109,
@@ -12842,7 +12845,7 @@ namespace OnePass.Android
 					2130903720,
 					2130903723,
 					2130903729,
-					2130903900};
+					2130903901};
 			
 			// aapt resource value: 0
 			public const int FloatingActionButton_android_enabled = 0;
@@ -12923,7 +12926,7 @@ namespace OnePass.Android
 					2130903407,
 					2130903408};
 			
-			// aapt resource value: { 0x1010532,0x1010533,0x101053F,0x101056F,0x1010570,0x7F030168,0x7F030171,0x7F030172,0x7F030173,0x7F03035B }
+			// aapt resource value: { 0x1010532,0x1010533,0x101053F,0x101056F,0x1010570,0x7F030168,0x7F030171,0x7F030172,0x7F030173,0x7F03035C }
 			public static int[] FontFamilyFont = new int[] {
 					16844082,
 					16844083,
@@ -12934,7 +12937,7 @@ namespace OnePass.Android
 					2130903409,
 					2130903410,
 					2130903411,
-					2130903899};
+					2130903900};
 			
 			// aapt resource value: 0
 			public const int FontFamilyFont_android_font = 0;
@@ -13090,7 +13093,7 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int GradientColor_android_type = 2;
 			
-			// aapt resource value: { 0x7F03002C,0x7F03006A,0x7F0300E1,0x7F0300F5,0x7F030265,0x7F03029A,0x7F03029B,0x7F03029C,0x7F030363 }
+			// aapt resource value: { 0x7F03002C,0x7F03006A,0x7F0300E1,0x7F0300F5,0x7F030265,0x7F03029A,0x7F03029B,0x7F03029C,0x7F030364 }
 			public static int[] ImageFilterView = new int[] {
 					2130903084,
 					2130903146,
@@ -13100,7 +13103,7 @@ namespace OnePass.Android
 					2130903706,
 					2130903707,
 					2130903708,
-					2130903907};
+					2130903908};
 			
 			// aapt resource value: 0
 			public const int ImageFilterView_altSrc = 0;
@@ -13144,7 +13147,7 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int Insets_paddingRightSystemWindowInsets = 2;
 			
-			// aapt resource value: { 0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030354,0x7F030356 }
+			// aapt resource value: { 0x101031F,0x1010320,0x1010321,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030355,0x7F030357 }
 			public static int[] KeyAttribute = new int[] {
 					16843551,
 					16843552,
@@ -13162,8 +13165,8 @@ namespace OnePass.Android
 					2130903413,
 					2130903630,
 					2130903632,
-					2130903892,
-					2130903894};
+					2130903893,
+					2130903895};
 			
 			// aapt resource value: 0
 			public const int KeyAttribute_android_alpha = 0;
@@ -13219,7 +13222,7 @@ namespace OnePass.Android
 			// aapt resource value: 17
 			public const int KeyAttribute_transitionPathRotate = 17;
 			
-			// aapt resource value: { 0x101031F,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030354,0x7F030356,0x7F030365,0x7F030366,0x7F030367,0x7F030368 }
+			// aapt resource value: { 0x101031F,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030355,0x7F030357,0x7F030366,0x7F030367,0x7F030368,0x7F030369 }
 			public static int[] KeyCycle = new int[] {
 					16843551,
 					16843554,
@@ -13235,12 +13238,12 @@ namespace OnePass.Android
 					2130903413,
 					2130903630,
 					2130903632,
-					2130903892,
-					2130903894,
-					2130903909,
+					2130903893,
+					2130903895,
 					2130903910,
 					2130903911,
-					2130903912};
+					2130903912,
+					2130903913};
 			
 			// aapt resource value: 0
 			public const int KeyCycle_android_alpha = 0;
@@ -13314,7 +13317,7 @@ namespace OnePass.Android
 			public static int[] KeyFramesVelocity = new int[] {
 					-1};
 			
-			// aapt resource value: { 0x7F0300F7,0x7F030116,0x7F030175,0x7F0301BA,0x7F030250,0x7F030275,0x7F030277,0x7F030278,0x7F030279,0x7F03027A,0x7F0302B9,0x7F030354 }
+			// aapt resource value: { 0x7F0300F7,0x7F030116,0x7F030175,0x7F0301BA,0x7F030250,0x7F030275,0x7F030277,0x7F030278,0x7F030279,0x7F03027A,0x7F0302B9,0x7F030355 }
 			public static int[] KeyPosition = new int[] {
 					2130903287,
 					2130903318,
@@ -13327,7 +13330,7 @@ namespace OnePass.Android
 					2130903673,
 					2130903674,
 					2130903737,
-					2130903892};
+					2130903893};
 			
 			// aapt resource value: 0
 			public const int KeyPosition_curveFit = 0;
@@ -13365,7 +13368,7 @@ namespace OnePass.Android
 			// aapt resource value: 11
 			public const int KeyPosition_transitionEasing = 11;
 			
-			// aapt resource value: { 0x101031F,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030354,0x7F030356,0x7F030364,0x7F030365,0x7F030366,0x7F030367 }
+			// aapt resource value: { 0x101031F,0x1010322,0x1010323,0x1010324,0x1010325,0x1010326,0x1010327,0x1010328,0x10103FA,0x1010440,0x7F0300F7,0x7F030175,0x7F03024E,0x7F030250,0x7F030355,0x7F030357,0x7F030365,0x7F030366,0x7F030367,0x7F030368 }
 			public static int[] KeyTimeCycle = new int[] {
 					16843551,
 					16843554,
@@ -13381,12 +13384,12 @@ namespace OnePass.Android
 					2130903413,
 					2130903630,
 					2130903632,
-					2130903892,
-					2130903894,
-					2130903908,
+					2130903893,
+					2130903895,
 					2130903909,
 					2130903910,
-					2130903911};
+					2130903911,
+					2130903912};
 			
 			// aapt resource value: 0
 			public const int KeyTimeCycle_android_alpha = 0;
@@ -13448,7 +13451,7 @@ namespace OnePass.Android
 			// aapt resource value: 19
 			public const int KeyTimeCycle_waveShape = 19;
 			
-			// aapt resource value: { 0x7F030175,0x7F030250,0x7F030251,0x7F030252,0x7F03025E,0x7F030260,0x7F030261,0x7F030358,0x7F030359,0x7F03035A }
+			// aapt resource value: { 0x7F030175,0x7F030250,0x7F030251,0x7F030252,0x7F03025E,0x7F030260,0x7F030261,0x7F030359,0x7F03035A,0x7F03035B }
 			public static int[] KeyTrigger = new int[] {
 					2130903413,
 					2130903632,
@@ -13457,9 +13460,9 @@ namespace OnePass.Android
 					2130903646,
 					2130903648,
 					2130903649,
-					2130903896,
 					2130903897,
-					2130903898};
+					2130903898,
+					2130903899};
 			
 			// aapt resource value: 0
 			public const int KeyTrigger_framePosition = 0;
@@ -13997,7 +14000,7 @@ namespace OnePass.Android
 			// aapt resource value: 20
 			public const int MaterialButton_strokeWidth = 20;
 			
-			// aapt resource value: { 0x101020D,0x7F030101,0x7F030102,0x7F030103,0x7F030104,0x7F03025B,0x7F03028F,0x7F030373,0x7F030374,0x7F030375 }
+			// aapt resource value: { 0x101020D,0x7F030101,0x7F030102,0x7F030103,0x7F030104,0x7F03025B,0x7F03028F,0x7F030374,0x7F030375,0x7F030376 }
 			public static int[] MaterialCalendar = new int[] {
 					16843277,
 					2130903297,
@@ -14006,9 +14009,9 @@ namespace OnePass.Android
 					2130903300,
 					2130903643,
 					2130903695,
-					2130903923,
 					2130903924,
-					2130903925};
+					2130903925,
+					2130903926};
 			
 			// aapt resource value: { 0x10101B7,0x10101B8,0x10101B9,0x10101BA,0x7F0301A3,0x7F0301AC,0x7F0301AD,0x7F0301B4,0x7F0301B5,0x7F0301B9 }
 			public static int[] MaterialCalendarItem = new int[] {
@@ -14134,10 +14137,10 @@ namespace OnePass.Android
 			// aapt resource value: 11
 			public const int MaterialCardView_strokeWidth = 11;
 			
-			// aapt resource value: { 0x7F030076,0x7F03035D }
+			// aapt resource value: { 0x7F030076,0x7F03035E }
 			public static int[] MaterialCheckBox = new int[] {
 					2130903158,
-					2130903901};
+					2130903902};
 			
 			// aapt resource value: 0
 			public const int MaterialCheckBox_buttonTint = 0;
@@ -14145,10 +14148,10 @@ namespace OnePass.Android
 			// aapt resource value: 1
 			public const int MaterialCheckBox_useMaterialThemeColors = 1;
 			
-			// aapt resource value: { 0x7F030076,0x7F03035D }
+			// aapt resource value: { 0x7F030076,0x7F03035E }
 			public static int[] MaterialRadioButton = new int[] {
 					2130903158,
-					2130903901};
+					2130903902};
 			
 			// aapt resource value: 0
 			public const int MaterialRadioButton_buttonTint = 0;
@@ -14242,7 +14245,7 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int MenuGroup_android_visible = 2;
 			
-			// aapt resource value: { 0x1010002,0x101000E,0x10100D0,0x1010106,0x1010194,0x10101DE,0x10101DF,0x10101E1,0x10101E2,0x10101E3,0x10101E4,0x10101E5,0x101026F,0x7F03000D,0x7F030021,0x7F030023,0x7F03002B,0x7F0300D2,0x7F030193,0x7F030194,0x7F03025D,0x7F0302AE,0x7F030346 }
+			// aapt resource value: { 0x1010002,0x101000E,0x10100D0,0x1010106,0x1010194,0x10101DE,0x10101DF,0x10101E1,0x10101E2,0x10101E3,0x10101E4,0x10101E5,0x101026F,0x7F03000D,0x7F030021,0x7F030023,0x7F03002B,0x7F0300D2,0x7F030193,0x7F030194,0x7F03025D,0x7F0302AE,0x7F030347 }
 			public static int[] MenuItem = new int[] {
 					16842754,
 					16842766,
@@ -14266,7 +14269,7 @@ namespace OnePass.Android
 					2130903444,
 					2130903645,
 					2130903726,
-					2130903878};
+					2130903879};
 			
 			// aapt resource value: 13
 			public const int MenuItem_actionLayout = 13;
@@ -14403,14 +14406,14 @@ namespace OnePass.Android
 			// aapt resource value: 5
 			public const int MockView_mock_showLabel = 5;
 			
-			// aapt resource value: { 0x7F03002D,0x7F030116,0x7F03024D,0x7F03024F,0x7F030275,0x7F030354 }
+			// aapt resource value: { 0x7F03002D,0x7F030116,0x7F03024D,0x7F03024F,0x7F030275,0x7F030355 }
 			public static int[] Motion = new int[] {
 					2130903085,
 					2130903318,
 					2130903629,
 					2130903631,
 					2130903669,
-					2130903892};
+					2130903893};
 			
 			// aapt resource value: { 0x7F03025F,0x7F030262 }
 			public static int[] MotionHelper = new int[] {
@@ -14461,11 +14464,11 @@ namespace OnePass.Android
 			// aapt resource value: 1
 			public const int MotionScene_layoutDuringTransition = 1;
 			
-			// aapt resource value: { 0x7F030300,0x7F030301,0x7F030302 }
+			// aapt resource value: { 0x7F030301,0x7F030302,0x7F030303 }
 			public static int[] MotionTelltales = new int[] {
-					2130903808,
 					2130903809,
-					2130903810};
+					2130903810,
+					2130903811};
 			
 			// aapt resource value: 0
 			public const int MotionTelltales_telltales_tailColor = 0;
@@ -14589,10 +14592,10 @@ namespace OnePass.Android
 			// aapt resource value: 22
 			public const int NavigationView_shapeAppearanceOverlay = 22;
 			
-			// aapt resource value: { 0x7F0300A1,0x7F0302FF }
+			// aapt resource value: { 0x7F0300A1,0x7F030300 }
 			public static int[] OnClick = new int[] {
 					2130903201,
-					2130903807};
+					2130903808};
 			
 			// aapt resource value: 0
 			public const int OnClick_clickAction = 0;
@@ -14600,7 +14603,7 @@ namespace OnePass.Android
 			// aapt resource value: 1
 			public const int OnClick_targetId = 1;
 			
-			// aapt resource value: { 0x7F030113,0x7F030114,0x7F030115,0x7F030204,0x7F030235,0x7F03023C,0x7F030253,0x7F03025A,0x7F030263,0x7F030347,0x7F030348,0x7F030349 }
+			// aapt resource value: { 0x7F030113,0x7F030114,0x7F030115,0x7F030204,0x7F030235,0x7F03023C,0x7F030253,0x7F03025A,0x7F030263,0x7F030348,0x7F030349,0x7F03034A }
 			public static int[] OnSwipe = new int[] {
 					2130903315,
 					2130903316,
@@ -14611,9 +14614,9 @@ namespace OnePass.Android
 					2130903635,
 					2130903642,
 					2130903651,
-					2130903879,
 					2130903880,
-					2130903881};
+					2130903881,
+					2130903882};
 			
 			// aapt resource value: 0
 			public const int OnSwipe_dragDirection = 0;
@@ -14673,13 +14676,13 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int PopupWindow_overlapAnchor = 2;
 			
-			// aapt resource value: { 0x10100DC,0x101031F,0x7F0301E9,0x7F03024E,0x7F030361 }
+			// aapt resource value: { 0x10100DC,0x101031F,0x7F0301E9,0x7F03024E,0x7F030362 }
 			public static int[] PropertySet = new int[] {
 					16842972,
 					16843551,
 					2130903529,
 					2130903630,
-					2130903905};
+					2130903906};
 			
 			// aapt resource value: 1
 			public const int PropertySet_android_alpha = 1;
@@ -14703,10 +14706,10 @@ namespace OnePass.Android
 			// aapt resource value: 0
 			public const int RadialViewGroup_materialCircleRadius = 0;
 			
-			// aapt resource value: { 0x7F030242,0x7F03035E }
+			// aapt resource value: { 0x7F030242,0x7F03035F }
 			public static int[] RangeSlider = new int[] {
 					2130903618,
-					2130903902};
+					2130903903};
 			
 			// aapt resource value: 0
 			public const int RangeSlider_minSeparation = 0;
@@ -14790,7 +14793,7 @@ namespace OnePass.Android
 			// aapt resource value: 0
 			public const int ScrollingViewBehavior_Layout_behavior_overlapTop = 0;
 			
-			// aapt resource value: { 0x10100DA,0x101011F,0x1010220,0x1010264,0x7F0300A6,0x7F0300CA,0x7F030106,0x7F030178,0x7F030195,0x7F0301C1,0x7F03028C,0x7F03028D,0x7F0302A0,0x7F0302A1,0x7F0302D7,0x7F0302DF,0x7F030362 }
+			// aapt resource value: { 0x10100DA,0x101011F,0x1010220,0x1010264,0x7F0300A6,0x7F0300CA,0x7F030106,0x7F030178,0x7F030195,0x7F0301C1,0x7F03028C,0x7F03028D,0x7F0302A0,0x7F0302A1,0x7F0302D7,0x7F0302DF,0x7F030363 }
 			public static int[] SearchView = new int[] {
 					16842970,
 					16843039,
@@ -14808,7 +14811,7 @@ namespace OnePass.Android
 					2130903713,
 					2130903767,
 					2130903775,
-					2130903906};
+					2130903907};
 			
 			// aapt resource value: 0
 			public const int SearchView_android_focusable = 0;
@@ -14951,7 +14954,7 @@ namespace OnePass.Android
 			// aapt resource value: 9
 			public const int ShapeAppearance_cornerSizeTopRight = 9;
 			
-			// aapt resource value: { 0x101000E,0x1010024,0x1010146,0x10102DE,0x10102DF,0x7F030179,0x7F03017A,0x7F0301BD,0x7F0301BE,0x7F030324,0x7F030325,0x7F030326,0x7F030327,0x7F030328,0x7F03032C,0x7F03032D,0x7F03032E,0x7F030332,0x7F03034B,0x7F03034C,0x7F03034D,0x7F03034F }
+			// aapt resource value: { 0x101000E,0x1010024,0x1010146,0x10102DE,0x10102DF,0x7F030179,0x7F03017A,0x7F0301BD,0x7F0301BE,0x7F030325,0x7F030326,0x7F030327,0x7F030328,0x7F030329,0x7F03032D,0x7F03032E,0x7F03032F,0x7F030333,0x7F03034C,0x7F03034D,0x7F03034E,0x7F030350 }
 			public static int[] Slider = new int[] {
 					16842766,
 					16842788,
@@ -14962,19 +14965,19 @@ namespace OnePass.Android
 					2130903418,
 					2130903485,
 					2130903486,
-					2130903844,
 					2130903845,
 					2130903846,
 					2130903847,
 					2130903848,
-					2130903852,
+					2130903849,
 					2130903853,
 					2130903854,
-					2130903858,
-					2130903883,
+					2130903855,
+					2130903859,
 					2130903884,
 					2130903885,
-					2130903887};
+					2130903886,
+					2130903888};
 			
 			// aapt resource value: 0
 			public const int Slider_android_enabled = 0;
@@ -15167,22 +15170,29 @@ namespace OnePass.Android
 			// aapt resource value: 1
 			public const int State_constraints = 1;
 			
-			// aapt resource value: { 0x1010124,0x1010125,0x1010142,0x7F0302B3,0x7F0302C2,0x7F0302E0,0x7F0302E1,0x7F0302E3,0x7F030329,0x7F03032A,0x7F03032B,0x7F03034A,0x7F030351,0x7F030352 }
+			// aapt resource value: { 0x7F0302E0 }
+			public static int[] SwipeRefreshLayout = new int[] {
+					2130903776};
+			
+			// aapt resource value: 0
+			public const int SwipeRefreshLayout_swipeRefreshLayoutProgressSpinnerBackgroundColor = 0;
+			
+			// aapt resource value: { 0x1010124,0x1010125,0x1010142,0x7F0302B3,0x7F0302C2,0x7F0302E1,0x7F0302E2,0x7F0302E4,0x7F03032A,0x7F03032B,0x7F03032C,0x7F03034B,0x7F030352,0x7F030353 }
 			public static int[] SwitchCompat = new int[] {
 					16843044,
 					16843045,
 					16843074,
 					2130903731,
 					2130903746,
-					2130903776,
 					2130903777,
-					2130903779,
-					2130903849,
+					2130903778,
+					2130903780,
 					2130903850,
 					2130903851,
-					2130903882,
-					2130903889,
-					2130903890};
+					2130903852,
+					2130903883,
+					2130903890,
+					2130903891};
 			
 			// aapt resource value: 1
 			public const int SwitchCompat_android_textOff = 1;
@@ -15226,9 +15236,9 @@ namespace OnePass.Android
 			// aapt resource value: 13
 			public const int SwitchCompat_trackTintMode = 13;
 			
-			// aapt resource value: { 0x7F03035D }
+			// aapt resource value: { 0x7F03035E }
 			public static int[] SwitchMaterial = new int[] {
-					2130903901};
+					2130903902};
 			
 			// aapt resource value: 0
 			public const int SwitchMaterial_useMaterialThemeColors = 0;
@@ -15248,9 +15258,8 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int TabItem_android_text = 2;
 			
-			// aapt resource value: { 0x7F0302E4,0x7F0302E5,0x7F0302E6,0x7F0302E7,0x7F0302E8,0x7F0302E9,0x7F0302EA,0x7F0302EB,0x7F0302EC,0x7F0302ED,0x7F0302EE,0x7F0302EF,0x7F0302F0,0x7F0302F1,0x7F0302F2,0x7F0302F3,0x7F0302F4,0x7F0302F5,0x7F0302F6,0x7F0302F7,0x7F0302F8,0x7F0302F9,0x7F0302FA,0x7F0302FC,0x7F0302FD,0x7F0302FE }
+			// aapt resource value: { 0x7F0302E5,0x7F0302E6,0x7F0302E7,0x7F0302E8,0x7F0302E9,0x7F0302EA,0x7F0302EB,0x7F0302EC,0x7F0302ED,0x7F0302EE,0x7F0302EF,0x7F0302F0,0x7F0302F1,0x7F0302F2,0x7F0302F3,0x7F0302F4,0x7F0302F5,0x7F0302F6,0x7F0302F7,0x7F0302F8,0x7F0302F9,0x7F0302FA,0x7F0302FB,0x7F0302FD,0x7F0302FE,0x7F0302FF }
 			public static int[] TabLayout = new int[] {
-					2130903780,
 					2130903781,
 					2130903782,
 					2130903783,
@@ -15273,9 +15282,10 @@ namespace OnePass.Android
 					2130903800,
 					2130903801,
 					2130903802,
-					2130903804,
+					2130903803,
 					2130903805,
-					2130903806};
+					2130903806,
+					2130903807};
 			
 			// aapt resource value: 0
 			public const int TabLayout_tabBackground = 0;
@@ -15355,7 +15365,7 @@ namespace OnePass.Android
 			// aapt resource value: 25
 			public const int TabLayout_tabUnboundedRipple = 25;
 			
-			// aapt resource value: { 0x1010095,0x1010096,0x1010097,0x1010098,0x101009A,0x101009B,0x1010161,0x1010162,0x1010163,0x1010164,0x10103AC,0x1010585,0x7F030169,0x7F030172,0x7F030303,0x7F03031F }
+			// aapt resource value: { 0x1010095,0x1010096,0x1010097,0x1010098,0x101009A,0x101009B,0x1010161,0x1010162,0x1010163,0x1010164,0x10103AC,0x1010585,0x7F030169,0x7F030172,0x7F030304,0x7F030320 }
 			public static int[] TextAppearance = new int[] {
 					16842901,
 					16842902,
@@ -15371,8 +15381,8 @@ namespace OnePass.Android
 					16844165,
 					2130903401,
 					2130903410,
-					2130903811,
-					2130903839};
+					2130903812,
+					2130903840};
 			
 			// aapt resource value: 10
 			public const int TextAppearance_android_fontFamily = 10;
@@ -15422,9 +15432,9 @@ namespace OnePass.Android
 			// aapt resource value: 15
 			public const int TextAppearance_textLocale = 15;
 			
-			// aapt resource value: { 0x7F03031D }
+			// aapt resource value: { 0x7F03031E }
 			public static int[] TextInputEditText = new int[] {
-					2130903837};
+					2130903838};
 			
 			// aapt resource value: 0
 			public const int TextInputEditText_textInputLayoutFocusedRectEnabled = 0;
@@ -15699,7 +15709,7 @@ namespace OnePass.Android
 			// aapt resource value: 2
 			public const int ThemeEnforcement_enforceTextAppearance = 2;
 			
-			// aapt resource value: { 0x10100AF,0x1010140,0x7F030071,0x7F0300AE,0x7F0300AF,0x7F0300D3,0x7F0300D4,0x7F0300D5,0x7F0300D6,0x7F0300D7,0x7F0300D8,0x7F030217,0x7F030218,0x7F030237,0x7F03023F,0x7F030255,0x7F030256,0x7F030283,0x7F0302D8,0x7F0302D9,0x7F0302DA,0x7F030335,0x7F030337,0x7F030338,0x7F030339,0x7F03033A,0x7F03033B,0x7F03033C,0x7F03033D,0x7F03033E }
+			// aapt resource value: { 0x10100AF,0x1010140,0x7F030071,0x7F0300AE,0x7F0300AF,0x7F0300D3,0x7F0300D4,0x7F0300D5,0x7F0300D6,0x7F0300D7,0x7F0300D8,0x7F030217,0x7F030218,0x7F030237,0x7F03023F,0x7F030255,0x7F030256,0x7F030283,0x7F0302D8,0x7F0302D9,0x7F0302DA,0x7F030336,0x7F030338,0x7F030339,0x7F03033A,0x7F03033B,0x7F03033C,0x7F03033D,0x7F03033E,0x7F03033F }
 			public static int[] Toolbar = new int[] {
 					16842927,
 					16843072,
@@ -15722,15 +15732,15 @@ namespace OnePass.Android
 					2130903768,
 					2130903769,
 					2130903770,
-					2130903861,
-					2130903863,
+					2130903862,
 					2130903864,
 					2130903865,
 					2130903866,
 					2130903867,
 					2130903868,
 					2130903869,
-					2130903870};
+					2130903870,
+					2130903871};
 			
 			// aapt resource value: 0
 			public const int Toolbar_android_gravity = 0;
@@ -15900,7 +15910,7 @@ namespace OnePass.Android
 			// aapt resource value: 9
 			public const int Transform_android_translationZ = 9;
 			
-			// aapt resource value: { 0x10100D0,0x7F03003B,0x7F0300CC,0x7F0300CD,0x7F030124,0x7F0301C3,0x7F03024C,0x7F030275,0x7F0302C5,0x7F030353,0x7F030355 }
+			// aapt resource value: { 0x10100D0,0x7F03003B,0x7F0300CC,0x7F0300CD,0x7F030124,0x7F0301C3,0x7F03024C,0x7F030275,0x7F0302C5,0x7F030354,0x7F030356 }
 			public static int[] Transition = new int[] {
 					16842960,
 					2130903099,
@@ -15911,8 +15921,8 @@ namespace OnePass.Android
 					2130903628,
 					2130903669,
 					2130903749,
-					2130903891,
-					2130903893};
+					2130903892,
+					2130903894};
 			
 			// aapt resource value: 0
 			public const int Transition_android_id = 0;
@@ -15970,13 +15980,13 @@ namespace OnePass.Android
 			// aapt resource value: 4
 			public const int Variant_region_widthMoreThan = 4;
 			
-			// aapt resource value: { 0x1010000,0x10100DA,0x7F030268,0x7F03026B,0x7F030321 }
+			// aapt resource value: { 0x1010000,0x10100DA,0x7F030268,0x7F03026B,0x7F030322 }
 			public static int[] View = new int[] {
 					16842752,
 					16842970,
 					2130903656,
 					2130903659,
-					2130903841};
+					2130903842};
 			
 			// aapt resource value: { 0x10100D4,0x7F030045,0x7F030046 }
 			public static int[] ViewBackgroundHelper = new int[] {

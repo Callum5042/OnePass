@@ -29,11 +29,9 @@ namespace OnePass.Android
 
             // Recycler View
             var recyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
-
-            var mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.SetLayoutManager(mLayoutManager);
-
+            recyclerView.SetLayoutManager(new LinearLayoutManager(this));
             recyclerView.SetAdapter(new ProductAdapter());
+            recyclerView.AddItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Vertical));
         }
 
         private void AddFab_Click(object sender, EventArgs e)
