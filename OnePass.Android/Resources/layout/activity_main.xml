@@ -10,13 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!--<android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/red"
-        android:dividerHeight="5dp" />-->
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
         android:layout_width="wrap_content"
