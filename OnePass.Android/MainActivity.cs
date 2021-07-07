@@ -2,8 +2,8 @@
 using Android.App;
 using Android.OS;
 using Android.Runtime;
+using Android.Widget;
 using Android.Views;
-using AndroidX.AppCompat.Widget;
 using AndroidX.AppCompat.App;
 using Google.Android.Material.FloatingActionButton;
 using Google.Android.Material.Snackbar;
@@ -13,7 +13,7 @@ using AndroidX.RecyclerView.Widget;
 namespace OnePass.Android
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -22,6 +22,9 @@ namespace OnePass.Android
             SetContentView(Resource.Layout.activity_main);
 
             // var username = Intent.GetStringExtra("Username")
+            var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+            SetActionBar(toolbar);
+            ActionBar.Title = "My Toolbar";
 
             // Add floating action button
             var addFab = FindViewById<FloatingActionButton>(Resource.Id.add_fab);
