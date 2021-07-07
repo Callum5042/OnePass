@@ -13,6 +13,10 @@
     <item name="windowNoTitle">true</item>
   </style>
 
+  <style name="MyToolbarStyle" parent="AppTheme">
+    <item name="android:textColorSecondary">@android:color/white</item>
+  </style>
+
   <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
   <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
