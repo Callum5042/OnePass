@@ -6669,37 +6669,40 @@ namespace OnePass.Android
 			public const int view_name = 2131231143;
 			
 			// aapt resource value: 0x7F0801A8
-			public const int view_offset_helper = 2131231144;
+			public const int view_name1 = 2131231144;
 			
 			// aapt resource value: 0x7F0801A9
-			public const int view_tree_lifecycle_owner = 2131231145;
+			public const int view_offset_helper = 2131231145;
 			
 			// aapt resource value: 0x7F0801AA
-			public const int view_tree_saved_state_registry_owner = 2131231146;
+			public const int view_tree_lifecycle_owner = 2131231146;
 			
 			// aapt resource value: 0x7F0801AB
-			public const int view_tree_view_model_store_owner = 2131231147;
+			public const int view_tree_saved_state_registry_owner = 2131231147;
 			
 			// aapt resource value: 0x7F0801AC
-			public const int visible = 2131231148;
+			public const int view_tree_view_model_store_owner = 2131231148;
 			
 			// aapt resource value: 0x7F0801AD
-			public const int visible_removing_fragment_view_tag = 2131231149;
-			
-			// aapt resource value: 0x7F0801AF
-			public const int withinBounds = 2131231151;
+			public const int visible = 2131231149;
 			
 			// aapt resource value: 0x7F0801AE
-			public const int withText = 2131231150;
+			public const int visible_removing_fragment_view_tag = 2131231150;
 			
 			// aapt resource value: 0x7F0801B0
-			public const int wrap = 2131231152;
+			public const int withinBounds = 2131231152;
+			
+			// aapt resource value: 0x7F0801AF
+			public const int withText = 2131231151;
 			
 			// aapt resource value: 0x7F0801B1
-			public const int wrap_content = 2131231153;
+			public const int wrap = 2131231153;
 			
 			// aapt resource value: 0x7F0801B2
-			public const int zero_corner_chip = 2131231154;
+			public const int wrap_content = 2131231154;
+			
+			// aapt resource value: 0x7F0801B3
+			public const int zero_corner_chip = 2131231155;
 			
 			static Id()
 			{

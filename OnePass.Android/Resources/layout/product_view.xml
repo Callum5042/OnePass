@@ -4,10 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/view_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Name"/>
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/view_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"/>
+
+        <TextView
+            android:id="@+id/view_name1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Testing"/>
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
