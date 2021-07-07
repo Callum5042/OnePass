@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/actionBarSize"
-    android:background="?android:attr/colorPrimary"
+    android:background="@color/colorPrimary"
     android:titleTextColor="@android:color/white"
+    android:theme="@style/MyToolbarStyle"
     android:title="Accounts"/>

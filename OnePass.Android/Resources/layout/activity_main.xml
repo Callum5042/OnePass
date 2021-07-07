@@ -28,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:backgroundTint="?android:attr/colorAccent"
+        app:tint="@android:color/white"
+        android:src="@android:drawable/ic_input_add"
         android:layout_margin="@dimen/fab_margin"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
