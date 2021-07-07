@@ -1,6 +1,7 @@
 ﻿using Android.Views;
 using Android.Widget;
 using AndroidX.RecyclerView.Widget;
+using System;
 using System.Collections.Generic;
 
 namespace OnePass.Android
@@ -10,6 +11,8 @@ namespace OnePass.Android
         public override int ItemCount => Names.Count;
 
         public IList<string> Names { get; set; } = new List<string>();
+
+        public event EventHandler<int> ItemClick;
 
         public ProductAdapter()
         {
@@ -30,17 +33,27 @@ namespace OnePass.Android
         {
             var itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.product_view, parent, false);
 
-            var viewHolder = new ProductViewHolder(itemView);
+            var viewHolder = new ProductViewHolder(itemView, OnClick);
             return viewHolder;
+        }
+
+        private void OnClick(int position)
+        {
+            ItemClick?.Invoke(this, position);
         }
 
         private class ProductViewHolder : RecyclerView.ViewHolder
         {
             public TextView Name { get; private set; }
 
-            public ProductViewHolder(View itemView) : base(itemView)
+            public ProductViewHolder(View itemView, Action<int> listener) : base(itemView)
             {
                 Name = itemView.FindViewById<TextView>(Resource.Id.view_name);
+
+                itemView.Click += (sender, args) =>
+                {
+                    listener(LayoutPosition);
+                };
             }
         }
     }
