@@ -1,14 +1,7 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
+﻿using Android.Views;
 using Android.Widget;
 using AndroidX.RecyclerView.Widget;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OnePass.Android
 {
@@ -40,15 +33,15 @@ namespace OnePass.Android
             var viewHolder = new ProductViewHolder(itemView);
             return viewHolder;
         }
-    }
 
-    public class ProductViewHolder : RecyclerView.ViewHolder
-    {
-        public TextView Name { get; private set; }
-
-        public ProductViewHolder(View itemView) : base(itemView)
+        private class ProductViewHolder : RecyclerView.ViewHolder
         {
-            Name = itemView.FindViewById<TextView>(Resource.Id.view_name);
+            public TextView Name { get; private set; }
+
+            public ProductViewHolder(View itemView) : base(itemView)
+            {
+                Name = itemView.FindViewById<TextView>(Resource.Id.view_name);
+            }
         }
     }
 }
