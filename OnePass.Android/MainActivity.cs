@@ -1,18 +1,15 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
+using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Widget;
 using Android.Views;
-using AndroidX.AppCompat.App;
-using Google.Android.Material.FloatingActionButton;
-using Google.Android.Material.Snackbar;
-using Android.Content.PM;
+using Android.Widget;
 using AndroidX.RecyclerView.Widget;
+using Google.Android.Material.FloatingActionButton;
+using System;
 
 namespace OnePass.Android
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
+    [Activity(Theme = "@style/AppTheme")]
     public class MainActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -53,24 +50,22 @@ namespace OnePass.Android
 
         private void ProductAdapter_ItemClick(object sender, int position)
         {
-            var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-            dialog.SetTitle("Alert");
-            dialog.SetMessage($"Product {position}");
-            dialog.SetPositiveButton("OK", (sender, args) => { });
+            //var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
+            //dialog.SetTitle("Alert");
+            //dialog.SetMessage($"Product {position}");
+            //dialog.SetPositiveButton("OK", (sender, args) => { });
 
-            var alert = dialog.Create();
-            alert.Show();
+            //var alert = dialog.Create();
+            //alert.Show();
+
+            var intent = new Intent(this, typeof(AccountEditActivity));
+            StartActivity(intent);
         }
 
         private void AddFab_Click(object sender, EventArgs e)
         {
-            var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-            dialog.SetTitle("Alert");
-            dialog.SetMessage("message");
-            dialog.SetPositiveButton("OK", (sender, args) => { });
-
-            var alert = dialog.Create();
-            alert.Show();
+            var intent = new Intent(this, typeof(AccountCreateActivity));
+            StartActivity(intent);
         }
     }
 }
