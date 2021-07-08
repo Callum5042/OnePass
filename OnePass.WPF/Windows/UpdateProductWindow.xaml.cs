@@ -1,6 +1,6 @@
 ﻿using OnePass.Handlers;
 using OnePass.Handlers.Interfaces;
-using OnePass.Models;
+using OnePass.WPF.Models;
 using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;

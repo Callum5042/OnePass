@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OnePass.Android
+namespace OnePass.Droid
 {
     [Activity(Theme = "@style/AppTheme")]
     public class AccountCreateActivity : Activity
