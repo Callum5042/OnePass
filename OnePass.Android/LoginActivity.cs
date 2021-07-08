@@ -1,15 +1,9 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
-using AndroidX.AppCompat.App;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace OnePass.Android
 {
@@ -22,13 +16,20 @@ namespace OnePass.Android
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_login);
 
-            var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-
             // Create your application here
+            SetVersionNumber();
+
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
             loginButton.Click += LoginButton_Click;
 
-            SetVersionNumber();
+            var registerButton = FindViewById<Button>(Resource.Id.register_button);
+            registerButton.Click += RegisterButton_Click;
+        }
+
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(RegisterActivity));
+            StartActivity(intent);
         }
 
         private void LoginButton_Click(object sender, EventArgs e)
