@@ -1,4 +1,4 @@
-﻿using OnePass.Models;
+﻿using OnePass.WPF.Models;
 using OnePass.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
 ﻿using OnePass.Handlers;
-using OnePass.Models;
+using OnePass.WPF.Models;
 using OnePass.WPF.Tests;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;

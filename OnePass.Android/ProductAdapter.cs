@@ -4,7 +4,7 @@ using AndroidX.RecyclerView.Widget;
 using System;
 using System.Collections.Generic;
 
-namespace OnePass.Android
+namespace OnePass.Droid
 {
     public class ProductAdapter : RecyclerView.Adapter
     {
