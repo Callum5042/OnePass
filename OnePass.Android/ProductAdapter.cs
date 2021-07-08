@@ -14,12 +14,9 @@ namespace OnePass.Droid
 
         public event EventHandler<int> ItemClick;
 
-        public ProductAdapter()
+        public ProductAdapter(IList<string> names)
         {
-            Names.Add("Callum");
-            Names.Add("Callum 1");
-            Names.Add("Callum 2");
-            Names.Add("Callum 3");
+            Names = names;
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)

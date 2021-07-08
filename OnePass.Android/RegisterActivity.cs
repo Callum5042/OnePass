@@ -43,29 +43,28 @@ namespace OnePass.Droid
             var encryptor = new FileEncryptor();
 
             // Create initial encrypted file
-            var json = JsonSerializer.Serialize(new AccountRoot());
 
             var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var filename = $"{_username.Text}.bin";
-
             var path = Path.Combine(documentsPath, filename);
-            if (File.Exists(path))
-            {
-                using var input = File.OpenRead(path);
-                using var output = new MemoryStream();
-                await encryptor.DecryptAsync(input, output, _password.Text);
 
-                output.Seek(0, SeekOrigin.Begin);
-                using var reader = new StreamReader(output);
-                var jsonOutput = await reader.ReadToEndAsync();
-            }
+            //if (File.Exists(path))
+            //{
+            //    using var input = File.OpenRead(path);
+            //    using var output = new MemoryStream();
+            //    await encryptor.DecryptAsync(input, output, _password.Text);
 
+            //    output.Seek(0, SeekOrigin.Begin);
+            //    using var reader = new StreamReader(output);
+            //    var jsonOutput = await reader.ReadToEndAsync();
+            //}
+
+            var json = JsonSerializer.Serialize(new List<Account>());
             var buffer = Encoding.UTF8.GetBytes(json);
             using var memory = new MemoryStream(buffer);
             using var file = File.OpenWrite(path);
 
             await encryptor.EncryptAsync(memory, file, _password.Text);
-
 
             // Finish
             Finish();
