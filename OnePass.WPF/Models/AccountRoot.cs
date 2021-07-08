@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OnePass.Models
+namespace OnePass.WPF.Models
 {
     public class AccountRoot
     {

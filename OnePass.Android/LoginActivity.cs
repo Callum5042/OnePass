@@ -5,7 +5,7 @@ using Android.Widget;
 using System;
 using System.Reflection;
 
-namespace OnePass.Android
+namespace OnePass.Droid
 {
     [Activity(Label = "OnePass", Theme = "@style/AppTheme", MainLauncher = true)]
     public class LoginActivity : Activity

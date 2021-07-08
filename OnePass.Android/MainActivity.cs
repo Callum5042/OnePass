@@ -7,7 +7,7 @@ using AndroidX.RecyclerView.Widget;
 using Google.Android.Material.FloatingActionButton;
 using System;
 
-namespace OnePass.Android
+namespace OnePass.Droid
 {
     [Activity(Theme = "@style/AppTheme")]
     public class MainActivity : Activity
