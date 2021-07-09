@@ -1,19 +1,15 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using OnePass.Models;
 using OnePass.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace OnePass.Droid
+namespace OnePass.Droid.Activities
 {
     [Activity(Theme = "@style/AppTheme")]
     public class RegisterActivity : Activity
@@ -43,21 +39,9 @@ namespace OnePass.Droid
             var encryptor = new FileEncryptor();
 
             // Create initial encrypted file
-
             var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var filename = $"{_username.Text}.bin";
             var path = Path.Combine(documentsPath, filename);
-
-            //if (File.Exists(path))
-            //{
-            //    using var input = File.OpenRead(path);
-            //    using var output = new MemoryStream();
-            //    await encryptor.DecryptAsync(input, output, _password.Text);
-
-            //    output.Seek(0, SeekOrigin.Begin);
-            //    using var reader = new StreamReader(output);
-            //    var jsonOutput = await reader.ReadToEndAsync();
-            //}
 
             var json = JsonSerializer.Serialize(new List<Account>());
             var buffer = Encoding.UTF8.GetBytes(json);

@@ -1,10 +1,9 @@
 ﻿using OnePass.Handlers;
-using OnePass.WPF.Models;
 using OnePass.Services;
+using OnePass.WPF.Models;
 using OnePass.WPF.Tests;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
