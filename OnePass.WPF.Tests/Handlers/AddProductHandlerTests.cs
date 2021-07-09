@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
+using Account = OnePass.Models.Account;
 
 namespace OnePass.Tests.Handlers
 {
@@ -20,12 +21,8 @@ namespace OnePass.Tests.Handlers
             var password = "TestPassword";
 
             // Arrange
-            var root = new ProductRoot()
-            {
-                Products = new List<Product>()
-            };
-
-            var json = JsonSerializer.Serialize(root);
+            var accounts = new List<Account>();
+            var json = JsonSerializer.Serialize(accounts);
 
             // Act
             var model = new Product()
@@ -47,9 +44,9 @@ namespace OnePass.Tests.Handlers
 
             // Assert
             var outputJson = fileSystem.File.ReadAllText(filename);
-            var output = JsonSerializer.Deserialize<ProductRoot>(outputJson);
+            var output = JsonSerializer.Deserialize<IList<Account>>(outputJson);
 
-            var product = output.Products.First();
+            var product = output.First();
             Assert.NotNull(product);
             Assert.Equal(1, product.Id);
             Assert.Equal(model.Name, product.Name);
