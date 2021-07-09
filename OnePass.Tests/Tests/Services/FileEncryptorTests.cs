@@ -29,7 +29,7 @@ namespace OnePass.Tests.Tests.Services
             // Assert
             var encryptedContent = new byte[]
             {
-                122, 173, 196, 6, 24, 91, 77, 249, 118, 155, 203, 50, 131, 232, 0, 21
+                243, 103, 226, 11, 187, 51, 24, 71, 33, 69, 50, 185, 219, 116, 226, 60
             };
 
             Assert.NotEmpty(content);
@@ -42,7 +42,7 @@ namespace OnePass.Tests.Tests.Services
             // Arrange
             var encryptedContent = new byte[]
             {
-                122, 173, 196, 6, 24, 91, 77, 249, 118, 155, 203, 50, 131, 232, 0, 21
+                243, 103, 226, 11, 187, 51, 24, 71, 33, 69, 50, 185, 219, 116, 226, 60
             };
 
             using var input = new MemoryStream();
