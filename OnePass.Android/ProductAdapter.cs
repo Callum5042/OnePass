@@ -1,6 +1,7 @@
 ﻿using Android.Views;
 using Android.Widget;
 using AndroidX.RecyclerView.Widget;
+using OnePass.Models;
 using System;
 using System.Collections.Generic;
 
@@ -8,22 +9,23 @@ namespace OnePass.Droid
 {
     public class ProductAdapter : RecyclerView.Adapter
     {
-        public override int ItemCount => Names.Count;
+        public override int ItemCount => Accounts.Count;
 
-        public IList<string> Names { get; set; } = new List<string>();
+        public IList<Account> Accounts { get; set; } = new List<Account>();
 
         public event EventHandler<int> ItemClick;
 
-        public ProductAdapter(IList<string> names)
+        public ProductAdapter(IList<Account> accounts)
         {
-            Names = names;
+            Accounts = accounts;
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             var viewHolder = holder as ProductViewHolder;
 
-            viewHolder.Name.Text = Names[position];
+            viewHolder.Name.Text = Accounts[position].Name;
+            viewHolder.Login.Text = Accounts[position].Login;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -43,9 +45,12 @@ namespace OnePass.Droid
         {
             public TextView Name { get; private set; }
 
+            public TextView Login { get; private set; }
+
             public ProductViewHolder(View itemView, Action<int> listener) : base(itemView)
             {
                 Name = itemView.FindViewById<TextView>(Resource.Id.view_name);
+                Login = itemView.FindViewById<TextView>(Resource.Id.view_login);
 
                 itemView.Click += (sender, args) =>
                 {

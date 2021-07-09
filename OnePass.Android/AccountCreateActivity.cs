@@ -1,7 +1,5 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OnePass.Models;
@@ -9,7 +7,6 @@ using OnePass.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 
@@ -18,7 +15,8 @@ namespace OnePass.Droid
     [Activity(Theme = "@style/AppTheme")]
     public class AccountCreateActivity : Activity
     {
-        private EditText _accountUsernameEditText;
+        private EditText _accountNameEditText;
+        private EditText _accountLoginEditText;
         private EditText _accountPasswordEditText;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -40,7 +38,8 @@ namespace OnePass.Droid
             var generatePasswordButton = FindViewById<Button>(Resource.Id.generate_password_button);
             generatePasswordButton.Click += GeneratePasswordButton_Click;
 
-            _accountUsernameEditText = FindViewById<EditText>(Resource.Id.account_name);
+            _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
+            _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
             _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
         }
 
@@ -65,14 +64,20 @@ namespace OnePass.Droid
             using var reader = new StreamReader(output);
             var jsonOutput = await reader.ReadToEndAsync();
 
-            var accounts = JsonSerializer.Deserialize<ICollection<Account>>(jsonOutput);
+            var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
 
             // Add data
             accounts.Add(new Account()
             {
-                Username = _accountUsernameEditText.Text,
+                Login = _accountNameEditText.Text,
+                Name = _accountLoginEditText.Text,
                 Password = _accountPasswordEditText.Text
             });
+
+            for (int i = 0; i < accounts.Count; i++)
+            {
+                accounts[i].Id = i;
+            }
 
             // Encrypt file
             var json = JsonSerializer.Serialize(accounts);

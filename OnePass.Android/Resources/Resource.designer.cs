@@ -6696,10 +6696,10 @@ namespace OnePass.Droid
 			public const int useLogo = 2131231151;
 			
 			// aapt resource value: 0x7F0801B0
-			public const int view_name = 2131231152;
+			public const int view_login = 2131231152;
 			
 			// aapt resource value: 0x7F0801B1
-			public const int view_name1 = 2131231153;
+			public const int view_name = 2131231153;
 			
 			// aapt resource value: 0x7F0801B2
 			public const int view_offset_helper = 2131231154;
