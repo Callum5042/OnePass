@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
+using Account = OnePass.Models.Account;
 
 namespace OnePass.Tests.Handlers
 {
@@ -20,32 +21,27 @@ namespace OnePass.Tests.Handlers
             var password = "TestPassword";
 
             // Arrange
-            var root = new ProductRoot()
+            var accounts = new List<Account>()
             {
-                Products = new List<Product>()
+                new Account()
                 {
-                    new Product()
-                    {
-                        Id = 1,
-                        Name = "Callum",
-                        Login = "Login",
-                        Password = "password"
-                    },
-                    new Product()
-                    {
-                        Id = 2,
-                        Name = "Callum",
-                        Login = "Login",
-                        Password = "password"
-                    }
+                    Id = 1,
+                    Name = "Callum",
+                    Login = "Login",
+                    Password = "password"
+                },
+                new Account()
+                {
+                    Id = 2,
+                    Name = "Callum",
+                    Login = "Login",
+                    Password = "password"
                 }
             };
 
-            var json = JsonSerializer.Serialize(root);
+            var json = JsonSerializer.Serialize(accounts);
 
             // Act
-            var product = root.Products.First();
-
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { filename, new MockFileData(json) }
@@ -54,13 +50,17 @@ namespace OnePass.Tests.Handlers
             var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
             var handler = new DeleteProductHandler(fileSystem, encryptor, onePassRepository);
-            await handler.DeleteProductAsync(product);
+            await handler.DeleteProductAsync(new Product()
+            {
+                Id = 1,
+                Name = "Callum"
+            });
 
             // Assert
             var outputJson = fileSystem.File.ReadAllText(filename);
-            var output = JsonSerializer.Deserialize<ProductRoot>(outputJson);
+            var output = JsonSerializer.Deserialize<IList<Account>>(outputJson);
 
-            Assert.Single(output.Products);
+            Assert.Single(output);
         }
     }
 }

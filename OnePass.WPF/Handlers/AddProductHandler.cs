@@ -1,15 +1,15 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
-using OnePass.WPF.Models;
 using OnePass.Services;
+using OnePass.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Account = OnePass.Models.Account;
 
 namespace OnePass.Handlers
 {
@@ -27,21 +27,26 @@ namespace OnePass.Handlers
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
-        public async Task<IEnumerable<Product>> AddProductAsync(Product model)
+        public async Task<IEnumerable<Account>> AddProductAsync(Product model)
         {
-            var products = await ReadJsonAsync();
-            products.Add(model);
-
-            for (int i = 0; i < products.Count; i++)
+            var accounts = await ReadJsonAsync();
+            accounts.Add(new Account()
             {
-                products[i].Id = i + 1;
+                Name = model.Name,
+                Login = model.Login,
+                Password = model.Password
+            });
+
+            for (int i = 0; i < accounts.Count; i++)
+            {
+                accounts[i].Id = i + 1;
             }
 
-            await SaveJsonAsync(new ProductRoot() { Products = products });
-            return products;
+            await SaveJsonAsync(accounts);
+            return accounts;
         }
 
-        private async Task<IList<Product>> ReadJsonAsync()
+        private async Task<IList<Account>> ReadJsonAsync()
         {
             using var input = _fileSystem.File.OpenRead(_onePassRepository.Filename);
             using var output = new MemoryStream();
@@ -51,19 +56,20 @@ namespace OnePass.Handlers
             using var reader = new StreamReader(output);
             var json = await reader.ReadToEndAsync();
 
-            var products = JsonSerializer.Deserialize<ProductRoot>(json);
-            return products.Products.ToList();
+            var accounts = JsonSerializer.Deserialize<IList<Account>>(json);
+            return accounts;
         }
 
-        private async Task SaveJsonAsync(ProductRoot root)
+        private async Task SaveJsonAsync(IList<Account> accounts)
         {
-            var json = JsonSerializer.Serialize(root);
+            var json = JsonSerializer.Serialize(accounts);
 
             var buffer = Encoding.UTF8.GetBytes(json);
             using var memory = new MemoryStream(buffer);
 
             using var file = _fileSystem.File.OpenWrite(_onePassRepository.Filename);
             file.SetLength(0);
+
             await _encryptor.EncryptAsync(memory, file, _onePassRepository.MasterPassword);
         }
     }

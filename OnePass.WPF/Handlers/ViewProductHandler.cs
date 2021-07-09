@@ -1,7 +1,7 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
-using OnePass.WPF.Models;
 using OnePass.Services;
+using OnePass.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,10 +39,20 @@ namespace OnePass.Handlers
             // Read content
             output.Seek(0, SeekOrigin.Begin);
             var reader = new StreamReader(output);
-            var json = reader.ReadToEnd();
+            var json = await reader.ReadToEndAsync();
 
-            var root = JsonSerializer.Deserialize<ProductRoot>(json);
-            return root.Products.ToList();
+            var accounts = JsonSerializer.Deserialize<List<Models.Account>>(json);
+
+            // Cast to view model
+            var products = accounts.Select(x => new Product()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Login = x.Login,
+                Password = x.Password
+            });
+
+            return products.ToList();
         }
     }
 }

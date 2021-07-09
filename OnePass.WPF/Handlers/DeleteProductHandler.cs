@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Account = OnePass.Models.Account;
 
 namespace OnePass.Handlers
 {
@@ -27,23 +28,23 @@ namespace OnePass.Handlers
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
-        public async Task<IEnumerable<Product>> DeleteProductAsync(Product model)
+        public async Task<IEnumerable<Account>> DeleteProductAsync(Product model)
         {
-            var products = await ReadJsonAsync();
+            var accounts = await ReadJsonAsync();
 
-            var product = products.First(x => x.Name == model.Name);
-            var x = products.Remove(product);
+            var account = accounts.First(x => x.Name == model.Name);
+            _ = accounts.Remove(account);
 
-            for (int i = 0; i < products.Count; i++)
+            for (int i = 0; i < accounts.Count; i++)
             {
-                products[i].Id = i + 1;
+                accounts[i].Id = i + 1;
             }
 
-            await SaveJsonAsync(new ProductRoot() { Products = products });
-            return products;
+            await SaveJsonAsync(accounts);
+            return accounts;
         }
 
-        private async Task<IList<Product>> ReadJsonAsync()
+        private async Task<IList<Account>> ReadJsonAsync()
         {
             using var input = _fileSystem.File.OpenRead(_onePassRepository.Filename);
             using var output = new MemoryStream();
@@ -53,13 +54,13 @@ namespace OnePass.Handlers
             using var reader = new StreamReader(output);
             var json = await reader.ReadToEndAsync();
 
-            var products = JsonSerializer.Deserialize<ProductRoot>(json);
-            return products.Products.ToList();
+            var accounts = JsonSerializer.Deserialize<IList<Account>>(json);
+            return accounts.ToList();
         }
 
-        private async Task SaveJsonAsync(ProductRoot root)
+        private async Task SaveJsonAsync(IList<Account> accounts)
         {
-            var json = JsonSerializer.Serialize(root);
+            var json = JsonSerializer.Serialize(accounts);
 
             var buffer = Encoding.UTF8.GetBytes(json);
             using var memory = new MemoryStream(buffer);
