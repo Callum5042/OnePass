@@ -18,6 +18,7 @@ namespace OnePass.Services
             using var aes = Aes.Create();
             aes.Key = Key;
             aes.IV = IV;
+            aes.Padding = PaddingMode.PKCS7;
 
             // Encrypt file
             using var decryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -33,6 +34,7 @@ namespace OnePass.Services
             using var aes = Aes.Create();
             aes.Key = Key;
             aes.IV = IV;
+            aes.Padding = PaddingMode.PKCS7;
 
             // Decrypt file
             using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
@@ -50,6 +52,7 @@ namespace OnePass.Services
             var hashKey = sha2.ComputeHash(rawKey);
             var hashIV = sha2.ComputeHash(rawIV);
 
+            Array.Resize(ref hashKey, 16);
             Array.Resize(ref hashIV, 16);
             return (hashKey, hashIV);
         }
