@@ -2,8 +2,11 @@
 using Android.Content;
 using Android.OS;
 using Android.Widget;
+using OnePass.Services;
 using System;
+using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace OnePass.Droid.Activities
 {
@@ -37,12 +40,38 @@ namespace OnePass.Droid.Activities
             StartActivity(intent);
         }
 
-        private void LoginButton_Click(object sender, EventArgs e)
+        private async void LoginButton_Click(object sender, EventArgs e)
         {
-            var intent = new Intent(this, typeof(MainActivity));
-            intent.PutExtra("Username", _usernameEditText.Text);
-            intent.PutExtra("Password", _passwordEditText.Text);
-            StartActivity(intent);
+            var encryptor = new FileEncryptor();
+
+            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var filename = $"{_usernameEditText.Text}.bin";
+            var path = Path.Combine(documentsPath, filename);
+
+            // Check if file exists
+            if (!File.Exists(path))
+            {
+                Toast.MakeText(this, "Invalid username", ToastLength.Short).Show();
+                return;
+            }
+
+            // Attempt to decrypt file with key
+            try
+            {
+                using var file = File.OpenRead(path);
+                using var memory = new MemoryStream();
+                await encryptor.DecryptAsync(file, memory, _passwordEditText.Text);
+
+                // Success
+                var intent = new Intent(this, typeof(MainActivity));
+                intent.PutExtra("Username", _usernameEditText.Text);
+                intent.PutExtra("Password", _passwordEditText.Text);
+                StartActivity(intent);
+            }
+            catch (CryptographicException)
+            {
+                Toast.MakeText(this, "Invalid password", ToastLength.Short).Show();
+            }
         }
 
         private void SetVersionNumber()
