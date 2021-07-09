@@ -21,8 +21,8 @@ namespace OnePass.CLI.Commands
         public async Task ExecuteAsync(Arguments arguments)
         {
             using var file = _fileSystem.File.OpenRead(arguments.File);
-            using var output = _fileSystem.File.Create("encrypted.txt");
-            await _fileEncryptor.DecryptAsync(file, output, "super");
+            using var output = _fileSystem.File.Create($"{arguments.File}.json");
+            await _fileEncryptor.DecryptAsync(file, output, arguments.Password);
         }
     }
 }

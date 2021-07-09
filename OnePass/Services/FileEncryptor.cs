@@ -13,7 +13,7 @@ namespace OnePass.Services
         public async Task EncryptAsync(Stream input, Stream output, string password)
         {
             // Encryption Key
-            var (Key, IV) = GetKeyAndIv("super");
+            var (Key, IV) = GetKeyAndIv(password);
 
             using var aes = Aes.Create();
             aes.Key = Key;
@@ -29,7 +29,7 @@ namespace OnePass.Services
         public async Task DecryptAsync(Stream input, Stream output, string password)
         {
             // Encrypted key
-            var (Key, IV) = GetKeyAndIv("super");
+            var (Key, IV) = GetKeyAndIv(password);
 
             using var aes = Aes.Create();
             aes.Key = Key;
