@@ -5,11 +5,14 @@ using Android.Widget;
 using System;
 using System.Reflection;
 
-namespace OnePass.Droid
+namespace OnePass.Droid.Activities
 {
     [Activity(Label = "OnePass", Theme = "@style/AppTheme", MainLauncher = true)]
     public class LoginActivity : Activity
     {
+        private EditText _usernameEditText;
+        private EditText _passwordEditText;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -17,6 +20,8 @@ namespace OnePass.Droid
             SetContentView(Resource.Layout.activity_login);
 
             // Create your application here
+            _usernameEditText = FindViewById<EditText>(Resource.Id.login_username);
+            _passwordEditText = FindViewById<EditText>(Resource.Id.login_password);
             SetVersionNumber();
 
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
@@ -35,6 +40,8 @@ namespace OnePass.Droid
         private void LoginButton_Click(object sender, EventArgs e)
         {
             var intent = new Intent(this, typeof(MainActivity));
+            intent.PutExtra("Username", _usernameEditText.Text);
+            intent.PutExtra("Password", _passwordEditText.Text);
             StartActivity(intent);
         }
 
