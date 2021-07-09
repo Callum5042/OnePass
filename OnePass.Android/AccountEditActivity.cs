@@ -104,12 +104,12 @@ namespace OnePass.Droid
             account.Name = _accountLoginEditText.Text;
             account.Password = _accountPasswordEditText.Text;
 
-            // Encrypt file
+            // Encrypt file 
             var json = JsonSerializer.Serialize(accounts);
             var buffer = Encoding.UTF8.GetBytes(json);
             using var memory = new MemoryStream(buffer);
             using var file = File.OpenWrite(path);
-
+            file.SetLength(0);
             await encryptor.EncryptAsync(memory, file, password);
 
             // Finish
