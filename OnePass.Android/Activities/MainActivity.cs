@@ -10,15 +10,18 @@ using OnePass.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace OnePass.Droid
+namespace OnePass.Droid.Activities
 {
     [Activity(Theme = "@style/AppTheme")]
     public class MainActivity : Activity
     {
+        private string Username { get; set; }
+
+        private string Password { get; set; }
+
         private ProductAdapter ProductAdapter { get; set; }
 
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -26,6 +29,9 @@ namespace OnePass.Droid
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
+
+            Username = Intent.GetStringExtra(nameof(Username));
+            Password = Intent.GetStringExtra(nameof(Password));
 
             // var username = Intent.GetStringExtra("Username")
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
@@ -49,18 +55,15 @@ namespace OnePass.Droid
 
         private async Task<IList<Account>> Accounts()
         {
-            var name = "Callum";
-            var password = "SUPER";
-
             var encryptor = new FileEncryptor();
 
             var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            var filename = $"{name}.bin";
+            var filename = $"{Username}.bin";
             var path = Path.Combine(documentsPath, filename);
 
             using var input = File.OpenRead(path);
             using var output = new MemoryStream();
-            await encryptor.DecryptAsync(input, output, password);
+            await encryptor.DecryptAsync(input, output, Password);
 
             output.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(output);
@@ -93,15 +96,19 @@ namespace OnePass.Droid
             //alert.Show();
 
             int id = ProductAdapter.Accounts[position].Id;
-            
+
             var intent = new Intent(this, typeof(AccountEditActivity));
             intent.PutExtra("Id", id);
+            intent.PutExtra(nameof(Username), Username);
+            intent.PutExtra(nameof(Password), Password);
             StartActivity(intent);
         }
 
         private void AddFab_Click(object sender, EventArgs e)
         {
             var intent = new Intent(this, typeof(AccountCreateActivity));
+            intent.PutExtra(nameof(Username), Username);
+            intent.PutExtra(nameof(Password), Password);
             StartActivity(intent);
         }
 
