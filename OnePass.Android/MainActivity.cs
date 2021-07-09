@@ -47,7 +47,7 @@ namespace OnePass.Droid
             recyclerView.AddItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Vertical));
         }
 
-        private async Task<IList<string>> Accounts()
+        private async Task<IList<Account>> Accounts()
         {
             var name = "Callum";
             var password = "SUPER";
@@ -66,10 +66,8 @@ namespace OnePass.Droid
             using var reader = new StreamReader(output);
             var jsonOutput = await reader.ReadToEndAsync();
 
-            var accounts = JsonSerializer.Deserialize<ICollection<Account>>(jsonOutput);
-            var names = accounts.Select(x => x.Username).ToList();
-
-            return names;
+            var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
+            return accounts;
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -94,7 +92,10 @@ namespace OnePass.Droid
             //var alert = dialog.Create();
             //alert.Show();
 
+            int id = ProductAdapter.Accounts[position].Id;
+            
             var intent = new Intent(this, typeof(AccountEditActivity));
+            intent.PutExtra("Id", id);
             StartActivity(intent);
         }
 
@@ -106,11 +107,11 @@ namespace OnePass.Droid
 
         protected override async void OnRestart()
         {
-            var list = await Accounts();
-            ProductAdapter.Names = list;
-            ProductAdapter.NotifyDataSetChanged();
-
             base.OnRestart();
+
+            var list = await Accounts();
+            ProductAdapter.Accounts = list;
+            ProductAdapter.NotifyDataSetChanged();
         }
     }
 }
