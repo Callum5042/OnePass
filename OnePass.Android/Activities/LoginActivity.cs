@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OnePass.Services;
@@ -18,6 +19,8 @@ namespace OnePass.Droid.Activities
         private EditText _passwordEditText;
         private TextView _usernameValidationTextView;
         private TextView _passwordValidationTextView;
+
+        private const int activityResult = 1;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -42,7 +45,7 @@ namespace OnePass.Droid.Activities
         private void RegisterButton_Click(object sender, EventArgs e)
         {
             var intent = new Intent(this, typeof(RegisterActivity));
-            StartActivity(intent);
+            StartActivityForResult(intent, activityResult);
         }
 
         private async void LoginButton_Click(object sender, EventArgs e)
@@ -120,6 +123,20 @@ namespace OnePass.Droid.Activities
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var versionLabel = FindViewById<TextView>(Resource.Id.login_version);
             versionLabel.Text = $"v{version.ToString(3)}";
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == activityResult)
+            {
+                if (resultCode == Result.Ok)
+                {
+                    var profileName = data.GetStringExtra("ProfileName");
+                    Toast.MakeText(this, $"Profile {profileName} created", ToastLength.Short).Show();
+                }
+            }
         }
     }
 }
