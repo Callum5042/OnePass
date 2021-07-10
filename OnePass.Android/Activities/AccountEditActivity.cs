@@ -64,19 +64,15 @@ namespace OnePass.Droid.Activities
 
             // Populate data
             _accountId = Intent.GetIntExtra("Id", -1);
-
-            var name = "Callum";
-            var password = "SUPER";
-
             var encryptor = new FileEncryptor();
 
             var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            var filename = $"{name}.bin";
+            var filename = $"{Username}.bin";
             var path = Path.Combine(documentsPath, filename);
 
             using var input = File.OpenRead(path);
             using var output = new MemoryStream();
-            await encryptor.DecryptAsync(input, output, password);
+            await encryptor.DecryptAsync(input, output, Password);
 
             output.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(output);
