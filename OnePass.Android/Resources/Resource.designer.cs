@@ -7286,22 +7286,19 @@ namespace OnePass.Droid
 			public const int ic_launcher = 2131558402;
 			
 			// aapt resource value: 0x7F0D0003
-			public const int ic_launcher_foreground = 2131558403;
+			public const int ic_launcher_round = 2131558403;
 			
 			// aapt resource value: 0x7F0D0004
-			public const int ic_launcher_round = 2131558404;
+			public const int ic_menu_copy_holo_dark = 2131558404;
 			
 			// aapt resource value: 0x7F0D0005
-			public const int ic_menu_copy_holo_dark = 2131558405;
+			public const int ic_menu_cut_holo_dark = 2131558405;
 			
 			// aapt resource value: 0x7F0D0006
-			public const int ic_menu_cut_holo_dark = 2131558406;
+			public const int ic_menu_paste_holo_dark = 2131558406;
 			
 			// aapt resource value: 0x7F0D0007
-			public const int ic_menu_paste_holo_dark = 2131558407;
-			
-			// aapt resource value: 0x7F0D0008
-			public const int ic_menu_search_holo_dark = 2131558408;
+			public const int ic_menu_search_holo_dark = 2131558407;
 			
 			static Mipmap()
 			{
