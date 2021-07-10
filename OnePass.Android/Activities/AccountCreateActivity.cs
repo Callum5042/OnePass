@@ -89,7 +89,9 @@ namespace OnePass.Droid.Activities
             {
                 Login = _accountNameEditText.Text,
                 Name = _accountLoginEditText.Text,
-                Password = _accountPasswordEditText.Text
+                Password = _accountPasswordEditText.Text,
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
             });
 
             for (int i = 0; i < accounts.Count; i++)

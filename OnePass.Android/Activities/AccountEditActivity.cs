@@ -117,6 +117,12 @@ namespace OnePass.Droid.Activities
             account.Login = _accountNameEditText.Text;
             account.Name = _accountLoginEditText.Text;
             account.Password = _accountPasswordEditText.Text;
+            account.DateModified = DateTime.Now;
+
+            if (account.DateCreated is null)
+            {
+                account.DateCreated = DateTime.Now;
+            }
 
             // Encrypt file 
             var json = JsonSerializer.Serialize(accounts);
