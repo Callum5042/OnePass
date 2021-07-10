@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using OnePass.Services;
 using System;
@@ -15,6 +16,8 @@ namespace OnePass.Droid.Activities
     {
         private EditText _usernameEditText;
         private EditText _passwordEditText;
+        private TextView _usernameValidationTextView;
+        private TextView _passwordValidationTextView;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -25,6 +28,8 @@ namespace OnePass.Droid.Activities
             // Create your application here
             _usernameEditText = FindViewById<EditText>(Resource.Id.login_username);
             _passwordEditText = FindViewById<EditText>(Resource.Id.login_password);
+            _usernameValidationTextView = FindViewById<TextView>(Resource.Id.login_username_validation_message);
+            _passwordValidationTextView = FindViewById<TextView>(Resource.Id.login_password_validation_message);
             SetVersionNumber();
 
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
@@ -48,9 +53,22 @@ namespace OnePass.Droid.Activities
             var filename = $"{_usernameEditText.Text}.bin";
             var path = Path.Combine(documentsPath, filename);
 
+            _usernameValidationTextView.Visibility = ViewStates.Gone;
+            _passwordValidationTextView.Visibility = ViewStates.Gone;
+
+            // Validate fields
+            bool isValid = ValidateFields();
+            if (!isValid)
+            {
+                return;
+            }
+
             // Check if file exists
             if (!File.Exists(path))
             {
+                _usernameValidationTextView.Text = "Invalid username";
+                _usernameValidationTextView.Visibility = ViewStates.Visible;
+
                 Toast.MakeText(this, "Invalid username", ToastLength.Short).Show();
                 return;
             }
@@ -70,8 +88,31 @@ namespace OnePass.Droid.Activities
             }
             catch (CryptographicException)
             {
+                _passwordValidationTextView.Text = "Invalid password";
+                _passwordValidationTextView.Visibility = ViewStates.Visible;
+
                 Toast.MakeText(this, "Invalid password", ToastLength.Short).Show();
             }
+        }
+
+        private bool ValidateFields()
+        {
+            bool isValid = true;
+            if (string.IsNullOrEmpty(_usernameEditText.Text))
+            {
+                isValid = false;
+                _usernameValidationTextView.Text = "Username is required";
+                _usernameValidationTextView.Visibility = ViewStates.Visible;
+            }
+
+            if (string.IsNullOrEmpty(_passwordValidationTextView.Text))
+            {
+                isValid = false;
+                _passwordValidationTextView.Text = "Password is required";
+                _passwordValidationTextView.Visibility = ViewStates.Visible;
+            }
+
+            return isValid;
         }
 
         private void SetVersionNumber()
