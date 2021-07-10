@@ -18,6 +18,13 @@
             android:layout_height="wrap_content"
             android:hint="@string/username_placeholder" />
 
+        <TextView
+            android:id="@id/login_username_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
+
         <EditText
             android:id="@+id/login_password"
             android:inputType="textPassword"
@@ -25,12 +32,26 @@
             android:layout_height="wrap_content"
             android:hint="@string/password_placeholder" />
 
+        <TextView
+            android:id="@id/login_password_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
+
         <EditText
             android:id="@+id/login_password_repeat"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password_repeat_placeholder" />
+        
+        <TextView
+            android:id="@+id/login_password_repeat_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/register_button"
