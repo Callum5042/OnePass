@@ -105,7 +105,7 @@ namespace OnePass.Droid.Activities
                 _usernameValidationTextView.Visibility = ViewStates.Visible;
             }
 
-            if (string.IsNullOrEmpty(_passwordValidationTextView.Text))
+            if (string.IsNullOrEmpty(_passwordEditText.Text))
             {
                 isValid = false;
                 _passwordValidationTextView.Text = "Password is required";
