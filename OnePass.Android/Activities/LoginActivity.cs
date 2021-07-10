@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 
 namespace OnePass.Droid.Activities
 {
-    [Activity(Label = "OnePass", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "OnePass", Theme = "@style/AppTheme.Header", MainLauncher = true)]
     public class LoginActivity : Activity
     {
         private EditText _usernameEditText;

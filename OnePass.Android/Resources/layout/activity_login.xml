@@ -16,6 +16,7 @@
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:hint="@string/username_placeholder" />
 
         <TextView
@@ -30,6 +31,7 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:hint="@string/password_placeholder" />
 
         <TextView
@@ -68,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="v0.0.0"
+                android:text=""
                 android:translationY="5dp"
                 android:id="@+id/login_version"/>
 
