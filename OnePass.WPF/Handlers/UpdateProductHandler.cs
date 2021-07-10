@@ -30,15 +30,22 @@ namespace OnePass.Handlers
 
         public async Task<IEnumerable<Account>> UpdateAsync(Product model)
         {
-            var products = await ReadJsonAsync();
+            var accounts = await ReadJsonAsync();
 
-            var product = products.First(x => x.Id == model.Id);
-            product.Name = model.Name;
-            product.Login = model.Login;
-            product.Password = model.Password;
+            var account = accounts.First(x => x.Id == model.Id);
+            account.Name = model.Name;
+            account.Login = model.Login;
+            account.Password = model.Password;
+            account.DateModified = DateTime.Now;
 
-            await SaveJsonAsync(products);
-            return products;
+            // Since we might have acounts created before this field, set the field to now if it was null
+            if (account.DateCreated is null)
+            {
+                account.DateCreated = DateTime.Now;
+            }
+
+            await SaveJsonAsync(accounts);
+            return accounts;
         }
 
         private async Task<IList<Account>> ReadJsonAsync()

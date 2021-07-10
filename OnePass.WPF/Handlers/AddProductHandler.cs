@@ -34,7 +34,9 @@ namespace OnePass.Handlers
             {
                 Name = model.Name,
                 Login = model.Login,
-                Password = model.Password
+                Password = model.Password,
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
             });
 
             for (int i = 0; i < accounts.Count; i++)
