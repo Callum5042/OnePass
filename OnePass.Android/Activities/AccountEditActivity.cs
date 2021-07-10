@@ -136,8 +136,17 @@ namespace OnePass.Droid.Activities
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)
         {
-            var generator = new PasswordGenerator1();
-            _accountPasswordEditText.Text = generator.Generate();
+            var generator = new PasswordGenerator();
+            _accountPasswordEditText.Text = generator.Generate(new PasswordGeneratorOptions() 
+            {
+                MinLength = 10,
+                MaxLength = 14,
+                Uppercase = true,
+                Lowercase = true,
+                Numbers = true,
+                Symbols = true,
+                SymbolAmount = 1
+            });
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)

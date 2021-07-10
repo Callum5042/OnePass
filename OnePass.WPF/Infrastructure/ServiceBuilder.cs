@@ -33,6 +33,7 @@ namespace OnePass.Infrastructure
             InjectConventions(services);
 
             services.AddTransient<IEncryptor, Encryptor>();
+            services.AddTransient<IPasswordGenerator, PasswordGenerator>();
             services.AddSingleton<OnePassRepository, OnePassRepository>();
 
             services.AddTransient<IFileEncryptor, FileEncryptor>();
