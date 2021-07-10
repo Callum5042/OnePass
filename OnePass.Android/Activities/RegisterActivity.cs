@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -73,6 +74,10 @@ namespace OnePass.Droid.Activities
             using var file = File.OpenWrite(path);
 
             await encryptor.EncryptAsync(memory, file, _password.Text);
+
+            var intent = new Intent();
+            intent.PutExtra("ProfileName", _username.Text);
+            SetResult(Result.Ok, intent);
 
             // Finish
             Finish();
