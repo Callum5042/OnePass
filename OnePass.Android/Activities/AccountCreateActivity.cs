@@ -19,6 +19,10 @@ namespace OnePass.Droid.Activities
         private EditText _accountLoginEditText;
         private EditText _accountPasswordEditText;
 
+        private TextView _accountNameTextView;
+        private TextView _accountLoginTextView;
+        private TextView _accountPasswordTextView;
+
         private string Username { get; set; }
 
         private string Password { get; set; }
@@ -48,16 +52,23 @@ namespace OnePass.Droid.Activities
             _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
             _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
             _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
+
+            _accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
+            _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
+            _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
         }
 
         private async void SubmitButton_Click(object sender, EventArgs e)
         {
-            var name = "Callum";
-            var password = "SUPER";
+            var isValid = Validate();
+            if (!isValid)
+            {
+                return;
+            }
 
             // File
             var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            var filename = $"{name}.bin";
+            var filename = $"{Username}.bin";
             var path = Path.Combine(documentsPath, filename);
 
             var encryptor = new FileEncryptor();
@@ -65,7 +76,7 @@ namespace OnePass.Droid.Activities
             // Decrypt file
             using var input = File.OpenRead(path);
             using var output = new MemoryStream();
-            await encryptor.DecryptAsync(input, output, password);
+            await encryptor.DecryptAsync(input, output, Password);
 
             output.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(output);
@@ -92,10 +103,41 @@ namespace OnePass.Droid.Activities
             using var memory = new MemoryStream(buffer);
             using var file = File.OpenWrite(path);
 
-            await encryptor.EncryptAsync(memory, file, password);
+            await encryptor.EncryptAsync(memory, file, Password);
 
             // Finish
             Finish();
+        }
+
+        private bool Validate()
+        {
+            _accountNameTextView.Visibility = ViewStates.Gone;
+            _accountLoginTextView.Visibility = ViewStates.Gone;
+            _accountPasswordTextView.Visibility = ViewStates.Gone;
+
+            var isValid = true;
+            if (string.IsNullOrEmpty(_accountNameEditText.Text))
+            {
+                isValid = false;
+                _accountNameTextView.Text = "Name is required";
+                _accountNameTextView.Visibility = ViewStates.Visible;
+            }
+
+            if (string.IsNullOrEmpty(_accountLoginEditText.Text))
+            {
+                isValid = false;
+                _accountLoginTextView.Text = "Password is required";
+                _accountLoginTextView.Visibility = ViewStates.Visible;
+            }
+
+            if (string.IsNullOrEmpty(_accountPasswordEditText.Text))
+            {
+                isValid = false;
+                _accountPasswordTextView.Text = "Repeat Password is required";
+                _accountPasswordTextView.Visibility = ViewStates.Visible;
+            }
+
+            return isValid;
         }
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)

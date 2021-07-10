@@ -19,6 +19,13 @@
             android:hint="@string/account_name"
             android:inputType="text" />
 
+        <TextView
+            android:id="@+id/name_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
+
         <EditText
             android:id="@+id/account_login"
             android:layout_width="match_parent"
@@ -26,12 +33,26 @@
             android:hint="@string/account_login"
             android:inputType="text" />
 
+        <TextView
+            android:id="@+id/login_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
+
         <EditText
             android:id="@+id/account_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/account_password"
             android:inputType="textVisiblePassword" />
+
+        <TextView
+            android:id="@+id/password_validation_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/submit_account_button"
