@@ -13,7 +13,7 @@ using System.Text.Json;
 
 namespace OnePass.Droid.Activities
 {
-    [Activity(Theme = "@style/AppTheme")]
+    [Activity(Label = "OnePass", Theme = "@style/AppTheme.Header")]
     public class RegisterActivity : Activity
     {
         private EditText _username;
