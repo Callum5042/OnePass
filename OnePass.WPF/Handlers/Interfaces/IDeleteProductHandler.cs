@@ -7,6 +7,6 @@ namespace OnePass.Handlers.Interfaces
 {
     public interface IDeleteProductHandler
     {
-        Task<IEnumerable<Account>> DeleteProductAsync(Product model);
+        Task<IEnumerable<Account>> DeleteProductAsync(AccountViewModel model);
     }
 }

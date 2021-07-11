@@ -36,7 +36,7 @@ namespace OnePass.Tests.Handlers
             var json = JsonSerializer.Serialize(accounts);
 
             // Act
-            var model = new Product()
+            var model = new AccountViewModel()
             {
                 Id = 1,
                 Name = "UpdatedName",

@@ -35,7 +35,7 @@ namespace OnePass.Windows
 
             if (isValid)
             {
-                var product = new Product()
+                var product = new AccountViewModel()
                 {
                     Name = NameTextbox.Text,
                     Login = LoginTextbox.Text,

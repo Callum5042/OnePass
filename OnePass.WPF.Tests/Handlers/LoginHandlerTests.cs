@@ -51,22 +51,8 @@ namespace OnePass.Tests.Handlers
         [Fact]
         public async Task LoginAsync_UsernameDoesntExist_ReturnsInvalidUsername()
         {
-            // Arrange
-            var accountRoot = new AccountRoot();
-            accountRoot.Accounts.Add(new Account()
-            {
-                Username = "username",
-                Password = "password"
-            });
-
-            var filename = "usermapping.json";
-            var json = JsonSerializer.Serialize(accountRoot);
-
             // Act
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
-            {
-                { filename, new MockFileData(json) }
-            });
+            var fileSystem = new MockFileSystem();
 
             var encryptor = new MockEncryptor();
             var handler = new LoginHandler(fileSystem, new OnePassRepository(), encryptor);
