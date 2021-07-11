@@ -64,6 +64,7 @@
     <Compile Include="Activities\AccountEditActivity.cs" />
     <Compile Include="Activities\LoginActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
+    <Compile Include="Models\AppOptions.cs" />
     <Compile Include="ProductAdapter.cs" />
     <Compile Include="Activities\RegisterActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
