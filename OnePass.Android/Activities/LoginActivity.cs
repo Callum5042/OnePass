@@ -4,11 +4,14 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using OnePass.Droid.Models;
 using OnePass.Services;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OnePass.Droid.Activities
 {
@@ -19,10 +22,11 @@ namespace OnePass.Droid.Activities
         private EditText _passwordEditText;
         private TextView _usernameValidationTextView;
         private TextView _passwordValidationTextView;
+        private CheckBox _remember_usernameCheckbox;
 
         private const int activityResult = 1;
 
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -33,6 +37,7 @@ namespace OnePass.Droid.Activities
             _passwordEditText = FindViewById<EditText>(Resource.Id.login_password);
             _usernameValidationTextView = FindViewById<TextView>(Resource.Id.login_username_validation_message);
             _passwordValidationTextView = FindViewById<TextView>(Resource.Id.login_password_validation_message);
+            _remember_usernameCheckbox = FindViewById<CheckBox>(Resource.Id.remember_username);
             SetVersionNumber();
 
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
@@ -40,6 +45,27 @@ namespace OnePass.Droid.Activities
 
             var registerButton = FindViewById<Button>(Resource.Id.register_button);
             registerButton.Click += RegisterButton_Click;
+
+            // Read appsettings to see if remember username has a value
+            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+            var filename = "appsettings.json";
+            var path = Path.Combine(documentsPath, filename);
+
+            if (File.Exists(path))
+            {
+                // Read appsettings
+                using var file = File.OpenRead(path);
+                using var reader = new StreamReader(file);
+                var json = await reader.ReadToEndAsync();
+                var options = JsonSerializer.Deserialize<AppOptions>(json);
+
+                if (!string.IsNullOrEmpty(options.RememberUsername))
+                {
+                    _usernameEditText.Text = options.RememberUsername;
+                    _remember_usernameCheckbox.Checked = true;
+                }
+            }
         }
 
         private void RegisterButton_Click(object sender, EventArgs e)
@@ -60,7 +86,7 @@ namespace OnePass.Droid.Activities
             _passwordValidationTextView.Visibility = ViewStates.Gone;
 
             // Validate fields
-            bool isValid = ValidateFields();
+            var isValid = ValidateFields();
             if (!isValid)
             {
                 return;
@@ -83,6 +109,12 @@ namespace OnePass.Droid.Activities
                 using var memory = new MemoryStream();
                 await encryptor.DecryptAsync(file, memory, _passwordEditText.Text);
 
+                // Write remember username to filesystem
+                if (_remember_usernameCheckbox.Checked)
+                {
+                    SetRememberedUsername();
+                }
+
                 // Success
                 var intent = new Intent(this, typeof(MainActivity));
                 intent.PutExtra("Username", _usernameEditText.Text);
@@ -96,6 +128,26 @@ namespace OnePass.Droid.Activities
 
                 Toast.MakeText(this, "Invalid password", ToastLength.Short).Show();
             }
+        }
+
+        private async void SetRememberedUsername()
+        {
+            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+            var filename = "appsettings.json";
+            var path = Path.Combine(documentsPath, filename);
+
+            // Appsettings
+            var option = new AppOptions
+            {
+                RememberUsername = _usernameEditText.Text
+            };
+
+            var json = JsonSerializer.Serialize(option);
+
+            // Read file
+            using var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write);
+            using var writer = new StreamWriter(file);
+            await writer.WriteAsync(json);
         }
 
         private bool ValidateFields()
