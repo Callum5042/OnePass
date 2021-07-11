@@ -112,7 +112,11 @@ namespace OnePass.Droid.Activities
                 // Write remember username to filesystem
                 if (_remember_usernameCheckbox.Checked)
                 {
-                    SetRememberedUsername();
+                    SetRememberedUsername(_usernameEditText.Text);
+                }
+                else
+                {
+                    SetRememberedUsername(null);
                 }
 
                 // Success
@@ -130,22 +134,25 @@ namespace OnePass.Droid.Activities
             }
         }
 
-        private async void SetRememberedUsername()
+        private async void SetRememberedUsername(string username)
         {
             var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var filename = "appsettings.json";
             var path = Path.Combine(documentsPath, filename);
 
             // Appsettings
             var option = new AppOptions
             {
-                RememberUsername = _usernameEditText.Text
+                RememberUsername = username
             };
 
             var json = JsonSerializer.Serialize(option);
 
             // Read file
             using var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write);
+            file.SetLength(0);
+
             using var writer = new StreamWriter(file);
             await writer.WriteAsync(json);
         }
