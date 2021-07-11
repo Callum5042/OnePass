@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace OnePass.WPF.Models
 {
-    public class Product : INotifyPropertyChanged
+    public class AccountViewModel : INotifyPropertyChanged
     {
         private string name;
         private string login;
@@ -51,7 +51,7 @@ namespace OnePass.WPF.Models
             }
         }
 
-        public string CensoredPassword => new string('*', Password.Length);
+        public string CensoredPassword => new('*', Password.Length);
 
         public event PropertyChangedEventHandler PropertyChanged;
 

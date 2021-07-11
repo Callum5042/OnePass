@@ -28,7 +28,7 @@ namespace OnePass.Handlers
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
-        public async Task<IEnumerable<Account>> DeleteProductAsync(Product model)
+        public async Task<IEnumerable<Account>> DeleteProductAsync(AccountViewModel model)
         {
             var accounts = await ReadJsonAsync();
 

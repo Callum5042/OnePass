@@ -1,7 +1,6 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
 using OnePass.Services;
-using OnePass.Services.Interfaces;
 using OnePass.WPF.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.IO.Abstractions;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Account = OnePass.Models.Account;
 
 namespace OnePass.Handlers
 {
@@ -18,8 +18,6 @@ namespace OnePass.Handlers
     {
         private readonly IFileSystem _fileSystem;
         private readonly IFileEncryptor _encryptor;
-
-        public string Filename { get; set; } = @"usermapping.json";
 
         public RegisterAccountHandler(IFileSystem fileSystem, IFileEncryptor encryptor)
         {

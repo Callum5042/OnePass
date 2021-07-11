@@ -49,7 +49,7 @@ namespace OnePass.Tests.Handlers
             var encryptor = new MockEncryptor();
             var onePassRepository = new OnePassRepository() { Filename = filename, MasterPassword = password };
             var handler = new DeleteProductHandler(fileSystem, encryptor, onePassRepository);
-            await handler.DeleteProductAsync(new Product()
+            await handler.DeleteProductAsync(new AccountViewModel()
             {
                 Id = 1,
                 Name = "Callum"

@@ -1,13 +1,10 @@
 ﻿using OnePass.Handlers.Interfaces;
 using OnePass.Infrastructure;
-using OnePass.WPF.Models;
 using OnePass.Services;
 using OnePass.Services.Interfaces;
 using System;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OnePass.Handlers
@@ -19,8 +16,6 @@ namespace OnePass.Handlers
         private readonly IFileEncryptor _encryptor;
         private readonly OnePassRepository _onePassRepository;
         private readonly IHasher _hasher;
-
-        public string Filename { get; set; } = @"usermapping.json";
 
         public ChangePasswordHandler(IFileSystem fileSystem, IFileEncryptor encryptor, OnePassRepository onePassRepository, IHasher hasher)
         {
@@ -35,9 +30,6 @@ namespace OnePass.Handlers
             if (_onePassRepository.MasterPassword == oldPassword)
             {
                 _onePassRepository.MasterPassword = newPassword;
-
-                // Hash new password
-                await HashPassword(newPassword);
 
                 // Decrypt file
                 using var file = _fileSystem.File.OpenRead(_onePassRepository.Filename);
@@ -55,34 +47,6 @@ namespace OnePass.Handlers
             }
 
             return false;
-        }
-
-        private async Task HashPassword(string password)
-        {
-            var accountRoot = await ConvertJsonAsync();
-            var account = accountRoot.Accounts.FirstOrDefault(x => x.Username.Equals(_onePassRepository.Username));
-            if (account != null)
-            {
-                var hash = _hasher.ComputeHashToString(password + account.Salt);
-                account.Password = hash;
-
-                await SaveJsonAsync(accountRoot);
-            }
-        }
-
-        private async Task<AccountRoot> ConvertJsonAsync()
-        {
-            using var fileRead = _fileSystem.File.OpenRead(Filename);
-            using var reader = new StreamReader(fileRead);
-
-            var readJson = await reader.ReadToEndAsync();
-            return JsonSerializer.Deserialize<AccountRoot>(readJson);
-        }
-
-        private async Task SaveJsonAsync(AccountRoot accountRoot)
-        {
-            var json = JsonSerializer.Serialize(accountRoot);
-            await _fileSystem.File.WriteAllTextAsync(Filename, json);
         }
     }
 }
