@@ -114,8 +114,8 @@ namespace OnePass.Droid.Activities
 
             // Add data
             var account = accounts.FirstOrDefault(x => x.Id == _accountId);
-            account.Login = _accountNameEditText.Text;
-            account.Name = _accountLoginEditText.Text;
+            account.Login = _accountLoginEditText.Text;
+            account.Name = _accountNameEditText.Text;
             account.Password = _accountPasswordEditText.Text;
             account.DateModified = DateTime.Now;
 
@@ -131,6 +131,10 @@ namespace OnePass.Droid.Activities
             using var file = File.OpenWrite(path);
             file.SetLength(0);
             await encryptor.EncryptAsync(memory, file, Password);
+
+            var intent = new Intent();
+            intent.PutExtra("AccountName", _accountNameEditText.Text);
+            SetResult(Result.Ok, intent);
 
             // Finish
             Finish();
