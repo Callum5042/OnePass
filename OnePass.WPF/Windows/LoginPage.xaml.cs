@@ -18,7 +18,7 @@ namespace OnePass.Windows
     public partial class LoginPage : Page
     {
         private readonly ILoginHandler _loginHandler;
-        private const string _filename = @"usermapping.json";
+        private const string _filename = @"appsettings.json";
 
         public LoginPage(ILoginHandler loginHandler)
         {
@@ -45,10 +45,15 @@ namespace OnePass.Windows
                     // Save username if checked
                     if (RememberUsername.IsChecked == true)
                     {
-                        var accountRoot = await ConvertJsonAsync();
-                        accountRoot.RememberUsername = Username.Text;
+                        var options = await ConvertJsonAsync();
+                        if (options is null)
+                        {
+                            options = new AppOptions();
+                        }
 
-                        await SaveJsonAsync(accountRoot);
+                        options.RememberUsername = Username.Text;
+
+                        await SaveJsonAsync(options);
                     }
 
                     // Go to main window
@@ -148,21 +153,26 @@ namespace OnePass.Windows
             }
         }
 
-        private static async Task<AccountRoot> ConvertJsonAsync()
+        private static async Task<AppOptions> ConvertJsonAsync()
         {
-            using var fileRead = File.OpenRead(_filename);
-            using var reader = new StreamReader(fileRead);
+            if (File.Exists(_filename))
+            {
+                using var fileRead = File.Open(_filename, FileMode.Open, FileAccess.Read);
+                using var reader = new StreamReader(fileRead);
 
-            var readJson = await reader.ReadToEndAsync();
-            return JsonSerializer.Deserialize<AccountRoot>(readJson);
+                var json = await reader.ReadToEndAsync();
+                return JsonSerializer.Deserialize<AppOptions>(json);
+            }
+
+            return null;
         }
 
-        private static async Task SaveJsonAsync(AccountRoot accountRoot)
+        private static async Task SaveJsonAsync(AppOptions options)
         {
             using var file = File.OpenWrite(_filename);
             using var writer = new StreamWriter(file);
 
-            var json = JsonSerializer.Serialize(accountRoot);
+            var json = JsonSerializer.Serialize(options);
             await writer.WriteLineAsync(json);
         }
     }
