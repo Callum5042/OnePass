@@ -52,7 +52,11 @@ namespace OnePass.Windows
                         }
 
                         options.RememberUsername = Username.Text;
-
+                        await SaveJsonAsync(options);
+                    }
+                    else
+                    {
+                        var options = new AppOptions();
                         await SaveJsonAsync(options);
                     }
 
@@ -170,6 +174,8 @@ namespace OnePass.Windows
         private static async Task SaveJsonAsync(AppOptions options)
         {
             using var file = File.OpenWrite(_filename);
+            file.SetLength(0);
+
             using var writer = new StreamWriter(file);
 
             var json = JsonSerializer.Serialize(options);
