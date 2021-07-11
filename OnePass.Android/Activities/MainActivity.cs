@@ -11,6 +11,7 @@ using OnePass.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -74,7 +75,7 @@ namespace OnePass.Droid.Activities
             var jsonOutput = await reader.ReadToEndAsync();
 
             var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
-            return accounts;
+            return accounts.OrderBy(x => x.Name).ToList();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
