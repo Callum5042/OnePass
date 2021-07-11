@@ -24,9 +24,9 @@ namespace OnePass.WPF.Models
             }
         }
 
-        public string Login 
-        { 
-            get => login; 
+        public string Login
+        {
+            get => login;
             set
             {
                 if (value != login)
@@ -37,9 +37,9 @@ namespace OnePass.WPF.Models
             }
         }
 
-        public string Password 
-        { 
-            get => password; 
+        public string Password
+        {
+            get => password;
             set
             {
                 if (value != password)
