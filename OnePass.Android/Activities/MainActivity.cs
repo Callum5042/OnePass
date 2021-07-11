@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AndroidX.RecyclerView.Widget;
@@ -23,6 +24,9 @@ namespace OnePass.Droid.Activities
         private string Password { get; set; }
 
         private ProductAdapter ProductAdapter { get; set; }
+
+        private const int _activityResultCreated = 1;
+        private const int _activityResultEdited = 2;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -101,7 +105,7 @@ namespace OnePass.Droid.Activities
             intent.PutExtra("Id", id);
             intent.PutExtra(nameof(Username), Username);
             intent.PutExtra(nameof(Password), Password);
-            StartActivity(intent);
+            StartActivityForResult(intent, _activityResultEdited);
         }
 
         private void AddFab_Click(object sender, EventArgs e)
@@ -109,7 +113,7 @@ namespace OnePass.Droid.Activities
             var intent = new Intent(this, typeof(AccountCreateActivity));
             intent.PutExtra(nameof(Username), Username);
             intent.PutExtra(nameof(Password), Password);
-            StartActivity(intent);
+            StartActivityForResult(intent, _activityResultCreated);
         }
 
         protected override async void OnRestart()
@@ -119,6 +123,30 @@ namespace OnePass.Droid.Activities
             var list = await Accounts();
             ProductAdapter.Accounts = list;
             ProductAdapter.NotifyDataSetChanged();
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            if (resultCode == Result.Ok)
+            {
+                var accountName = data.GetStringExtra("AccountName");
+
+                var message = string.Empty;
+                switch (requestCode)
+                {
+                    case _activityResultCreated:
+                        message = $"Account {accountName} created";
+                        break;
+
+                    case _activityResultEdited:
+                        message = $"Account {accountName} updated";
+                        break;
+                }
+
+                Toast.MakeText(this, message, ToastLength.Short).Show();
+            }
         }
     }
 }

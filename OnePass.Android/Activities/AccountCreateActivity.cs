@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -87,8 +88,8 @@ namespace OnePass.Droid.Activities
             // Add data
             accounts.Add(new Account()
             {
-                Login = _accountNameEditText.Text,
-                Name = _accountLoginEditText.Text,
+                Name = _accountNameEditText.Text,
+                Login = _accountLoginEditText.Text,
                 Password = _accountPasswordEditText.Text,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now
@@ -106,6 +107,10 @@ namespace OnePass.Droid.Activities
             using var file = File.OpenWrite(path);
 
             await encryptor.EncryptAsync(memory, file, Password);
+
+            var intent = new Intent();
+            intent.PutExtra("AccountName", _accountNameEditText.Text);
+            SetResult(Result.Ok, intent);
 
             // Finish
             Finish();
