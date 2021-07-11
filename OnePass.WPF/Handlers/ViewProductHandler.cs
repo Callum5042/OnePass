@@ -26,7 +26,7 @@ namespace OnePass.Handlers
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<AccountViewModel>> GetAllProductsAsync()
         {
             var filename = _onePassRepository.Filename;
             var password = _onePassRepository.MasterPassword;
@@ -44,7 +44,7 @@ namespace OnePass.Handlers
             var accounts = JsonSerializer.Deserialize<List<Models.Account>>(json);
 
             // Cast to view model
-            var products = accounts.Select(x => new Product()
+            var products = accounts.Select(x => new AccountViewModel()
             {
                 Id = x.Id,
                 Name = x.Name,

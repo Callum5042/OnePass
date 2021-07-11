@@ -20,7 +20,7 @@ namespace OnePass.Windows
 
         private bool IsContentModified { get; set; }
 
-        public Product Product { get; set; }
+        public AccountViewModel Product { get; set; }
 
         public UpdateProductWindow(IUpdateProductHandler handler, IPasswordGenerator passwordGenerator)
         {

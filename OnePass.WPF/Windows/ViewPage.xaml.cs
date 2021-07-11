@@ -23,7 +23,7 @@ namespace OnePass.Windows
         private readonly IViewProductHandler _handler;
         private readonly IDeleteProductHandler _deleteProductHandler;
 
-        public ObservableCollection<Product> Products { get; set; } = new ObservableCollection<Product>();
+        public ObservableCollection<AccountViewModel> Products { get; set; } = new ObservableCollection<AccountViewModel>();
 
         public ViewPage(IViewProductHandler handler, IDeleteProductHandler deleteProductHandler)
         {
@@ -66,7 +66,7 @@ namespace OnePass.Windows
                 var item = sender as ListViewItem;
                 if (item?.IsSelected == true)
                 {
-                    var content = item.Content as Product;
+                    var content = item.Content as AccountViewModel;
                     Clipboard.SetText(content.Password);
                     await CreatePopup("Password copied to clipboard");
                 }
@@ -126,7 +126,7 @@ namespace OnePass.Windows
             {
                 var app = Application.Current as App;
                 var window = app.GetService<UpdateProductWindow>();
-                window.Product = item.Content as Product;
+                window.Product = item.Content as AccountViewModel;
 
                 window.ShowDialog();
             }
@@ -156,7 +156,7 @@ namespace OnePass.Windows
                 var result = MessageBox.Show("Are you sure you want to delete this product?\nOnce deleted it cannot be recovered", "Delete Product", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    if (item.Content is Product product)
+                    if (item.Content is AccountViewModel product)
                     {
                         await _deleteProductHandler.DeleteProductAsync(product);
                         Products.Remove(product);

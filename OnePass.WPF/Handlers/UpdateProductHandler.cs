@@ -28,7 +28,7 @@ namespace OnePass.Handlers
             _onePassRepository = onePassRepository ?? throw new ArgumentNullException(nameof(onePassRepository));
         }
 
-        public async Task<IEnumerable<Account>> UpdateAsync(Product model)
+        public async Task<IEnumerable<Account>> UpdateAsync(AccountViewModel model)
         {
             var accounts = await ReadJsonAsync();
 

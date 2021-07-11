@@ -7,6 +7,6 @@ namespace OnePass.Handlers.Interfaces
 {
     public interface IUpdateProductHandler
     {
-        Task<IEnumerable<Account>> UpdateAsync(Product model);
+        Task<IEnumerable<Account>> UpdateAsync(AccountViewModel model);
     }
 }
