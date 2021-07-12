@@ -1,13 +1,19 @@
-﻿namespace OnePass.Models
+﻿using System;
+
+namespace OnePass.Models
 {
     public class Account
     {
-        public string Username { get; set; }
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Login { get; set; }
 
         public string Password { get; set; }
 
-        public string Salt { get; set; }
+        public DateTime? DateCreated { get; set; }
 
-        public string Filename { get; set; }
+        public DateTime? DateModified { get; set; }
     }
 }
