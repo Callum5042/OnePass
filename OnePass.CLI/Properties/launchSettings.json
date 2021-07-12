@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "OnePass.CLI": {
+      "commandName": "Project"
+    }
+  }
+}
