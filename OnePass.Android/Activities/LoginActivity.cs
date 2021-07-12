@@ -11,7 +11,6 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace OnePass.Droid.Activities
 {
