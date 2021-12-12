@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <Description>One pass to rule them all</Description>
     <Authors>Callum Anning</Authors>
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <PackageReleaseNotes>Beta</PackageReleaseNotes>
-    <FileVersion>0.9.0.0</FileVersion>
-    <Version>0.9.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0.0</Version>
     <ApplicationIcon>OnePassIcon.ico</ApplicationIcon>
     <RepositoryUrl>https://github.com/Callum5042/OnePass/</RepositoryUrl>
     <Copyright>Callum Anning</Copyright>
