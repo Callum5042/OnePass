@@ -33,7 +33,12 @@ namespace OnePass.Handlers
             var accounts = await ReadJsonAsync();
 
             var account = accounts.First(x => x.Name == model.Name);
-            _ = accounts.Remove(account);
+            if (account == null)
+            {
+                throw new InvalidOperationException("Account is null on DeleteProductHandler");
+            }
+
+            accounts.Remove(account);
 
             for (int i = 0; i < accounts.Count; i++)
             {

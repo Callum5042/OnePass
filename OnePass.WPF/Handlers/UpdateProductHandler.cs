@@ -32,7 +32,12 @@ namespace OnePass.Handlers
         {
             var accounts = await ReadJsonAsync();
 
-            var account = accounts.First(x => x.Id == model.Id);
+            var account = accounts.FirstOrDefault(x => x.Id == model.Id);
+            if (account is null)
+            {
+                throw new InvalidOperationException($"Account is null for {nameof(UpdateProductHandler)}");
+            }
+
             account.Name = model.Name;
             account.Login = model.Login;
             account.Password = model.Password;
