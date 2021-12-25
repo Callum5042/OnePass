@@ -15,12 +15,13 @@
             <MenuItem Header="_File">
                 <MenuItem Header="Add Product" Click="MenuItem_Click_Add" />
                 <MenuItem Header="_Refresh" Click="MenuItem_OnClick_Refresh" />
+                <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword" />
+                <MenuItem Header="About" Click="MenuItem_Click_About" />
                 <Separator></Separator>
                 <MenuItem Header="Logout" Click="OnClick_Logout" />
             </MenuItem>
             <MenuItem Header="Add Product" Click="MenuItem_Click_Add" />
-            <MenuItem Header="About" Click="MenuItem_Click_About" />
-            <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword" />
+            <MenuItem Header="Sync" Click="MenuItem_Click_Sync" />
         </Menu>
 
         <!-- Product list -->

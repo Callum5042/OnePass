@@ -1,6 +1,7 @@
 ﻿using OnePass.Handlers;
 using OnePass.Handlers.Interfaces;
 using OnePass.WPF.Models;
+using OnePass.WPF.Windows;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -246,6 +247,14 @@ namespace OnePass.Windows
 
             var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             mainWindow.Close();
+        }
+
+        private void MenuItem_Click_Sync(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+
+            var window = app.GetService<SyncWindow>();
+            window.Show();
         }
     }
 }
