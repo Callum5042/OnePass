@@ -44,7 +44,6 @@ namespace OnePass.WPF.Windows
                 return;
             }
 
-            // Convert to files
             var remoteAccounts = JsonSerializer.Deserialize<List<Account>>(remoteJson);
 
             // Load local JSON
@@ -54,23 +53,30 @@ namespace OnePass.WPF.Windows
                 return;
             }
 
-            // Convert
             var localAccounts = JsonSerializer.Deserialize<List<Account>>(localJson);
 
-            // Compare
-            foreach (var account in localAccounts)
-            {
-                // Try find remote account
-                var remote = remoteAccounts.FirstOrDefault(x => x.Id == account.Id);
-                if (remote != null)
-                {
+            // Convert
+            var syncer = new AccountSyncer();
+            var jointAccounts = syncer.Sync(localAccounts, remoteAccounts);
+            var jointJson = JsonSerializer.Serialize(jointAccounts);
+            var buffer = Encoding.UTF8.GetBytes(jointJson);
+            var encryptor = GetEncryptor("password123");
 
-                }
-                else
-                {
-                    // Could not find 
-                }
-            }
+            // Encrypt and save locally
+            using var file = File.OpenWrite("Callum.bin");
+            file.SetLength(0);
+
+            using var localMemoryStream = new MemoryStream(buffer);
+            using var encryptStream = new CryptoStream(localMemoryStream, encryptor, CryptoStreamMode.Read);
+            await encryptStream.CopyToAsync(file);
+
+            // Encrypt and send to remote device
+            var networkStream = _client.GetStream();
+            var writer = new BinaryWriter(networkStream);
+            writer.Write("It has been done");
+
+            // Success
+            Textbox.Text = "Devices have been synced";
         }
 
         private static async Task<string> LoadLocalJSONAsync()
@@ -99,29 +105,37 @@ namespace OnePass.WPF.Windows
                 // Await for device to conntect
                 Textbox.Text = "Awaiting device to connect";
                 _client = await _listener.AcceptTcpClientAsync();
+                _client.NoDelay = true;
 
-                // Decrypt file
-                using var networkStream = _client.GetStream();
-                using var decryptor = GetDecrypter("password123");
-                using var cryptoStream = new CryptoStream(networkStream, decryptor, CryptoStreamMode.Read);
-                var reader = new StreamReader(cryptoStream);
-                var msg = await reader.ReadToEndAsync();
+                // Read message
+                var network = _client.GetStream();
+                var reader = new BinaryReader(network);
+                var bufferCount = reader.ReadInt32();
+
+                // Send ok
+                var writer = new BinaryWriter(network);
+                writer.Write(true);
+
+                // Read encrypted stream
+                var encryptedBuffer = reader.ReadBytes(bufferCount);
+
+                // Decrypt in memory
+                var decryptor = GetDecrypter("password123");
+                var encryptedStream = new MemoryStream(encryptedBuffer);
+                var cryptoStream = new CryptoStream(encryptedStream, decryptor, CryptoStreamMode.Read);
+                var cryptoReader = new StreamReader(cryptoStream);
+                var json = cryptoReader.ReadToEnd();
+
+                //var json = Encoding.UTF8.GetString(buffer);
 
                 // Print message
                 Textbox.Text = "Syncing";
-                return msg;
+                return json;
             }
             catch (SocketException)
             {
                 // Swallow
                 Textbox.Text = "Connection lost";
-            }
-            finally
-            {
-                if (_client?.Connected == true)
-                {
-                    _client.Close();
-                }
             }
 
             return null;
@@ -130,6 +144,18 @@ namespace OnePass.WPF.Windows
         private void Window_Closed(object sender, EventArgs e)
         {
             _listener.Stop();
+        }
+
+        private static ICryptoTransform GetEncryptor(string password)
+        {
+            var (Key, IV) = GetKeyAndIv(password);
+
+            using var aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = IV;
+            aes.Padding = PaddingMode.PKCS7;
+
+            return aes.CreateEncryptor(aes.Key, aes.IV);
         }
 
         private static ICryptoTransform GetDecrypter(string password)

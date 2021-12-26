@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace OnePass.Services
 {
-
     public class AccountSyncer
     {
         public IEnumerable<Account> Sync(IList<Account> localAccounts, IList<Account> remoteAccounts)
