@@ -38,6 +38,9 @@ namespace OnePass.Infrastructure
 
             services.AddTransient<IFileEncryptor, FileEncryptor>();
             services.AddTransient<IFileSystem, FileSystem>();
+
+            services.AddTransient<SyncServer>();
+            services.AddTransient<AccountSyncer>();
         }
 
         private static void InjectServices(IServiceCollection services)

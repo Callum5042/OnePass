@@ -8,6 +8,6 @@
         SourceInitialized="Window_SourceInitialized" Closed="Window_Closed"
         Title="Sync" Height="auto" Width="300" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen">
     <StackPanel>
-        <TextBox x:Name="Textbox" AcceptsReturn="True"></TextBox>
+        <TextBox x:Name="Textbox" AcceptsReturn="True" IsReadOnly="True"></TextBox>
     </StackPanel>
 </Window>
