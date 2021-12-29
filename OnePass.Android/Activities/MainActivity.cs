@@ -28,6 +28,7 @@ namespace OnePass.Droid.Activities
 
         private const int _activityResultCreated = 1;
         private const int _activityResultEdited = 2;
+        private const int _activityResultSynced = 3;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -38,7 +39,6 @@ namespace OnePass.Droid.Activities
             Username = Intent.GetStringExtra(nameof(Username));
             Password = Intent.GetStringExtra(nameof(Password));
 
-            // var username = Intent.GetStringExtra("Username")
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
             SetActionBar(toolbar);
 
@@ -86,20 +86,23 @@ namespace OnePass.Droid.Activities
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
+            var name = item.ToString();
+            if (name == "Sync")
+            {
+                var intent = new Intent(this, typeof(SyncActivity));
+                intent.PutExtra(nameof(Username), Username);
+                StartActivityForResult(intent, _activityResultSynced);
+            }
+            else
+            {
+                Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
+            }
+
             return base.OnOptionsItemSelected(item);
         }
 
         private void ProductAdapter_ItemClick(object sender, int position)
         {
-            //var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-            //dialog.SetTitle("Alert");
-            //dialog.SetMessage($"Product {position}");
-            //dialog.SetPositiveButton("OK", (sender, args) => { });
-
-            //var alert = dialog.Create();
-            //alert.Show();
-
             int id = ProductAdapter.Accounts[position].Id;
 
             var intent = new Intent(this, typeof(AccountEditActivity));

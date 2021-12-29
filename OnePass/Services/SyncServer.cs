@@ -11,51 +11,57 @@ using System.Threading.Tasks;
 
 namespace OnePass.Services
 {
-    public class SyncServer : IDisposable
+    public class SyncServer
     {
         private TcpListener _listener;
         private TcpClient _client;
 
-        public void Dispose()
-        {
-
-        }
-
-        public async Task ListenAsync(int port)
+        public void Listen(int port)
         {
             _listener = new TcpListener(IPAddress.Any, port);
             _listener.Start();
-
-            _client = await _listener.AcceptTcpClientAsync();
         }
 
-        public IList<Account> ReceivesAndDecryptData(string password)
+        public async Task<IList<Account>> ReceivesAndDecryptDataAsync(string password)
         {
-            var memory = _client.GetStream();
-            var writer = new BinaryWriter(memory);
-            var reader = new BinaryReader(memory);
+            // Wait for clients to poll
+            while (true)
+            {
+                try
+                {
+                    _client = await _listener.AcceptTcpClientAsync();
 
-            // Get buffer size
-            var bufferSize = reader.ReadInt32();
+                    var memory = _client.GetStream();
+                    var writer = new BinaryWriter(memory);
+                    var reader = new BinaryReader(memory);
 
-            // Sends OK to client
-            writer.Write(true);
+                    // Get buffer size
+                    var bufferSize = reader.ReadInt32();
 
-            // Get buffer
-            var encryptedBuffer = reader.ReadBytes(bufferSize);
+                    // Sends OK to client
+                    writer.Write(true);
 
-            // Sends OK to client
-            writer.Write(true);
+                    // Get buffer
+                    var encryptedBuffer = reader.ReadBytes(bufferSize);
 
-            // Decrypt in memory
-            var decryptor = GetDecrypter(password);
-            var encryptedStream = new MemoryStream(encryptedBuffer);
-            var cryptoStream = new CryptoStream(encryptedStream, decryptor, CryptoStreamMode.Read);
-            var cryptoReader = new StreamReader(cryptoStream);
-            var json = cryptoReader.ReadToEnd();
+                    // Sends OK to client
+                    writer.Write(true);
 
-            var accounts = JsonSerializer.Deserialize<List<Account>>(json);
-            return accounts;
+                    // Decrypt in memory
+                    var decryptor = GetDecrypter(password);
+                    var encryptedStream = new MemoryStream(encryptedBuffer);
+                    var cryptoStream = new CryptoStream(encryptedStream, decryptor, CryptoStreamMode.Read);
+                    var cryptoReader = new StreamReader(cryptoStream);
+                    var json = cryptoReader.ReadToEnd();
+
+                    var accounts = JsonSerializer.Deserialize<List<Account>>(json);
+                    return accounts;
+                }
+                catch (Exception)
+                {
+                    // Swallow
+                }
+            }
         }
 
         public void EncryptAndSendData(string password, IEnumerable<Account> accounts)
@@ -84,7 +90,6 @@ namespace OnePass.Services
 
             // Send buffer
             writer.Write(buffer);
-
 
             // Await ok
             reader.ReadBoolean();

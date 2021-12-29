@@ -14,4 +14,6 @@
   <string name="account_generate_password_button">Generate Password</string>
   <string name="register_create_button">Create Account</string>
   <string name="register_import_button">Import Account</string>
+  <string name="sync_connect">Sync</string>
+  <string name="sync_scan">Scan</string>
 </resources>

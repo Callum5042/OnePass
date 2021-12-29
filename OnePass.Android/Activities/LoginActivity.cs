@@ -46,7 +46,6 @@ namespace OnePass.Droid.Activities
             registerButton.Click += RegisterButton_Click;
 
             // Read appsettings to see if remember username has a value
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
             var filename = "appsettings.json";
             var path = Path.Combine(documentsPath, filename);
@@ -136,7 +135,6 @@ namespace OnePass.Droid.Activities
         private async void SetRememberedUsername(string username)
         {
             var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var filename = "appsettings.json";
             var path = Path.Combine(documentsPath, filename);
 

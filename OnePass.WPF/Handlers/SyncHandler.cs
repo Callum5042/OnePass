@@ -3,6 +3,7 @@ using OnePass.Models;
 using OnePass.Services;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -25,10 +26,10 @@ namespace OnePass.WPF.Handlers
 
         public async Task<SyncResults> HandleAsync()
         {
-            await _syncServer.ListenAsync(port: 42655);
+            _syncServer.Listen(port: 42655);
 
             // Awaits for client to send encrypted file
-            var remoteAccounts = _syncServer.ReceivesAndDecryptData(_onePassRepository.MasterPassword);
+            var remoteAccounts = await _syncServer.ReceivesAndDecryptDataAsync(_onePassRepository.MasterPassword);
 
             // Load local 
             var localAccounts = await GetLocalAccountsAsync(_onePassRepository.Filename, _onePassRepository.MasterPassword);
