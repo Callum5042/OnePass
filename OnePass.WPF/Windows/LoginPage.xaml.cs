@@ -134,27 +134,30 @@ namespace OnePass.Windows
             window.Content = app.GetService<RegisterAccountPage>();
         }
 
-        private async void OnLoaded_CheckRemeberUsername(object sender, RoutedEventArgs e)
+        private void OnLoaded_CheckRemeberUsername(object sender, RoutedEventArgs e)
         {
             // Check if username has been remembered
-            if (File.Exists(_filename))
+            Application.Current.Dispatcher.Invoke(async () =>
             {
-                var accountRoot = await ConvertJsonAsync();
-                if (string.IsNullOrWhiteSpace(accountRoot.RememberUsername))
+                if (File.Exists(_filename))
                 {
-                    Username.Focus();
+                    var accountRoot = await ConvertJsonAsync();
+                    if (string.IsNullOrWhiteSpace(accountRoot.RememberUsername))
+                    {
+                        Username.Focus();
+                    }
+                    else
+                    {
+                        Username.Text = accountRoot.RememberUsername;
+                        RememberUsername.IsChecked = true;
+                        Password.Focus();
+                    }
                 }
                 else
                 {
-                    Username.Text = accountRoot.RememberUsername;
-                    RememberUsername.IsChecked = true;
-                    Password.Focus();
+                    Username.Focus();
                 }
-            }
-            else
-            {
-                Username.Focus();
-            }
+            });
         }
 
         private static async Task<AppOptions> ConvertJsonAsync()
