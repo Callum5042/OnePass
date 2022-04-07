@@ -1,0 +1,1 @@
+Get-ChildItem -Directory -Recurse | Where-Object { $_.Name -in "bin", "obj" } | Remove-Item -Recurse -Force

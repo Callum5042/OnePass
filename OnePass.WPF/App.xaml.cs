@@ -10,7 +10,7 @@ namespace OnePass
     /// </summary>
     public partial class App : Application
     {
-        private readonly ServiceBuilder _serviceBuilder = new ServiceBuilder();
+        private readonly ServiceBuilder _serviceBuilder = new();
 
         public App()
         {
