@@ -1,12 +1,41 @@
 ﻿<Window x:Class="OnePass.WPF.Windows.LoginWindow2"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OnePass.WPF.Windows"
-        mc:Ignorable="d"
-        Title="LoginWindow2" Height="450" Width="800">
+        xmlns:models="clr-namespace:OnePass.WPF.Models"
+        Title="OnePass" Height="400" Width="600" 
+        ResizeMode="CanMinimize" WindowStartupLocation="Manual" WindowStyle="SingleBorderWindow" Background="#FF003264">
+
+    <!-- LoginModel Datacontext -->
+    <Window.DataContext>
+        <models:LoginModel />
+    </Window.DataContext>
+    
+    <!-- Resources -->
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="WhiteSmoke" />
+        </Style>
+    </Window.Resources>
+
+    <!-- Content -->
     <Grid>
+
+        <!-- Grid defintions -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!-- Login details -->
+        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,20,0">
+
+            <Label Content="{Binding Path=UsernameLabel}" />
+            <TextBox />
+
+        </StackPanel>
+        
+        <!-- Version number -->
+        <Label Grid.Column="1" Content="{Binding Path=Version}" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
         
     </Grid>
 </Window>
