@@ -10,12 +10,10 @@ namespace OnePass.WPF.Models
 {
     public class LoginModel : ObservableValidator
     {
-
-
         public static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
         public static string UsernameLabel => "Username";
 
-
+        public static string PasswordLabel => "Password";
     }
 }
