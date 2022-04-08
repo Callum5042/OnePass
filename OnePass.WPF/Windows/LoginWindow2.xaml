@@ -4,7 +4,7 @@
         xmlns:models="clr-namespace:OnePass.WPF.Models"
         Style="{StaticResource WindowStyle}"
         Title="OnePass" Height="400" Width="600"
-        ResizeMode="CanMinimize" WindowStartupLocation="Manual" WindowStyle="SingleBorderWindow" Background="#FF003264">
+        ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" Background="#FF003264" MouseDown="Window_MouseDown">
 
     <!-- LoginModel Datacontext -->
     <Window.DataContext>
@@ -33,15 +33,15 @@
 
         <!-- Button style -->
         <Style TargetType="Button">
-            
+
             <!-- Resources -->
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="3" />
                 </Style>
             </Style.Resources>
-            
-             <!-- Setters -->
+
+            <!-- Setters -->
             <Style.Setters>
                 <Setter Property="Background">
                     <Setter.Value>
@@ -59,7 +59,7 @@
                     </Setter.Value>
                 </Setter>
             </Style.Setters>
-            
+
             <!-- Triggers -->
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
@@ -67,11 +67,15 @@
                     <Setter Property="Cursor" Value="Hand" />
                 </Trigger>
             </Style.Triggers>
-            
+
         </Style>
 
     </Window.Resources>
 
+    <Window.Effect>
+        <DropShadowEffect Color="Gray" BlurRadius="20" Direction="-90" RenderingBias="Quality" ShadowDepth="4"/>
+    </Window.Effect>
+    
     <!-- Content -->
     <Grid>
         <Grid.ColumnDefinitions>
@@ -83,6 +87,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
+        <!--<Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2" />
+        </Grid.Effect>-->
 
         <!-- Left panel -->
         <Grid Grid.Column="0">
