@@ -31,16 +31,16 @@
             <Setter Property="Padding" Value="2" />
         </Style>
 
-        <!-- Button style -->
-        <Style TargetType="Button">
-
+        <!-- Primary button style -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            
             <!-- Resources -->
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="3" />
                 </Style>
             </Style.Resources>
-
+            
             <!-- Setters -->
             <Style.Setters>
                 <Setter Property="Background">
@@ -70,12 +70,47 @@
 
         </Style>
 
+        <!-- Secondary button style -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            
+            <!-- Resources -->
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+            
+            <!-- Setters -->
+            <Style.Setters>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="#FF1164B4"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="WhiteSmoke" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}" Padding="0,6,0,6">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+
+            <!-- Triggers -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="DeepSkyBlue"/>
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
     </Window.Resources>
 
-    <Window.Effect>
-        <DropShadowEffect Color="Gray" BlurRadius="20" Direction="-90" RenderingBias="Quality" ShadowDepth="4"/>
-    </Window.Effect>
-    
     <!-- Content -->
     <Grid>
         <Grid.ColumnDefinitions>
@@ -143,8 +178,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Content="Create"/>
-                    <Button Grid.Column="3" Content="Login"/>
+                    <Button Style="{StaticResource PrimaryButton}" Grid.Column="0" Content="Login"/>
+                    <Button Style="{StaticResource SecondaryButton}" Grid.Column="3" Content="Create"/>
                 </Grid>
                 
                 <!-- Remember me checkbox -->
