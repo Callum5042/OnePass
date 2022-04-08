@@ -5,7 +5,12 @@
              StartupUri="Windows/LoginWindow2.xaml" ShutdownMode="OnLastWindowClose" DispatcherUnhandledException="OnUnhandledException">
 
     <Application.Resources>
-        <Style TargetType="Label" x:Key="DefaultLabel">
+
+        <Style x:Key="WindowStyle" TargetType="Window">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        
+        <!--<Style TargetType="Label" x:Key="DefaultLabel">
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Padding" Value="0,5,5,5"/>
         </Style>
@@ -21,7 +26,8 @@
         </Style>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="0,2,0,2"/>
-        </Style>
+        </Style>-->
+        
     </Application.Resources>
     
 </Application>
