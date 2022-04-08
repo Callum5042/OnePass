@@ -6,6 +6,8 @@
 
     <Application.Resources>
 
+        <FontFamily x:Key="IconFonts">pack://application:,,,/Fonts/#icomoon</FontFamily>
+
         <Style x:Key="WindowStyle" TargetType="Window">
             <Setter Property="FontSize" Value="16" />
         </Style>
