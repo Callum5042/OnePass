@@ -79,12 +79,18 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Left panel -->
+        <Grid Grid.Column="0">
+            <Image Source="/Windows/OnePassIcon.png" Stretch="Uniform" StretchDirection="Both" Margin="25,25,25,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  />
+        </Grid>
+        
         <!-- Right panel -->
         <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
 
             <!-- Login details -->
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,20,20">
@@ -109,10 +115,10 @@
                     <Button Grid.Column="3" Content="Login"/>
                 </Grid>
             </StackPanel>
-
-            <!-- Version number -->
-            <Label Style="{x:Null}" Grid.Row="1" Content="{Binding Path=Version}" HorizontalAlignment="Right" Padding="0,0,20,10" Foreground="WhiteSmoke" FontSize="12" />
-
         </Grid>
+
+        <!-- Version number -->
+        <Label Style="{x:Null}" Grid.Column="1" Grid.Row="1" Content="{Binding Path=Version}" HorizontalAlignment="Right" Padding="0,0,20,10" Foreground="WhiteSmoke" FontSize="12" />
+
     </Grid>
 </Window>
