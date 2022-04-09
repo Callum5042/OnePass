@@ -11,7 +11,7 @@ namespace OnePass.WPF.Models
     {
         public RegisterModel()
         {
-            CreateAccountCommand = new RelayCommand(() => throw new System.NotImplementedException());
+            CreateAccountCommand = new RelayCommand(CreateAccount);
             BackCommand = new RelayCommand(Back);
         }
 
@@ -25,7 +25,12 @@ namespace OnePass.WPF.Models
 
         public ICommand BackCommand { get; }
 
-        public void Back()
+        public static void CreateAccount()
+        {
+
+        }
+
+        public static void Back()
         {
             // Might have to refactor this out into a service
             var window = App.Current.Windows.OfType<LoginWindow2>().FirstOrDefault();

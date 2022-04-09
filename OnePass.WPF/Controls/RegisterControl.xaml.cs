@@ -1,4 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using OnePass.WPF.Models;
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace OnePass.WPF.Controls
@@ -20,6 +25,11 @@ namespace OnePass.WPF.Controls
             {
                 e.Handled = true;
             }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            TextboxUsername.Focus();
         }
     }
 }

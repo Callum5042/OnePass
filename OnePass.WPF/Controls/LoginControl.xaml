@@ -16,7 +16,11 @@
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
             
         <!-- Username -->
-        <Label Style="{StaticResource LoginLabel}" Content="Username" />
+        <local:CustomTextbox Label="Username" Value="{Binding Username}" />
+
+
+
+        <!--<Label Style="{StaticResource LoginLabel}" Content="Username" />
         <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding Username}">
             <Validation.ErrorTemplate>
                 <ControlTemplate>
@@ -26,7 +30,7 @@
                 </ControlTemplate>
             </Validation.ErrorTemplate>
         </TextBox>
-        <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidationMessage}" Visibility="{Binding UsernameLabelVisibility}" />
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidationMessage}" Visibility="{Binding UsernameLabelVisibility}" />-->
 
         <!-- Password -->
         <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />

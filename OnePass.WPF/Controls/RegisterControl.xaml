@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:models="clr-namespace:OnePass.WPF.Models"
-             mc:Ignorable="d" >
+             mc:Ignorable="d" Loaded="OnLoaded">
 
     <!-- LoginModel Datacontext -->
     <UserControl.DataContext>

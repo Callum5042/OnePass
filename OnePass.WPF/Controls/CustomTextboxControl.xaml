@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="OnePass.WPF.Controls.CustomTextbox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OnePass.WPF.Controls"
+             mc:Ignorable="d">
+    
+    <StackPanel>
+
+        <Label Style="{StaticResource LoginLabel}" Content="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding TextboxContent, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Validation.ErrorTemplate>
+                <ControlTemplate>
+                    <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </ControlTemplate>
+            </Validation.ErrorTemplate>
+        </TextBox>
+
+    </StackPanel>
+    
+</UserControl>
