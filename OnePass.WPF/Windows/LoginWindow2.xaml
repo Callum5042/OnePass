@@ -5,7 +5,7 @@
         Style="{StaticResource WindowStyle}"
         Title="OnePass" Height="400" Width="600"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" 
-        Background="#FF003264" MouseDown="Window_MouseDown">
+        Background="#FF003264" MouseDown="Window_MouseDown" Activated="OnActivated" KeyDown="OnKeyDown">
 
     <!-- LoginModel Datacontext -->
     <Window.DataContext>
@@ -191,6 +191,8 @@
                         </Style>
                     </CheckBox.Resources>
                 </CheckBox>
+
+                <Label x:Name="CapsLockWarningLabel" Foreground="Yellow" Content="Caps lock is on" />
 
             </StackPanel>
         </Grid>

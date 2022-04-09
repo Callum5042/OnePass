@@ -26,6 +26,11 @@ namespace OnePass.WPF.Windows
             InitializeComponent();
         }
 
+        private void OnActivated(object sender, EventArgs e)
+        {
+            SetCapsLockWarning();
+        }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -35,7 +40,6 @@ namespace OnePass.WPF.Windows
         }
 
         private bool _showPassword = false;
-
         private const string _passwordEyeBlocked = "";
         private const string _passwordEye = "";
 
@@ -56,6 +60,23 @@ namespace OnePass.WPF.Windows
                 _showPassword = true;
 
                 TextboxPassword.FontFamily = new FontFamily("Segoe UI");
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            SetCapsLockWarning();
+        }
+
+        private void SetCapsLockWarning()
+        {
+            if ((Keyboard.GetKeyStates(Key.CapsLock) & KeyStates.Toggled) == KeyStates.Toggled)
+            {
+                CapsLockWarningLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CapsLockWarningLabel.Visibility = Visibility.Collapsed;
             }
         }
     }
