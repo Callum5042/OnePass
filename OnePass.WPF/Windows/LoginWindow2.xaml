@@ -141,7 +141,7 @@
 
                 <!-- Username -->
                 <Label Content="Username" />
-                <TextBox x:Name="TextboxUsername" Height="30"  Text="{Binding Username}" />
+                <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding Username}" />
 
                 <!-- Password -->
                 <Label Content="Password" />

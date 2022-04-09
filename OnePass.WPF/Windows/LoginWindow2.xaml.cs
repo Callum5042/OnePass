@@ -29,6 +29,7 @@ namespace OnePass.WPF.Windows
         private void OnActivated(object sender, EventArgs e)
         {
             SetCapsLockWarning();
+            TextboxUsername.Focus();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
