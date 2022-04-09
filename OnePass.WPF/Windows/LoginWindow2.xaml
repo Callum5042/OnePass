@@ -150,7 +150,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="30" />
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Height="30" x:Name="TextboxPassword" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}">
+                    <TextBox Grid.Column="0" Height="30" x:Name="TextboxPassword" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
                         <TextBox.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="3,0,0,3" />

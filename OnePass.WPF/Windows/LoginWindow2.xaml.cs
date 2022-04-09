@@ -79,5 +79,14 @@ namespace OnePass.WPF.Windows
                 CapsLockWarningLabel.Visibility = Visibility.Collapsed;
             }
         }
+
+        private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Disable copy & pasting on the password box
+            if (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut || e.Command == ApplicationCommands.Paste)
+            {
+                e.Handled = true;
+            }
+        }
     }
 }
