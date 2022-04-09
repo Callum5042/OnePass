@@ -66,7 +66,7 @@ namespace OnePass.WPF.Models
         private string _password;
 
         [Required]
-        [MinLength(10, ErrorMessage = $"{nameof(Password)} must be at least 10 characters")]
+        [MinLength(10, ErrorMessage = $"{nameof(Password)} must be at least 10 characters.")]
         public string Password
         {
             get => _password;
