@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="OnePass.WPF.Controls.RegisterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:models="clr-namespace:OnePass.WPF.Models"
+             mc:Ignorable="d" >
+
+    <!-- LoginModel Datacontext -->
+    <UserControl.DataContext>
+        <models:RegisterModel />
+    </UserControl.DataContext>
+    
+    <!-- Content -->
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+        <!-- Username -->
+        <Label Style="{StaticResource LoginLabel}" Content="Username" />
+        <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding Username}">
+            <Validation.ErrorTemplate>
+                <ControlTemplate>
+                    <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </ControlTemplate>
+            </Validation.ErrorTemplate>
+        </TextBox>
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidationMessage}" Visibility="{Binding UsernameLabelVisibility}" />
+
+        <!-- Password -->
+        <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="30" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Text="{Binding Password}" Grid.Column="0" Height="30" x:Name="TextboxPassword" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                <TextBox.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="3,0,0,3" />
+                    </Style>
+                </TextBox.Resources>
+                <Validation.ErrorTemplate>
+                    <ControlTemplate>
+                        <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3,0,0,3">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </ControlTemplate>
+                </Validation.ErrorTemplate>
+            </TextBox>
+
+            <Button Grid.Column="1" Style="{x:Null}" Background="White" BorderBrush="#FFABADB3" BorderThickness="0,1,1,1" FontFamily="{StaticResource IconFonts}" Content="" Foreground="Gray">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="0,3,3,0" />
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+        </Grid>
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidationMessage}" Visibility="{Binding PasswordLabelVisibility}" />
+
+        <!-- Repeat password -->
+        <Label Style="{StaticResource LoginLabel}" Content="Repeat Password" Margin="0,10,0,0" />
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="30" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Text="{Binding Password}" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                <TextBox.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="3,0,0,3" />
+                    </Style>
+                </TextBox.Resources>
+                <Validation.ErrorTemplate>
+                    <ControlTemplate>
+                        <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3,0,0,3">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </ControlTemplate>
+                </Validation.ErrorTemplate>
+            </TextBox>
+
+            <Button Grid.Column="1" Style="{x:Null}" Background="White" BorderBrush="#FFABADB3" BorderThickness="0,1,1,1" FontFamily="{StaticResource IconFonts}" Content="" Foreground="Gray">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="0,3,3,0" />
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+        </Grid>
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidationMessage}" Visibility="{Binding PasswordLabelVisibility}" />
+
+        <!-- Buttons -->
+        <Grid Margin="0,10,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Style="{StaticResource PrimaryButton}" Command="{Binding CreateAccountCommand}" Grid.Column="0" Content="Create Account"/>
+            <Button Style="{StaticResource SecondaryButton}" Command="{Binding BackCommand}" Grid.Column="3" Content="Back"/>
+        </Grid>
+        
+    </StackPanel>
+
+</UserControl>

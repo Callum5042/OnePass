@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using OnePass.WPF.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,8 +40,6 @@ namespace OnePass.WPF.Models
             }
         }
 
-        public static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
-
         public ICommand LoginCommand { get; }
 
         public ICommand RegisterCommand { get; }
@@ -63,7 +62,10 @@ namespace OnePass.WPF.Models
 
         private void Register()
         {
-
+            // Might have to refactor this out into a service
+            var window = App.Current.Windows.OfType<LoginWindow2>().FirstOrDefault();
+            window.LoginControl.Visibility = Visibility.Collapsed;
+            window.RegisterControl.Visibility = Visibility.Visible;
         }
 
         private string _username;

@@ -1,0 +1,75 @@
+﻿using OnePass.WPF.Models;
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+
+namespace OnePass.WPF.Controls
+{
+    /// <summary>
+    /// Interaction logic for LoginControl.xaml
+    /// </summary>
+    public partial class LoginControl : UserControl
+    {
+        private const string _passwordEyeBlocked = "";
+        private const string _passwordEye = "";
+        private bool _showPassword = false;
+
+        public LoginControl()
+        {
+            InitializeComponent();
+        }
+
+        private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Disable copy & pasting on the password box
+            if (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut || e.Command == ApplicationCommands.Paste)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void OnClickTogglePasswordField(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (_showPassword)
+            {
+                button.Content = _passwordEye;
+                _showPassword = false;
+
+                TextboxPassword.FontFamily = App.Current.TryFindResource("PasswordFonts") as FontFamily;
+            }
+            else
+            {
+                button.Content = _passwordEyeBlocked;
+                _showPassword = true;
+
+                TextboxPassword.FontFamily = new FontFamily("Segoe UI");
+            }
+        }
+
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            TextboxUsername.Focus();
+
+            // Load options
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+            if (File.Exists(path))
+            {
+                using var file = File.OpenRead(path);
+                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+
+                // Set remember username
+                if (!string.IsNullOrWhiteSpace(options.RememberUsername))
+                {
+                    throw new NotImplementedException("Load option file");
+                }
+            }
+        }
+    }
+}

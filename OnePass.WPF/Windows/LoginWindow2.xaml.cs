@@ -1,12 +1,10 @@
 ﻿using OnePass.WPF.Models;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace OnePass.WPF.Windows
 {
@@ -15,9 +13,12 @@ namespace OnePass.WPF.Windows
     /// </summary>
     public partial class LoginWindow2 : Window
     {
+        public static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
+
         public LoginWindow2()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -25,30 +26,6 @@ namespace OnePass.WPF.Windows
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
-            }
-        }
-
-        private bool _showPassword = false;
-        private const string _passwordEyeBlocked = "";
-        private const string _passwordEye = "";
-
-        private void OnClickTogglePasswordField(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-
-            if (_showPassword)
-            {
-                button.Content = _passwordEye;
-                _showPassword = false;
-
-                TextboxPassword.FontFamily = App.Current.TryFindResource("PasswordFonts") as FontFamily;
-            }
-            else
-            {
-                button.Content = _passwordEyeBlocked;
-                _showPassword = true;
-
-                TextboxPassword.FontFamily = new FontFamily("Segoe UI");
             }
         }
 
@@ -69,19 +46,9 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            // Disable copy & pasting on the password box
-            if (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut || e.Command == ApplicationCommands.Paste)
-            {
-                e.Handled = true;
-            }
-        }
-
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             SetCapsLockWarning();
-            TextboxUsername.Focus();
 
             // Load options
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
