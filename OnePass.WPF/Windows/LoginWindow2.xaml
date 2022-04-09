@@ -183,7 +183,13 @@
                 </Grid>
                 
                 <!-- Remember me checkbox -->
-                <CheckBox Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" />
+                <CheckBox Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White">
+                    <CheckBox.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="2" />
+                        </Style>
+                    </CheckBox.Resources>
+                </CheckBox>
 
             </StackPanel>
         </Grid>
