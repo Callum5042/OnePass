@@ -23,7 +23,6 @@ namespace OnePass.WPF.Windows
     {
         public LoginWindow2()
         {
-            DataContext = new LoginModel();
             InitializeComponent();
         }
 
@@ -32,6 +31,31 @@ namespace OnePass.WPF.Windows
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
+            }
+        }
+
+        private bool _showPassword = false;
+
+        private const string _passwordEyeBlocked = "";
+        private const string _passwordEye = "";
+
+        private void OnClickTogglePasswordField(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (_showPassword)
+            {
+                button.Content = _passwordEye;
+                _showPassword = false;
+
+                TextboxPassword.FontFamily = App.Current.TryFindResource("PasswordFonts") as FontFamily;
+            }
+            else
+            {
+                button.Content = _passwordEyeBlocked;
+                _showPassword = true;
+
+                TextboxPassword.FontFamily = new FontFamily("Segoe UI");
             }
         }
     }

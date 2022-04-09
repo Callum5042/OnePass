@@ -34,5 +34,7 @@ namespace OnePass
 
             Environment.Exit(0);
         }
+
+        public new static App Current => (App)Application.Current;
     }
 }
