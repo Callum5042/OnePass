@@ -5,7 +5,7 @@
         Style="{StaticResource WindowStyle}"
         Title="OnePass" Height="400" Width="600"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" 
-        Background="#FF003264" MouseDown="Window_MouseDown" Activated="OnActivated" KeyDown="OnKeyDown">
+        Background="#FF003264" MouseDown="Window_MouseDown" KeyDown="OnKeyDown" Loaded="OnLoaded">
 
     <!-- LoginModel Datacontext -->
     <Window.DataContext>

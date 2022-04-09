@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -47,6 +48,17 @@ namespace OnePass.WPF.Models
         private void Login()
         {
             ValidateAllProperties();
+            if (HasErrors)
+            {
+                // We have validation errors so exit early
+                return;
+            }
+
+            // Check file
+            if (!File.Exists($"{Username}.bin"))
+            {
+                MessageBox.Show("Boom");
+            }
         }
 
         private void Register()

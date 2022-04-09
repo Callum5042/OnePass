@@ -1,18 +1,12 @@
 ﻿using OnePass.WPF.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OnePass.WPF.Windows
 {
@@ -24,12 +18,6 @@ namespace OnePass.WPF.Windows
         public LoginWindow2()
         {
             InitializeComponent();
-        }
-
-        private void OnActivated(object sender, EventArgs e)
-        {
-            SetCapsLockWarning();
-            TextboxUsername.Focus();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -87,6 +75,27 @@ namespace OnePass.WPF.Windows
             if (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut || e.Command == ApplicationCommands.Paste)
             {
                 e.Handled = true;
+            }
+        }
+
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            SetCapsLockWarning();
+            TextboxUsername.Focus();
+
+            // Load options
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+            if (File.Exists(path))
+            {
+                using var file = File.OpenRead(path);
+                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+
+                // Set remember username
+                if (!string.IsNullOrWhiteSpace(options.RememberUsername))
+                {
+                    throw new NotImplementedException("Load option file");
+                }
             }
         }
     }
