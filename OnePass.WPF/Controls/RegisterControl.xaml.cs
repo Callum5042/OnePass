@@ -23,7 +23,7 @@ namespace OnePass.WPF.Controls
 
         public void ShowLoginControl()
         {
-            var window = App.Current.Windows.OfType<LoginWindow2>().FirstOrDefault();
+            var window = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
             window.LoginControl.Visibility = Visibility.Visible;
             window.RegisterControl.Visibility = Visibility.Collapsed;
         }

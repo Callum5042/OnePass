@@ -1,5 +1,6 @@
 ﻿using OnePass.Handlers;
 using OnePass.Handlers.Interfaces;
+using OnePass.WPF.Windows;
 using System;
 using System.Linq;
 using System.Windows;
@@ -26,7 +27,7 @@ namespace OnePass.Windows
         {
             var app = Application.Current as App;
             var window = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
-            window.Content = app.GetService<LoginPage>();
+            //window.Content = app.GetService<LoginPage>();
         }
 
         private async void OnClick_CreateAccount(object sender, RoutedEventArgs e)

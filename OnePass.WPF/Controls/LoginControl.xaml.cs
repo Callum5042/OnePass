@@ -54,7 +54,7 @@ namespace OnePass.WPF.Controls
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            //TextboxUsername.Focus();
+            TextboxUsername.Focus();
 
             // Load options
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

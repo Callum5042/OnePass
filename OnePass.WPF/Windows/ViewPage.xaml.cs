@@ -239,13 +239,13 @@ namespace OnePass.Windows
 
         private void OnClick_Logout(object sender, RoutedEventArgs e)
         {
-            var app = Application.Current as App;
+            //var app = Application.Current as App;
 
-            var window = app.GetService<LoginWindow>();
-            window.Show();
+            //var window = app.GetService<LoginWindow>();
+            //window.Show();
 
-            var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            mainWindow.Close();
+            //var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            //mainWindow.Close();
         }
     }
 }
