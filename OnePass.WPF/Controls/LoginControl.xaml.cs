@@ -21,6 +21,7 @@ namespace OnePass.WPF.Controls
         public LoginControl()
         {
             InitializeComponent();
+            DataContext = App.Current.GetService<LoginModel>();
         }
 
         private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)

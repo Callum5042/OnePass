@@ -1,19 +1,26 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using OnePass.Infrastructure;
+using OnePass.Services;
+using OnePass.Windows;
 using OnePass.WPF.Windows;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 namespace OnePass.WPF.Models
 {
+    [Inject]
     public class LoginModel : ObservableValidator
     {
-        public LoginModel()
+        private readonly OnePassRepository _onePassRepository;
+
+        public LoginModel(OnePassRepository onePassRepository)
         {
+            _onePassRepository = onePassRepository;
+
             LoginCommand = new RelayCommand(Login);
             RegisterCommand = new RelayCommand(Register);
 
@@ -49,10 +56,23 @@ namespace OnePass.WPF.Models
             }
 
             // Check file
-            if (!File.Exists($"{Username}.bin"))
-            {
-                MessageBox.Show("Boom");
-            }
+            _onePassRepository.Username = Username;
+            _onePassRepository.Filename = $"{Username}.bin";
+            _onePassRepository.MasterPassword = Password;
+
+            // Open main window
+            var window = new MainWindow();
+            window.Show();
+
+
+            // Close login window
+            var loginWindow = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+            loginWindow.Close();
+
+            //if (!File.Exists($"{Username}.bin"))
+            //{
+            //    MessageBox.Show("Boom");
+            //}
         }
 
         private void Register()

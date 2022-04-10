@@ -1,16 +1,17 @@
 ﻿<UserControl x:Class="OnePass.WPF.Controls.LoginControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OnePass.WPF.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:OnePass.WPF.Models"
-             Loaded="OnLoaded">
+             d:DataContext="{d:DesignInstance Type=models:LoginModel}"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
 
     <!-- LoginModel Datacontext -->
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <models:LoginModel />
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     
     <!-- Content -->
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
