@@ -49,21 +49,6 @@ namespace OnePass.WPF.Windows
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             SetCapsLockWarning();
-
-            // Load options
-            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var path = Path.Combine(appdata, @"OnePass", "options.json");
-            if (File.Exists(path))
-            {
-                using var file = File.OpenRead(path);
-                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
-
-                // Set remember username
-                if (!string.IsNullOrWhiteSpace(options.RememberUsername))
-                {
-                    throw new NotImplementedException("Load option file");
-                }
-            }
         }
     }
 }

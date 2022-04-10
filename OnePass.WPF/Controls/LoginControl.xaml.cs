@@ -58,18 +58,27 @@ namespace OnePass.WPF.Controls
             TextboxUsername.Focus();
 
             // Load options
-            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var path = Path.Combine(appdata, @"OnePass", "options.json");
-            if (File.Exists(path))
+            try
             {
-                using var file = File.OpenRead(path);
-                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
-
-                // Set remember username
-                if (!string.IsNullOrWhiteSpace(options.RememberUsername))
+                var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var path = Path.Combine(appdata, @"OnePass", "options.json");
+                if (File.Exists(path))
                 {
-                    throw new NotImplementedException("Load option file");
+                    using var file = File.OpenRead(path);
+                    var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+
+                    // Set remember username
+                    if (!string.IsNullOrWhiteSpace(options.RememberUsername))
+                    {
+                        TextboxUsername.Text = options.RememberUsername;
+                        RememberMe.IsChecked = true;
+                        TextboxPassword.Focus();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Could not load options", "Waring", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

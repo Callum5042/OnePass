@@ -4,9 +4,12 @@ using OnePass.Infrastructure;
 using OnePass.Services;
 using OnePass.Windows;
 using OnePass.WPF.Windows;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 
@@ -69,10 +72,37 @@ namespace OnePass.WPF.Models
             var loginWindow = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
             loginWindow.Close();
 
-            //if (!File.Exists($"{Username}.bin"))
-            //{
-            //    MessageBox.Show("Boom");
-            //}
+            // Update options in appdata
+            if (RememberMe)
+            {
+                SaveOptions(new AppOptions()
+                {
+                    RememberUsername = Username
+                });
+            }
+            else
+            {
+                SaveOptions(new AppOptions()
+                {
+                    RememberUsername = string.Empty
+                });
+            }
+        }
+
+        private static void SaveOptions(AppOptions appOptions)
+        {
+            try
+            {
+                var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
+                var path = Path.Combine(appdata, @"OnePass", "options.json");
+                using var file = File.Open(path, FileMode.Truncate);
+                JsonSerializer.Serialize(file, appOptions);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Could not save options", "Waring", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Register()
@@ -86,7 +116,7 @@ namespace OnePass.WPF.Models
         private string _username;
 
         [Required]
-        public string Username 
+        public string Username
         {
             get => _username;
             set => SetProperty(ref _username, value, validate: true);
@@ -104,7 +134,7 @@ namespace OnePass.WPF.Models
 
         private string _usernameValidationMessage;
 
-        public string UsernameValidationMessage 
+        public string UsernameValidationMessage
         {
             get => _usernameValidationMessage;
             set => SetProperty(ref _usernameValidationMessage, value);
@@ -112,7 +142,7 @@ namespace OnePass.WPF.Models
 
         private Visibility _visibilityUsernameLabel = Visibility.Collapsed;
 
-        public Visibility UsernameLabelVisibility 
+        public Visibility UsernameLabelVisibility
         {
             get => _visibilityUsernameLabel;
             set => SetProperty(ref _visibilityUsernameLabel, value);
@@ -133,5 +163,7 @@ namespace OnePass.WPF.Models
             get => _visibilitypasswordLabel;
             set => SetProperty(ref _visibilitypasswordLabel, value);
         }
+
+        public bool RememberMe { get; set; }
     }
 }

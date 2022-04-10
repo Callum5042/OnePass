@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="30" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Text="{Binding Password}" Grid.Column="0" Height="30" x:Name="TextboxPassword" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+            <TextBox x:Name="TextboxPassword" Text="{Binding Password}" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
                 <TextBox.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="3,0,0,3" />
@@ -77,7 +77,7 @@
         </Grid>
 
         <!-- Remember me checkbox -->
-        <CheckBox Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White">
+        <CheckBox x:Name="RememberMe" Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White" IsChecked="{Binding RememberMe}">
             <CheckBox.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="2" />
