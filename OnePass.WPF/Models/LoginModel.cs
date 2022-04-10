@@ -35,13 +35,11 @@ namespace OnePass.WPF.Models
             if (e.PropertyName == nameof(Username))
             {
                 UsernameValidationMessage = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
-                UsernameLabelVisibility = GetErrors(e.PropertyName).Any() ? Visibility.Visible : Visibility.Collapsed;
             }
 
             if (e.PropertyName == nameof(Password))
             {
                 PasswordValidationMessage = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
-                PasswordLabelVisibility = GetErrors(e.PropertyName).Any() ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -58,6 +56,16 @@ namespace OnePass.WPF.Models
                 return;
             }
 
+            // Check if file exists
+            if (!File.Exists($"{Username}.bin"))
+            {
+                UsernameValidationMessage = $"File could not be found '{Username}.bin'";
+                return;
+            }
+
+            // Check if password is correct
+
+
             // Check file
             _onePassRepository.Username = Username;
             _onePassRepository.Filename = $"{Username}.bin";
@@ -66,7 +74,6 @@ namespace OnePass.WPF.Models
             // Open main window
             var window = new MainWindow();
             window.Show();
-
 
             // Close login window
             var loginWindow = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
@@ -140,28 +147,12 @@ namespace OnePass.WPF.Models
             set => SetProperty(ref _usernameValidationMessage, value);
         }
 
-        private Visibility _visibilityUsernameLabel = Visibility.Collapsed;
-
-        public Visibility UsernameLabelVisibility
-        {
-            get => _visibilityUsernameLabel;
-            set => SetProperty(ref _visibilityUsernameLabel, value);
-        }
-
         private string _passwordValidationMessage;
 
         public string PasswordValidationMessage
         {
             get => _passwordValidationMessage;
             set => SetProperty(ref _passwordValidationMessage, value);
-        }
-
-        private Visibility _visibilitypasswordLabel = Visibility.Collapsed;
-
-        public Visibility PasswordLabelVisibility
-        {
-            get => _visibilitypasswordLabel;
-            set => SetProperty(ref _visibilitypasswordLabel, value);
         }
 
         public bool RememberMe { get; set; }
