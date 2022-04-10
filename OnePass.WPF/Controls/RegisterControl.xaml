@@ -3,13 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:models="clr-namespace:OnePass.WPF.Models"
-             mc:Ignorable="d" Loaded="OnLoaded">
-
-    <!-- LoginModel Datacontext -->
-    <UserControl.DataContext>
-        <models:RegisterModel />
-    </UserControl.DataContext>
+             xmlns:models="clr-namespace:OnePass.WPF.Models" 
+             d:DataContext="{d:DesignInstance Type=models:RegisterModel}"
+             mc:Ignorable="d">
     
     <!-- Content -->
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
@@ -25,7 +21,7 @@
                 </ControlTemplate>
             </Validation.ErrorTemplate>
         </TextBox>
-        <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidationMessage}" Visibility="{Binding UsernameLabelVisibility}" />
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidationMessage}" />
 
         <!-- Password -->
         <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />
@@ -60,7 +56,7 @@
             </Button>
 
         </Grid>
-        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidationMessage}" Visibility="{Binding PasswordLabelVisibility}" />
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidationMessage}" />
 
         <!-- Repeat password -->
         <Label Style="{StaticResource LoginLabel}" Content="Repeat Password" Margin="0,10,0,0" />
@@ -71,7 +67,7 @@
                 <ColumnDefinition Width="30" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Text="{Binding Password}" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+            <TextBox Text="{Binding PasswordRepeat}" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
                 <TextBox.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="3,0,0,3" />
@@ -95,7 +91,7 @@
             </Button>
 
         </Grid>
-        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidationMessage}" Visibility="{Binding PasswordLabelVisibility}" />
+        <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordRepeatValidationMessage}" />
 
         <!-- Buttons -->
         <Grid Margin="0,10,0,10">

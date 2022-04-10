@@ -1,6 +1,8 @@
 ﻿using OnePass.WPF.Models;
+using OnePass.WPF.Windows;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,11 +13,19 @@ namespace OnePass.WPF.Controls
     /// <summary>
     /// Interaction logic for RegisterControl.xaml
     /// </summary>
-    public partial class RegisterControl : UserControl
+    public partial class RegisterControl : UserControl, IWindowRegisterModel
     {
         public RegisterControl()
         {
             InitializeComponent();
+            DataContext = new RegisterModel(this);
+        }
+
+        public void ShowLoginControl()
+        {
+            var window = App.Current.Windows.OfType<LoginWindow2>().FirstOrDefault();
+            window.LoginControl.Visibility = Visibility.Visible;
+            window.RegisterControl.Visibility = Visibility.Collapsed;
         }
 
         private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -25,11 +35,6 @@ namespace OnePass.WPF.Controls
             {
                 e.Handled = true;
             }
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            TextboxUsername.Focus();
         }
     }
 }
