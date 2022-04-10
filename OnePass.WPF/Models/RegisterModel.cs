@@ -63,20 +63,20 @@ namespace OnePass.WPF.Models
 
         public ICommand BackCommand { get; }
 
-        public async Task CreateAccount()
+        public Task CreateAccount()
         {
             ValidateAllProperties();
 
             if (HasErrors)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             // Check if file already exists
             if (File.Exists($"{Username}.bin"))
             {
                 MessageBox.Show("File already exists");
-                return;
+                return Task.CompletedTask;
             }
 
             // Create file
@@ -84,6 +84,8 @@ namespace OnePass.WPF.Models
             // throw new System.NotImplementedException();
             //using var file = File.Open($"{Username}.bin", FileMode.CreateNew);
             //await JsonSerializer.SerializeAsync(file, new AppOptions());
+
+            return Task.CompletedTask;
         }
 
         public void Back()
