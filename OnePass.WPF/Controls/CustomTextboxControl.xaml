@@ -9,7 +9,7 @@
     <StackPanel>
 
         <Label Style="{StaticResource LoginLabel}" Content="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-        <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding TextboxContent, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <TextBox x:Name="TextboxUsername" Height="30" VerticalContentAlignment="Center" Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
             <Validation.ErrorTemplate>
                 <ControlTemplate>
                     <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">

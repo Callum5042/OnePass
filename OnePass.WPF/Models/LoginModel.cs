@@ -68,7 +68,7 @@ namespace OnePass.WPF.Models
             window.RegisterControl.Visibility = Visibility.Visible;
         }
 
-        private string _username = "ABC";
+        private string _username;
 
         [Required]
         public string Username 
