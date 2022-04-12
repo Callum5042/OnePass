@@ -40,7 +40,6 @@
     <Resource Include="Fonts\password.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Windows\OnePassIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
