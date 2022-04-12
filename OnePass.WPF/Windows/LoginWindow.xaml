@@ -39,7 +39,7 @@
 
         <!-- Left panel -->
         <Grid Grid.Column="0">
-            <Image Source="/Windows/OnePassIcon.png" Stretch="Uniform" StretchDirection="Both" Margin="25,25,25,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  />
+            <Image Stretch="Uniform" StretchDirection="Both" Margin="25,25,25,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="/OnePassIcon.png"  />
         </Grid>
 
         <!-- Right panel -->

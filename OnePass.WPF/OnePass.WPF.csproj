@@ -18,10 +18,15 @@
   <ItemGroup>
     <None Remove="Fonts\icomoon.ttf" />
     <None Remove="Fonts\password.ttf" />
+    <None Remove="OnePassIcon.png" />
     <None Remove="Windows\eye.png" />
     <None Remove="Windows\eye.svg" />
     <None Remove="Windows\eye.xml" />
     <None Remove="Windows\OnePassIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="OnePassIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +45,7 @@
     <Resource Include="Fonts\password.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Windows\OnePassIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
