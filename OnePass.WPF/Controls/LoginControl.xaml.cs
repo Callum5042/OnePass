@@ -1,5 +1,6 @@
 ﻿using OnePass.WPF.Models;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -21,7 +22,11 @@ namespace OnePass.WPF.Controls
         public LoginControl()
         {
             InitializeComponent();
-            DataContext = App.Current.GetService<LoginModel>();
+
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                DataContext = App.Current.GetService<LoginModel>();
+            }
         }
 
         private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
