@@ -72,7 +72,7 @@ namespace OnePass.WPF.Models
             _onePassRepository.MasterPassword = Password;
 
             // Open main window
-            var window = new MainWindow();
+            var window = new ContentWindow();
             window.Show();
 
             // Close login window
