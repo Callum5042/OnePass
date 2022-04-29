@@ -51,67 +51,41 @@
             </Border>-->
 
             <!-- Products -->
-            <ListView Grid.Row="1" x:Name="ListView" ItemsSource="{Binding Path=ProductDetails}">
+            <ListView Grid.Row="1" ItemsSource="{Binding ProductDetails}" SelectionMode="Single">
 
-                <!-- Style -->
                 <ListView.ItemContainerStyle>
-
                     <Style TargetType="ListViewItem">
-                        <Setter Property="Height" Value="30" />
                         <Setter Property="Foreground" Value="Black" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
-                                    <Border BorderBrush="Transparent" BorderThickness="0" Background="{TemplateBinding Background}">
-                                        <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+
+                                    <Border x:Name="border" Padding="8">
+                                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                                     </Border>
+                                    
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="#FF0080FF" />
+                                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="#FF1164B4" />
+                                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                    
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" Value="#FF1164B4" />
-                                <Setter Property="Foreground" Value="WhiteSmoke" />
-                                <Setter Property="BorderThickness" Value="0" />
-                            </Trigger>
-                        </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
 
-                <!-- Grid -->
-                <ListView.View>
-                    <GridView>
-
-                        <GridView.ColumnHeaderContainerStyle>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="GridViewColumnHeader">
-                                            <Grid>
-                                                <Border Background="Red" BorderBrush="#FFD4D4D4" BorderThickness="0" Name="HeaderBorder" Padding="{TemplateBinding Padding}">
-                                                    <ContentPresenter Name="HeaderContent" Content="{TemplateBinding Content}" Margin="0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                </Border>
-                                                <Thumb x:Name="PART_HeaderGripper" HorizontalAlignment="Right" Margin="0,0,-9,0" Style="{StaticResource GridViewColumnHeaderGripper}" />
-                                            </Grid>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsPressed" Value="true">
-                                                    <Setter TargetName="HeaderContent" Property="Margin" Value="0,0,0,0"/>
-                                                    <Setter Property="Background" Value="Blue"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="false">
-                                                    <Setter Property="Opacity" Value=".5" TargetName="HeaderBorder"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GridView.ColumnHeaderContainerStyle>
-
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name" Width="200" />
-
-                    </GridView>
-                </ListView.View>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
             </ListView>
 
