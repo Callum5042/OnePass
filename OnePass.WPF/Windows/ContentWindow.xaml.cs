@@ -46,15 +46,21 @@ namespace OnePass.WPF.Windows
             InitializeComponent();
             DataContext = this;
 
-
             ProductDetails = new ObservableCollection<ProductDetails>()
             {
                 new ProductDetails() { Name = "Natwest" },
                 new ProductDetails() { Name = "Microsoft" },
                 new ProductDetails() { Name = "GMail" },
             };
+        }
 
-            // ListView.ItemsSource = ProductDetails;
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = sender as ListView;
+            var selected = item.SelectedItem as ProductDetails;
+
+            ProductDetailsGrid.Visibility = Visibility.Visible;
+            ProductDetailsGrid.DataContext = selected;
         }
     }
 }
