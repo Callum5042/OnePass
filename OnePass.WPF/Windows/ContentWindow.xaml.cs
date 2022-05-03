@@ -1,6 +1,7 @@
-﻿using System;
+﻿using OnePass.WPF.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,36 +16,17 @@ using System.Windows.Shapes;
 
 namespace OnePass.WPF.Windows
 {
-    public class ProductDetails
-    {
-        public string Name { get; set; }
-
-        public string Username { get; set; } = "Username";
-
-        public string EmailAddress { get; set; } = "Email@email.com";
-
-        public string Password { get; set; }
-
-        public bool Favourite { get; set; }
-
-        public bool MfaEnabled { get; set; }
-
-        public string Notes { get; set; }
-
-        public DateTime? LastChanged { get; set; } = DateTime.Now;
-    }
-
     /// <summary>
     /// Interaction logic for ContentWindow.xaml
     /// </summary>
     public partial class ContentWindow : Window
     {
-        public ObservableCollection<ProductDetails> ProductDetails { get; set; }
+        public ObservableCollection<AccountListModel> ProductDetails { get; set; }
 
         public ContentWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = App.Current.GetService<ContentModel>();
 
             //ProductDetails = new ObservableCollection<ProductDetails>()
             //{
@@ -57,7 +39,7 @@ namespace OnePass.WPF.Windows
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var item = sender as ListView;
-            var selected = item.SelectedItem as ProductDetails;
+            var selected = item.SelectedItem as AccountListModel;
 
             ProductDetailsGrid.Visibility = Visibility.Visible;
             ProductDetailsGrid.DataContext = selected;

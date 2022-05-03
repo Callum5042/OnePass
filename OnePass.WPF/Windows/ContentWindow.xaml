@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OnePass.WPF.Windows" 
+        xmlns:models="clr-namespace:OnePass.WPF.Models" 
+        d:DataContext="{d:DesignInstance Type=models:ContentModel}"
         mc:Ignorable="d" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
         Title="OnePass" Height="450" Width="800" MinWidth="400">
 
@@ -13,6 +15,8 @@
         <Menu DockPanel.Dock="Top" Background="White">
 
             <MenuItem Header="File">
+                <MenuItem Header="Add Account" Command="{Binding AddAccountCommand}" />
+                <MenuItem Header="Logout" IsEnabled="False" />
                 <MenuItem Header="Exit" />
             </MenuItem>
 
