@@ -7,11 +7,6 @@
              d:DataContext="{d:DesignInstance Type=models:LoginModel}"
              Loaded="OnLoaded"
              mc:Ignorable="d">
-
-    <!-- LoginModel Datacontext -->
-    <!--<UserControl.DataContext>
-        <models:LoginModel />
-    </UserControl.DataContext>-->
     
     <!-- Content -->
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">

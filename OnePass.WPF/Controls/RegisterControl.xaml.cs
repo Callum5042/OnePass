@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OnePass.WPF.Controls
 {
@@ -15,6 +16,11 @@ namespace OnePass.WPF.Controls
     /// </summary>
     public partial class RegisterControl : UserControl, IWindowRegisterModel
     {
+        private const string _passwordEyeBlocked = "";
+        private const string _passwordEye = "";
+        private bool _showPassword = false;
+        private bool _showRepeatPassword = false;
+
         public RegisterControl()
         {
             InitializeComponent();
@@ -34,6 +40,46 @@ namespace OnePass.WPF.Controls
             if (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut || e.Command == ApplicationCommands.Paste)
             {
                 e.Handled = true;
+            }
+        }
+
+        private void OnClickTogglePasswordField(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (_showPassword)
+            {
+                button.Content = _passwordEye;
+                _showPassword = false;
+
+                TextboxPassword.FontFamily = App.Current.TryFindResource("PasswordFonts") as FontFamily;
+            }
+            else
+            {
+                button.Content = _passwordEyeBlocked;
+                _showPassword = true;
+
+                TextboxPassword.FontFamily = new FontFamily("Segoe UI");
+            }
+        }
+
+        private void OnClickToggleRepeatPasswordField(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (_showRepeatPassword)
+            {
+                button.Content = _passwordEye;
+                _showRepeatPassword = false;
+
+                TextboxRepeatPassword.FontFamily = App.Current.TryFindResource("PasswordFonts") as FontFamily;
+            }
+            else
+            {
+                button.Content = _passwordEyeBlocked;
+                _showRepeatPassword = true;
+
+                TextboxRepeatPassword.FontFamily = new FontFamily("Segoe UI");
             }
         }
     }
