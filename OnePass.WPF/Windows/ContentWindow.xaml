@@ -131,18 +131,6 @@
                 </Border>
 
             </WrapPanel>
-            
-            <!--<Grid x:Name="ProductDetailsGrid" Grid.Row="3" Margin="20" Visibility="Collapsed">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Name}" />
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="email@address.com" />
-
-            </Grid>-->
 
         </Grid>
 

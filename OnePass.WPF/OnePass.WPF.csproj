@@ -55,10 +55,4 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Windows\AddProductWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-
 </Project>
