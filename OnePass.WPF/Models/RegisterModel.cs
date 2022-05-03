@@ -1,5 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using OnePass.Services;
+using OnePass.WPF.Windows;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -24,7 +26,7 @@ namespace OnePass.WPF.Models
         {
             _panel = panel;
 
-            CreateAccountCommand = new AsyncRelayCommand(CreateAccount);
+            CreateAccountCommand = new RelayCommand(CreateAccount);
             BackCommand = new RelayCommand(Back);
 
             ErrorsChanged += LoginModel_ErrorsChanged;
@@ -63,29 +65,39 @@ namespace OnePass.WPF.Models
 
         public ICommand BackCommand { get; }
 
-        public Task CreateAccount()
+        public void CreateAccount()
         {
             ValidateAllProperties();
 
             if (HasErrors)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             // Check if file already exists
             if (File.Exists($"{Username}.bin"))
             {
                 MessageBox.Show("File already exists");
-                return Task.CompletedTask;
+                return;
             }
 
             // Create file
-            MessageBox.Show("Not yet implemented");
-            // throw new System.NotImplementedException();
-            //using var file = File.Open($"{Username}.bin", FileMode.CreateNew);
-            //await JsonSerializer.SerializeAsync(file, new AppOptions());
+            var fileCreator = new FileCreator();
+            fileCreator.Create(Username, Password);
 
-            return Task.CompletedTask;
+            // Set details
+            var onepass = App.Current.GetService<OnePassRepository>();
+            onepass.Username = Username;
+            onepass.Filename = $"{Username}.bin";
+            onepass.MasterPassword = Password;
+
+            // Open content window
+            var contentWindow = App.Current.GetService<ContentWindow>();
+            contentWindow.Show();
+
+            // Close login window
+            var loginWindow = App.Current.Windows.OfType<LoginWindow>().First();
+            loginWindow.Close();
         }
 
         public void Back()

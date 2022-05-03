@@ -46,12 +46,12 @@ namespace OnePass.WPF.Windows
             InitializeComponent();
             DataContext = this;
 
-            ProductDetails = new ObservableCollection<ProductDetails>()
-            {
-                new ProductDetails() { Name = "Natwest" },
-                new ProductDetails() { Name = "Microsoft" },
-                new ProductDetails() { Name = "GMail" },
-            };
+            //ProductDetails = new ObservableCollection<ProductDetails>()
+            //{
+            //    new ProductDetails() { Name = "Natwest" },
+            //    new ProductDetails() { Name = "Microsoft" },
+            //    new ProductDetails() { Name = "GMail" },
+            //};
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
