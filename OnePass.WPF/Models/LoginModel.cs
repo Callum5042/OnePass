@@ -119,9 +119,9 @@ namespace OnePass.WPF.Models
         private void Register()
         {
             // Might have to refactor this out into a service
-            var window = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
-            window.LoginControl.Visibility = Visibility.Collapsed;
-            window.RegisterControl.Visibility = Visibility.Visible;
+            //var window = App.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+            //window.LoginControl.Visibility = Visibility.Collapsed;
+            //window.RegisterControl.Visibility = Visibility.Visible;
         }
 
         private string _username;

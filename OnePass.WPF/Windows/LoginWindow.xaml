@@ -46,9 +46,184 @@
         <Grid Grid.Column="1" Margin="20,0,20,20">
 
             <StackPanel VerticalAlignment="Center">
-                <controls:LoginControl x:Name="LoginControl" Visibility="Visible" />
-                <controls:RegisterControl x:Name="RegisterControl" Visibility="Collapsed" />
+                
+                <!-- Login panel -->
+                <StackPanel x:Name="LoginStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+                    <!-- Username -->
+                    <Label Style="{StaticResource LoginLabel}" Content="Username" />
+                    <TextBox x:Name="LoginUsernameTextbox" Height="30" VerticalContentAlignment="Center">
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate>
+                                <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
+                                    <AdornedElementPlaceholder />
+                                </Border>
+                            </ControlTemplate>
+                        </Validation.ErrorTemplate>
+                    </TextBox>
+                    <Label Name="LoginUsernameValidationLabel" Style="{StaticResource ValidationLabel}" />
+
+                    <!-- Password -->
+                    <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="LoginPasswordTextbox" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="3,0,0,3" />
+                                </Style>
+                            </TextBox.Resources>
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3,0,0,3">
+                                        <AdornedElementPlaceholder />
+                                    </Border>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
+
+                        <Button Grid.Column="1" Style="{x:Null}" Background="White" BorderBrush="#FFABADB3" BorderThickness="0,1,1,1" FontFamily="{StaticResource IconFonts}" Content="" Foreground="Gray" Click="OnClickTogglePasswordField">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="0,3,3,0" />
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                    </Grid>
+                    <Label Name="LoginPasswordValidationLabel" Style="{StaticResource ValidationLabel}" />
+
+                    <!-- Buttons -->
+                    <Grid Margin="0,10,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Style="{StaticResource PrimaryButton}" Grid.Column="0" Content="Login" IsDefault="True" Click="OnClickLoginButton"/>
+                        <Button Style="{StaticResource SecondaryButton}" Grid.Column="3" Content="Create" Click="OnClickRegisterButton"/>
+                    </Grid>
+
+                    <!-- Remember me checkbox -->
+                    <CheckBox x:Name="RememberMe" Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White" IsChecked="{Binding RememberMe}">
+                        <CheckBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="2" />
+                            </Style>
+                        </CheckBox.Resources>
+                    </CheckBox>
+
+                </StackPanel>
+
+                <!-- Register panel -->
+                <StackPanel x:Name="RegisterStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="Collapsed">
+
+                    <!-- Username -->
+                    <Label Style="{StaticResource LoginLabel}" Content="Username" />
+                    <TextBox x:Name="RegisterUsernameTextbox" Height="30" VerticalContentAlignment="Center">
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate>
+                                <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
+                                    <AdornedElementPlaceholder />
+                                </Border>
+                            </ControlTemplate>
+                        </Validation.ErrorTemplate>
+                    </TextBox>
+                    <Label Name="RegisterUsernameValidationLabel" Style="{StaticResource ValidationLabel}" />
+
+                    <!-- Password -->
+                    <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Height="30" x:Name="RegisterPasswordTextbox" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="3,0,0,3" />
+                                </Style>
+                            </TextBox.Resources>
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3,0,0,3">
+                                        <AdornedElementPlaceholder />
+                                    </Border>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
+
+                        <Button Grid.Column="1" Style="{x:Null}" Background="White" BorderBrush="#FFABADB3" BorderThickness="0,1,1,1" FontFamily="{StaticResource IconFonts}" Content="" Foreground="Gray" Click="OnClickTogglePasswordField">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="0,3,3,0" />
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                    </Grid>
+                    <Label Name="RegisterPasswordValidationLabel" Style="{StaticResource ValidationLabel}" />
+
+                    <!-- Repeat password -->
+                    <Label Style="{StaticResource LoginLabel}" Content="Repeat Password" Margin="0,10,0,0" />
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="RegisterPasswordRepeatTextbox" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="3,0,0,3" />
+                                </Style>
+                            </TextBox.Resources>
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3,0,0,3">
+                                        <AdornedElementPlaceholder />
+                                    </Border>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
+
+                        <Button Grid.Column="1" Style="{x:Null}" Background="White" BorderBrush="#FFABADB3" BorderThickness="0,1,1,1" FontFamily="{StaticResource IconFonts}" Content="" Foreground="Gray" Click="OnClickTogglePasswordField">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="0,3,3,0" />
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                    </Grid>
+                    <Label Name="RegisterRepeatPasswordValidationLabel" Style="{StaticResource ValidationLabel}" />
+
+                    <!-- Buttons -->
+                    <Grid Margin="0,10,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Style="{StaticResource PrimaryButton}" Grid.Column="0" Content="Create Account" Click="OnClickCreateAccountButton"/>
+                        <Button Style="{StaticResource SecondaryButton}" Grid.Column="3" Content="Back" Click="OnClickBackButton"/>
+                    </Grid>
+
+                </StackPanel>
+
+                <!-- Caps lock warning -->
                 <Label x:Name="CapsLockWarningLabel" Padding="0" Foreground="Yellow" Content="Caps lock is on" />
+                
             </StackPanel>
 
         </Grid>
