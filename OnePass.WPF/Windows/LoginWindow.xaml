@@ -108,7 +108,7 @@
                     </Grid>
 
                     <!-- Remember me checkbox -->
-                    <CheckBox x:Name="RememberMe" Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White" IsChecked="{Binding RememberMe}">
+                    <CheckBox x:Name="RememberMeCheckbox" Content="Remember me" Foreground="WhiteSmoke" VerticalContentAlignment="Center" Background="White" IsChecked="{Binding RememberMe}">
                         <CheckBox.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="2" />

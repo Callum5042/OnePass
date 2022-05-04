@@ -1,4 +1,6 @@
 ﻿using OnePass.Models;
+using OnePass.WPF.Models;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -57,8 +59,45 @@ namespace OnePass.WPF.Windows
         {
             SetCapsLockWarning();
 
-            // Login
-            LoginUsernameTextbox.Focus();
+            // Check if selected
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+            if (File.Exists(path))
+            {
+                using var file = File.OpenRead(path);
+                var options = JsonSerializer.Deserialize<AppOptions>(file);
+
+                if (string.IsNullOrEmpty(options.RememberUsername))
+                {
+                    LoginUsernameTextbox.Focus();
+                }
+                else
+                {
+                    LoginUsernameTextbox.Text = options.RememberUsername;
+                    LoginPasswordTextbox.Focus();
+                    RememberMeCheckbox.IsChecked = true;
+                }
+            }
+            else
+            {
+                LoginUsernameTextbox.Focus();
+            }
+        }
+
+        private static void SaveOptions(AppOptions appOptions)
+        {
+            try
+            {
+                var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
+                var path = Path.Combine(appdata, @"OnePass", "options.json");
+                using var file = File.Create(path);
+                JsonSerializer.Serialize(file, appOptions);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Waring", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void TextboxPassword_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -93,6 +132,22 @@ namespace OnePass.WPF.Windows
             {
                 if (VerifyFile())
                 {
+                    // Save options
+                    if (RememberMeCheckbox.IsChecked == true)
+                    {
+                        SaveOptions(new AppOptions()
+                        {
+                            RememberUsername = LoginUsernameTextbox.Text,
+                        });
+                    }
+                    else
+                    {
+                        SaveOptions(new AppOptions()
+                        {
+                            RememberUsername = string.Empty,
+                        });
+                    }
+
                     // Set login details
                     App.Current.Username = LoginUsernameTextbox.Text;
                     App.Current.Password = LoginPasswordTextbox.Text;
