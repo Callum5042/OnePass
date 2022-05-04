@@ -91,7 +91,14 @@ namespace OnePass.WPF.Windows
             {
                 if (VerifyFile())
                 {
-                    MessageBox.Show("Is valid");
+                    // Set login details
+                    App.Current.Username = LoginUsernameTextbox.Text;
+                    App.Current.Password = LoginPasswordTextbox.Text;
+
+                    // Change window
+                    var contentWindow = new ContentWindow();
+                    contentWindow.Show();
+                    Close();
                 }
             }
         }
