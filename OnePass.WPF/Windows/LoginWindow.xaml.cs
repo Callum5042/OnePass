@@ -161,6 +161,8 @@ namespace OnePass.WPF.Windows
         {
             LoginStackPanel.Visibility = Visibility.Collapsed;
             RegisterStackPanel.Visibility = Visibility.Visible;
+
+            RegisterUsernameTextbox.Focus();
         }
 
         private void OnClickBackButton(object sender, RoutedEventArgs e)
@@ -173,7 +175,25 @@ namespace OnePass.WPF.Windows
         {
             if (ValidateCreateAccount())
             {
-                MessageBox.Show("Create Account");
+                // Check if file already exists
+                if (File.Exists($"{RegisterUsernameTextbox.Text}.bin"))
+                {
+                    RegisterUsernameValidationLabel.Visibility= Visibility.Visible;
+                    RegisterUsernameValidationLabel.Content = $"{RegisterUsernameTextbox.Text}.bin already exists";
+                    return;
+                }
+
+                // Create new file
+                throw new System.NotImplementedException();
+
+                // Set login details
+                App.Current.Username = RegisterUsernameTextbox.Text;
+                App.Current.Password = RegisterPasswordTextbox.Text;
+
+                // Change window
+                var contentWindow = new ContentWindow();
+                contentWindow.Show();
+                Close();
             }
         }
 

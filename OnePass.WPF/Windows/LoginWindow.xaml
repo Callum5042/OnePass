@@ -126,7 +126,7 @@
 
                     <!-- Username -->
                     <Label Style="{StaticResource LoginLabel}" Content="Username" />
-                    <TextBox x:Name="RegisterUsernameTextbox" Height="30" VerticalContentAlignment="Center">
+                    <TextBox TabIndex="1" x:Name="RegisterUsernameTextbox" Height="30" VerticalContentAlignment="Center">
                         <Validation.ErrorTemplate>
                             <ControlTemplate>
                                 <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
@@ -146,7 +146,7 @@
                             <ColumnDefinition Width="30" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" Height="30" x:Name="RegisterPasswordTextbox" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                        <TextBox TabIndex="2" Grid.Column="0" Height="30" x:Name="RegisterPasswordTextbox" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="3,0,0,3" />
@@ -181,7 +181,7 @@
                             <ColumnDefinition Width="30" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="RegisterPasswordRepeatTextbox" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
+                        <TextBox x:Name="RegisterPasswordRepeatTextbox" TabIndex="3" Grid.Column="0" Height="30" VerticalContentAlignment="Center" FontFamily="{StaticResource PasswordFonts}" CommandManager.PreviewExecuted="TextboxPassword_PreviewExecuted">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="3,0,0,3" />
