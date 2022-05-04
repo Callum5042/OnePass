@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using OnePass.Models;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -184,7 +186,7 @@ namespace OnePass.WPF.Windows
                 }
 
                 // Create new file
-                throw new System.NotImplementedException();
+                CreateFile();
 
                 // Set login details
                 App.Current.Username = RegisterUsernameTextbox.Text;
@@ -195,6 +197,56 @@ namespace OnePass.WPF.Windows
                 contentWindow.Show();
                 Close();
             }
+        }
+
+        private void CreateFile()
+        {
+            var fileSignature = ".ONEPASS";
+            var fileVersion = 1;
+
+            // Generate salt
+            var salt = RandomNumberGenerator.GetBytes(8);
+
+            // Generate keys
+            var rfc = new Rfc2898DeriveBytes(RegisterPasswordTextbox.Text, salt);
+            using var aes = Aes.Create();
+            aes.Key = rfc.GetBytes(16);
+
+            using var file = File.Create($"{RegisterUsernameTextbox.Text}.bin");
+            using var writer = new BinaryWriter(file);
+
+            // Write signature
+            writer.Write(Encoding.UTF8.GetBytes(fileSignature));
+
+            // Write version
+            writer.Write(fileVersion);
+
+            // Write password hash
+            using (var sha = SHA512.Create())
+            {
+                var passwordBytes = Encoding.UTF8.GetBytes(RegisterPasswordTextbox.Text);
+                var bytes = passwordBytes.Concat(salt).ToArray();
+                var passwordHash = sha.ComputeHash(bytes);
+
+                writer.Write(passwordHash.Length);
+                writer.Write(passwordHash);
+            }
+
+            // Write salt
+            writer.Write(salt.Length);
+            writer.Write(salt);
+
+            // Write IV
+            writer.Write(aes.IV.Length);
+            writer.Write(aes.IV);
+
+            // Encrypt
+            using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            using var cryptoWriter = new StreamWriter(cryptoStream);
+
+            var accountRoot = new RootAccount();
+            var content = JsonSerializer.Serialize(accountRoot);
+            cryptoWriter.Write(content);
         }
 
         private bool ValidateCreateAccount()

@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnePass.Models
 {
+    public class RootAccount
+    {
+        public IList<AccountV2> Accounts { get; set; } = new List<AccountV2>();
+    }
+
     public class AccountV2
     {
         public int Id { get; set; }

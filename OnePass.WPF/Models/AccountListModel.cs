@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnePass.WPF.Windows
+namespace OnePass.WPF.Models
 {
     public class AccountListModel
     {

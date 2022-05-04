@@ -8,11 +8,6 @@ using System.Text;
 
 namespace OnePass
 {
-    public class RootAccount
-    {
-        public IList<AccountV2> Accounts { get; set; }
-    }
-
     public class FileCreator
     {
         private const string _fileSignature = ".ONEPASS";
