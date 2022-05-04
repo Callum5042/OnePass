@@ -1,4 +1,5 @@
-﻿using OnePass.WPF.Models;
+﻿using OnePass.Services;
+using OnePass.WPF.Models;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -25,7 +26,8 @@ namespace OnePass.WPF.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                DataContext = App.Current.GetService<LoginModel>();
+                var repository = App.Current.GetService<OnePassRepository>();
+                DataContext = new LoginModel(repository, this);
             }
         }
 
@@ -85,6 +87,12 @@ namespace OnePass.WPF.Controls
             {
                 MessageBox.Show("Could not load options", "Waring", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            button.Focus();
         }
     }
 }

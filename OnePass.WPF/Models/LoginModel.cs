@@ -2,6 +2,7 @@
 using Microsoft.Toolkit.Mvvm.Input;
 using OnePass.Infrastructure;
 using OnePass.Services;
+using OnePass.WPF.Controls;
 using OnePass.WPF.Windows;
 using System;
 using System.ComponentModel;
@@ -18,10 +19,12 @@ namespace OnePass.WPF.Models
     public class LoginModel : ObservableValidator
     {
         private readonly OnePassRepository _onePassRepository;
+        private readonly LoginControl _loginControl;
 
-        public LoginModel(OnePassRepository onePassRepository)
+        public LoginModel(OnePassRepository onePassRepository, LoginControl loginControl)
         {
             _onePassRepository = onePassRepository;
+            _loginControl = loginControl;
 
             LoginCommand = new RelayCommand(Login);
             RegisterCommand = new RelayCommand(Register);
@@ -34,11 +37,13 @@ namespace OnePass.WPF.Models
             if (e.PropertyName == nameof(Username))
             {
                 UsernameValidationMessage = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
+                _loginControl.TextboxUsername.Focus();
             }
 
             if (e.PropertyName == nameof(Password))
             {
                 PasswordValidationMessage = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
+                _loginControl.TextboxPassword.Focus();
             }
         }
 
