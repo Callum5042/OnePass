@@ -26,8 +26,10 @@ namespace OnePass.WPF.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                var repository = App.Current.GetService<OnePassRepository>();
-                DataContext = new LoginModel(repository, this);
+                var loginModel = App.Current.GetService<LoginModel>();
+                loginModel.LoginControl = this;
+
+                DataContext = loginModel;
             }
         }
 
