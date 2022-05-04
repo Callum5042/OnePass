@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,8 +89,65 @@ namespace OnePass.WPF.Windows
         {
             if (ValidateLoginModel())
             {
-                MessageBox.Show("Is valid");
+                if (VerifyFile())
+                {
+                    MessageBox.Show("Is valid");
+                }
             }
+        }
+
+        private bool VerifyFile()
+        {
+            var fileSignature = ".ONEPASS";
+            var filename = $"{LoginUsernameTextbox.Text}.bin";
+
+            if (!File.Exists(filename))
+            {
+                LoginUsernameValidationLabel.Visibility = Visibility.Visible;
+                LoginUsernameValidationLabel.Content = $"{filename} doesn't exist.";
+                return false;
+            }
+
+            using var file = File.OpenRead(filename);
+            using var reader = new BinaryReader(file);
+
+            // Read signature
+            var signature = reader.ReadBytes(Encoding.UTF8.GetByteCount(fileSignature));
+            if (Encoding.UTF8.GetString(signature) != fileSignature)
+            {
+                LoginUsernameValidationLabel.Visibility = Visibility.Visible;
+                LoginUsernameValidationLabel.Content = $"{filename} is not a valid OnePass file.";
+                return false;
+            }
+
+            // Read version
+            var version = reader.ReadInt32();
+
+            // Read password hash
+            var passwordHashLength = reader.ReadInt32();
+            var passwordHash = reader.ReadBytes(passwordHashLength);
+
+            // Read salt
+            var saltLength = reader.ReadInt32();
+            var salt = reader.ReadBytes(saltLength);
+
+            // Verify password
+            using (var sha = SHA512.Create())
+            {
+                var passwordBytes = Encoding.UTF8.GetBytes(LoginPasswordTextbox.Text);
+                var bytes = passwordBytes.Concat(salt).ToArray();
+                var passwordHashTmp = sha.ComputeHash(bytes);
+
+                var valid = passwordHashTmp.SequenceEqual(passwordHash);
+                if (!valid)
+                {
+                    LoginPasswordValidationLabel.Visibility = Visibility.Visible;
+                    LoginPasswordValidationLabel.Content = "Password is invalid.";
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void OnClickRegisterButton(object sender, RoutedEventArgs e)
