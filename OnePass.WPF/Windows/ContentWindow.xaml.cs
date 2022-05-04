@@ -21,19 +21,10 @@ namespace OnePass.WPF.Windows
     /// </summary>
     public partial class ContentWindow : Window
     {
-        public ObservableCollection<AccountListModel> ProductDetails { get; set; }
-
         public ContentWindow()
         {
             InitializeComponent();
             DataContext = App.Current.GetService<ContentModel>();
-
-            //ProductDetails = new ObservableCollection<ProductDetails>()
-            //{
-            //    new ProductDetails() { Name = "Natwest" },
-            //    new ProductDetails() { Name = "Microsoft" },
-            //    new ProductDetails() { Name = "GMail" },
-            //};
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -43,6 +34,11 @@ namespace OnePass.WPF.Windows
 
             ProductDetailsGrid.Visibility = Visibility.Visible;
             ProductDetailsGrid.DataContext = selected;
+        }
+
+        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

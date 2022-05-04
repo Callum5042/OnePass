@@ -17,7 +17,7 @@
             <MenuItem Header="File">
                 <MenuItem Header="Add Account" Command="{Binding AddAccountCommand}" />
                 <MenuItem Header="Logout" IsEnabled="False" />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
         </Menu>
@@ -55,9 +55,14 @@
                 </StackPanel>
 
             </Border>-->
+            
+            <!-- Products empty -->
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyAccountStackPanelVisibility}">
+                <Label Content="Accounts list is empty" FontStyle="Italic" />
+            </StackPanel>
 
             <!-- Products -->
-            <ListView Grid.Row="1" ItemsSource="{Binding ProductDetails}" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged">
+            <ListView Grid.Row="1" Visibility="{Binding AccountListViewVisibility}" ItemsSource="{Binding ProductDetails}" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
