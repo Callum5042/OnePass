@@ -98,7 +98,7 @@
 
                             <Grid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Edit" />
+                                    <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />
                                     <MenuItem Header="Remove" IsEnabled="False" />
                                 </ContextMenu>
                             </Grid.ContextMenu>
@@ -106,10 +106,12 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="200"  />
                                 <ColumnDefinition MinWidth="200" />
+                                <ColumnDefinition MinWidth="200" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Grid.Column="0" Text="{Binding Name}" />
                             <TextBlock Grid.Column="1" Text="{Binding Username}" />
+                            <TextBlock Grid.Column="2" Text="{Binding EmailAddress}" />
 
                         </Grid>
 

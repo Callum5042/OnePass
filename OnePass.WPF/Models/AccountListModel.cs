@@ -4,6 +4,8 @@ namespace OnePass.WPF.Models
 {
     public class AccountListModel
     {
+        public Guid Guid { get; set; }
+
         public string Name { get; set; }
 
         public string Username { get; set; } = "Username";

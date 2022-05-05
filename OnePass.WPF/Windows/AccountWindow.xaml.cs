@@ -34,9 +34,12 @@ namespace OnePass.WPF.Windows
             var root = ReadFile();
 
             // Add new account
-            root.Accounts.Add(new AccountV2()
+            root.Accounts.Add(new Account()
             {
-                Name = NameTextbox.Text
+                Name = NameTextbox.Text,
+                Username = UsernameTextbox.Text,
+                EmailAddress = EmailAddressTextbox.Text,
+                Password = PasswordTextbox.Text,
             });
 
             // Save file

@@ -116,5 +116,13 @@ namespace OnePass.WPF.Windows
             var root = JsonSerializer.Deserialize<RootAccount>(content);
             return root;
         }
+
+        private void MenuItem_Click_EditAccount(object sender, RoutedEventArgs e)
+        {
+
+
+            // var model = (sender as ListViewItem).DataContext as AccountListModel;
+
+        }
     }
 }

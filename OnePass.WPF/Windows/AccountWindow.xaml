@@ -44,7 +44,7 @@
             <TextBox x:Name="NameTextbox" />
 
             <Label Content="Email Address" />
-            <TextBox />
+            <TextBox x:Name="EmailAddressTextbox" />
             
             <Button Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" />
 
@@ -53,10 +53,10 @@
         <StackPanel Grid.Column="2">
 
             <Label Content="Username" />
-            <TextBox />
+            <TextBox x:Name="UsernameTextbox" />
 
             <Label Content="Password" />
-            <TextBox />
+            <TextBox x:Name="PasswordTextbox" />
 
             <Button Style="{StaticResource SecondaryButton}" Content="Generate Password" IsEnabled="False" />
 
