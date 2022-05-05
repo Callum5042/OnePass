@@ -39,7 +39,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition />
-                <RowDefinition Height="5" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
@@ -90,39 +89,37 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
-
+                
                 <ListView.ItemTemplate>
+                    
                     <DataTemplate>
 
                         <Grid>
+
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Edit" />
+                                    <MenuItem Header="Remove" IsEnabled="False" />
+                                </ContextMenu>
+                            </Grid.ContextMenu>
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="200"  />
                                 <ColumnDefinition MinWidth="200" />
                             </Grid.ColumnDefinitions>
-                            
+
                             <TextBlock Grid.Column="0" Text="{Binding Name}" />
                             <TextBlock Grid.Column="1" Text="{Binding Username}" />
-                            
+
                         </Grid>
-                        
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
 
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Edit" />
-                        <MenuItem Header="Remove" IsEnabled="False" />
-                    </ContextMenu>
-                </ListView.ContextMenu>
-
             </ListView>
 
-            <!-- Splitter -->
-            <!--<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" />-->
-
             <!-- Details -->
-            <WrapPanel Grid.Row="3" Name="ProductDetailsGrid" Visibility="Collapsed" HorizontalAlignment="Center">
+            <WrapPanel Grid.Row="2" Name="ProductDetailsGrid" Visibility="Collapsed" HorizontalAlignment="Center">
 
                 <Border Padding="10,0">
                     <StackPanel Orientation="Horizontal">
