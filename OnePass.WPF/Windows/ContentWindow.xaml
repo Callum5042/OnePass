@@ -18,6 +18,10 @@
                 <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
+            <MenuItem Header="Help">
+                <MenuItem Header="About OnePass" IsEnabled="False" />
+            </MenuItem>
+
         </Menu>
 
         <!-- Status bar -->
@@ -40,19 +44,16 @@
             </Grid.RowDefinitions>
 
             <!-- Toolbar -->
-            <!--<Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0">
+            <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0">
 
                 <StackPanel Orientation="Horizontal">
 
-                    <Button Style="{StaticResource PrimaryButton}" Content="Add" Margin="0,0,10,0" Padding="10" />
-                    <Button Content="Sync" Margin="0,0,10,0" />
-                    <Button Content="Options" Margin="0,0,10,0" />
-
-                    <TextBox Width="200" />
+                    <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
+                    <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" />
 
                 </StackPanel>
 
-            </Border>-->
+            </Border>
             
             <!-- Products empty -->
             <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
@@ -107,6 +108,13 @@
                         
                     </DataTemplate>
                 </ListView.ItemTemplate>
+
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Edit" />
+                        <MenuItem Header="Remove" IsEnabled="False" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
 
             </ListView>
 
