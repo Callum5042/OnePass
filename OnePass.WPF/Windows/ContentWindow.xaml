@@ -48,7 +48,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
-                    <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" />
+                    <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" IsEnabled="False" />
 
                 </StackPanel>
 

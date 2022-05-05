@@ -64,7 +64,7 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_AddAccount(object sender, RoutedEventArgs e)
         {
-            var window = new AddAccountWindow
+            var window = new AccountWindow
             {
                 Owner = this
             };

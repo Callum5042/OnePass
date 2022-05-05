@@ -21,9 +21,9 @@ namespace OnePass.WPF.Windows
     /// <summary>
     /// Interaction logic for AddAccountWindow.xaml
     /// </summary>
-    public partial class AddAccountWindow : Window
+    public partial class AccountWindow : Window
     {
-        public AddAccountWindow()
+        public AccountWindow()
         {
             InitializeComponent();
         }
