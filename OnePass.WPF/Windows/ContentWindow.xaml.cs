@@ -45,7 +45,10 @@ namespace OnePass.WPF.Windows
             var root = ReadFile();
             Accounts = new ObservableCollection<AccountListModel>(root.Accounts.Select(x => new AccountListModel()
             {
+                Guid = x.Guid,
                 Name = x.Name,
+                Username = x.Username,
+                EmailAddress = x.EmailAddress,
             }));
 
             AccountsListView.ItemsSource = Accounts;
@@ -119,10 +122,16 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_EditAccount(object sender, RoutedEventArgs e)
         {
+            var menu = sender as MenuItem;
+            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
 
+            var model = item.DataContext as AccountListModel;
 
-            // var model = (sender as ListViewItem).DataContext as AccountListModel;
+            // Window
+            var accountWindow = new AccountWindow() { Owner = this };
+            accountWindow.DataContext = model;
 
+            accountWindow.Show();
         }
     }
 }

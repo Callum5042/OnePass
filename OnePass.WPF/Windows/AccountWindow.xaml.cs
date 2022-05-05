@@ -1,20 +1,12 @@
 ﻿using OnePass.Models;
+using OnePass.WPF.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OnePass.WPF.Windows
 {
@@ -26,6 +18,7 @@ namespace OnePass.WPF.Windows
         public AccountWindow()
         {
             InitializeComponent();
+            DataContext = new AccountListModel();
         }
 
         private void Button_Click_AddAccount(object sender, RoutedEventArgs e)
@@ -36,6 +29,7 @@ namespace OnePass.WPF.Windows
             // Add new account
             root.Accounts.Add(new Account()
             {
+                Guid = Guid.NewGuid(),
                 Name = NameTextbox.Text,
                 Username = UsernameTextbox.Text,
                 EmailAddress = EmailAddressTextbox.Text,

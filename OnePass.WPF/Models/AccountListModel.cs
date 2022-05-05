@@ -8,9 +8,9 @@ namespace OnePass.WPF.Models
 
         public string Name { get; set; }
 
-        public string Username { get; set; } = "Username";
+        public string Username { get; set; }
 
-        public string EmailAddress { get; set; } = "Email@email.com";
+        public string EmailAddress { get; set; }
 
         public string Password { get; set; }
 
@@ -20,6 +20,6 @@ namespace OnePass.WPF.Models
 
         public string Notes { get; set; }
 
-        public DateTime? LastChanged { get; set; } = DateTime.Now;
+        public DateTime? LastChanged { get; set; }
     }
 }

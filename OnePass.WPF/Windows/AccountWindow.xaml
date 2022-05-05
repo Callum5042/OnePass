@@ -41,10 +41,10 @@
         <StackPanel Grid.Column="0">
 
             <Label Content="Name" />
-            <TextBox x:Name="NameTextbox" />
+            <TextBox x:Name="NameTextbox" Text="{Binding Name}" />
 
             <Label Content="Email Address" />
-            <TextBox x:Name="EmailAddressTextbox" />
+            <TextBox x:Name="EmailAddressTextbox" Text="{Binding EmailAddress}" />
             
             <Button Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" />
 
@@ -53,10 +53,10 @@
         <StackPanel Grid.Column="2">
 
             <Label Content="Username" />
-            <TextBox x:Name="UsernameTextbox" />
+            <TextBox x:Name="UsernameTextbox" Text="{Binding Username}" />
 
             <Label Content="Password" />
-            <TextBox x:Name="PasswordTextbox" />
+            <TextBox x:Name="PasswordTextbox" Text="{Binding Password}" />
 
             <Button Style="{StaticResource SecondaryButton}" Content="Generate Password" IsEnabled="False" />
 
