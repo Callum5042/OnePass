@@ -19,10 +19,15 @@
                     <Setter Property="CornerRadius" Value="3" />
                 </Style>
             </Style.Resources>
-            <Setter Property="Margin" Value="0,0,0,10" />
             <Setter Property="Padding" Value="2" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Height" Value="30" />
+            <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="BorderBrush" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Label style -->
@@ -34,37 +39,46 @@
 
     <Grid Margin="10">
 
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160" />
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="160" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
-
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
             <Label Content="Name" />
-            <TextBox x:Name="NameTextbox" Text="{Binding Name}" TabIndex="1" />
-
-            <Label Content="Email Address" />
-            <TextBox x:Name="EmailAddressTextbox" Text="{Binding EmailAddress}" TabIndex="3" />
-            
-            <Button x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
-            <Button x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" />
-
+            <TextBox Text="{Binding Name}" TabIndex="1" />
+            <Label Style="{StaticResource ValidationLabel}" Content="{Binding NameValidation}" />
         </StackPanel>
 
-        <StackPanel Grid.Column="2">
-
+        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
             <Label Content="Username" />
-            <TextBox x:Name="UsernameTextbox" Text="{Binding Username}" TabIndex="2" />
-
-            <Label Content="Password" />
-            <TextBox x:Name="PasswordTextbox" Text="{Binding Password}" TabIndex="4" />
-
-            <Button Style="{StaticResource SecondaryButton}" Content="Generate Password" IsEnabled="False" />
-
+            <TextBox Text="{Binding Username}" TabIndex="2" />
+            <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidation}" />
         </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+            <Label Content="Email Address" />
+            <TextBox Text="{Binding EmailAddress}" TabIndex="3" />
+            <Label Style="{StaticResource ValidationLabel}" Content="{Binding EmailAddressValidation}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
+            <Label Content="Password" />
+            <TextBox Text="{Binding Password}" TabIndex="4" />
+            <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidation}" />
+        </StackPanel>
+
+        <Button Grid.Row="2" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
+        <Button Grid.Row="2" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" />
+        <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" IsEnabled="False" />
 
     </Grid>
-    
+
 </Window>

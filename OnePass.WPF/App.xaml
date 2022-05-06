@@ -28,6 +28,11 @@
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Padding" Value="0" />
             </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="Content" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Primary button style -->
@@ -126,19 +131,6 @@
         </Style>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="0,2,0,2"/>
-        </Style>
-
-        <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
-            <Setter Property="Width" Value="18"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border Padding="{TemplateBinding Padding}" Background="Transparent">
-                            <Rectangle HorizontalAlignment="Center" Width="1" Fill="#FFD4D4D4"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
     </Application.Resources>
