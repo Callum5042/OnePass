@@ -38,6 +38,18 @@ namespace OnePass.WPF.Windows
 
             // Save file
             SaveFile(root);
+
+            // Update thing
+            var contentWindow = App.Current.Windows.OfType<ContentWindow>().FirstOrDefault();
+            contentWindow.Accounts.Add(new AccountListModel()
+            {
+                Name = NameTextbox.Text,
+                Username = UsernameTextbox.Text,
+                EmailAddress= EmailAddressTextbox.Text,
+                Password= PasswordTextbox.Text
+            });
+
+            Close();
         }
 
         private static RootAccount ReadFile()
