@@ -28,15 +28,17 @@ namespace OnePass.WPF.Models
         public string Username { get => username; set => SetProperty(ref username, value); }
         private string username;
 
-        public void AddAccount()
+        public Guid AddAccount()
         {
+            var guid = Guid.NewGuid();
             _fileEncoder.Accounts.Add(new Account()
             {
-                Guid = Guid.NewGuid(),
+                Guid = guid,
                 Name = Name,
             });
 
             _fileEncoder.Save();
+            return guid;
         }
 
         public void RegisterAccount()

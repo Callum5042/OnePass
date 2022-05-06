@@ -29,8 +29,11 @@ namespace OnePass.WPF.Models
 
         public void Remove(AccountListModel model)
         {
+            _fileEncoder.Load();
+
             var account = _fileEncoder.Accounts.First(x => x.Guid == model.Guid);
             _fileEncoder.Accounts.Remove(account);
+            _fileEncoder.Save();
 
             // Remove from view
             Accounts.Remove(model);

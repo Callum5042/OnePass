@@ -28,13 +28,14 @@ namespace OnePass.WPF.Windows
         {
             if (DataContext is AccountModel model)
             {
-                model.AddAccount();
+                var guid = model.AddAccount();
 
                 // Update content window and return
                 if (_contentWindow.DataContext is ContentModel contentModel)
                 {
                     contentModel.Accounts.Add(new AccountListModel()
                     {
+                        Guid = guid,
                         Name = model.Name,
                     });
                 }
