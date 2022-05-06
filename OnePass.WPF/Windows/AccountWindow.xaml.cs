@@ -31,10 +31,13 @@ namespace OnePass.WPF.Windows
                 model.AddAccount();
 
                 // Update content window and return
-                _contentWindow.Accounts.Add(new AccountListModel()
+                if (_contentWindow.DataContext is ContentModel contentModel)
                 {
-                    Name = model.Name,
-                });
+                    contentModel.Accounts.Add(new AccountListModel()
+                    {
+                        Name = model.Name,
+                    });
+                }
 
                 Close();
             }
@@ -42,13 +45,16 @@ namespace OnePass.WPF.Windows
 
         private void Button_Click_EditAccount(object sender, RoutedEventArgs e)
         {
-            if (DataContext is AccountModel model)
+            if (DataContext is AccountModel accountModel)
             {
-                model.RegisterAccount();
+                accountModel.RegisterAccount();
 
                 // Update content window and return
-                var accountListModel = _contentWindow.Accounts.First(x => x.Guid == model.Guid);
-                accountListModel.Name = model.Name;
+                if (_contentWindow.DataContext is ContentModel contentModel)
+                {
+                    var accountListModel = contentModel.Accounts.First(x => x.Guid == accountModel.Guid);
+                    accountListModel.Name = accountModel.Name;
+                }
 
                 Close();
             }

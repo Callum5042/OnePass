@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 
 namespace OnePass.WPF.Models
 {
-    public class AccountListModel
+    public class AccountListModel : ObservableObject
     {
         public Guid Guid { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get => name; set => SetProperty(ref name, value); }
+        private string name;
 
         public string Username { get; set; }
 
