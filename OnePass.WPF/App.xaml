@@ -65,6 +65,9 @@
                     <Setter Property="Background" Value="DeepSkyBlue"/>
                     <Setter Property="Cursor" Value="Hand" />
                 </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="Gray"/>
+                </Trigger>
             </Style.Triggers>
 
         </Style>
@@ -103,6 +106,9 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="DeepSkyBlue"/>
                     <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="Gray"/>
                 </Trigger>
             </Style.Triggers>
 
