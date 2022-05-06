@@ -99,7 +99,7 @@
                             <Grid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />
-                                    <MenuItem Header="Remove" IsEnabled="False" />
+                                    <MenuItem Header="Remove" Click="MenuItem_Click_RemoveAccount" />
                                 </ContextMenu>
                             </Grid.ContextMenu>
 

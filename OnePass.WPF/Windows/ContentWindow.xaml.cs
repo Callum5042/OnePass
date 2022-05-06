@@ -133,5 +133,79 @@ namespace OnePass.WPF.Windows
 
             accountWindow.Show();
         }
+
+        private static void SaveFile(RootAccount rootAccount)
+        {
+            var fileSignature = ".ONEPASS";
+            var fileVersion = 1;
+
+            // Generate salt
+            var salt = RandomNumberGenerator.GetBytes(8);
+
+            // Generate keys
+            var rfc = new Rfc2898DeriveBytes(App.Current.Password, salt);
+            using var aes = Aes.Create();
+            aes.Key = rfc.GetBytes(16);
+
+            using var file = File.Create(App.Current.Filename);
+            using var writer = new BinaryWriter(file);
+
+            // Write signature
+            writer.Write(Encoding.UTF8.GetBytes(fileSignature));
+
+            // Write version
+            writer.Write(fileVersion);
+
+            // Write password hash
+            using (var sha = SHA512.Create())
+            {
+                var passwordBytes = Encoding.UTF8.GetBytes(App.Current.Password);
+                var bytes = passwordBytes.Concat(salt).ToArray();
+                var passwordHash = sha.ComputeHash(bytes);
+
+                writer.Write(passwordHash.Length);
+                writer.Write(passwordHash);
+            }
+
+            // Write salt
+            writer.Write(salt.Length);
+            writer.Write(salt);
+
+            // Write IV
+            writer.Write(aes.IV.Length);
+            writer.Write(aes.IV);
+
+            // Encrypt
+            using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            using var cryptoWriter = new StreamWriter(cryptoStream);
+
+            var content = JsonSerializer.Serialize(rootAccount);
+            cryptoWriter.Write(content);
+        }
+
+        private void MenuItem_Click_RemoveAccount(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+            var model = item.DataContext as AccountListModel;
+
+            var confirm = MessageBox.Show("Delete account", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm == MessageBoxResult.Yes)
+            {
+                if (model != null)
+                {
+                    // Remove from view
+                    Accounts.Remove(model);
+
+                    // Remove from file
+                    var root = ReadFile();
+
+                    var accountToRemove = root.Accounts.FirstOrDefault(x => x.Guid == model.Guid);
+                    root.Accounts.Remove(accountToRemove);
+
+                    SaveFile(root);
+                }
+            }
+        }
     }
 }
