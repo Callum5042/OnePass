@@ -27,27 +27,42 @@ namespace OnePass.WPF.Windows
             var root = ReadFile();
 
             // Add new account
-            root.Accounts.Add(new Account()
+            var context = DataContext as AccountListModel;
+            if (context?.Guid != Guid.Empty)
             {
-                Guid = Guid.NewGuid(),
-                Name = NameTextbox.Text,
-                Username = UsernameTextbox.Text,
-                EmailAddress = EmailAddressTextbox.Text,
-                Password = PasswordTextbox.Text,
-            });
+                var account = root.Accounts.FirstOrDefault(x => x.Guid == context.Guid);
+                account.Name = NameTextbox.Text;
+                account.Username = UsernameTextbox.Text;
+                account.EmailAddress = EmailAddressTextbox.Text;
+                account.Password = PasswordTextbox.Text;
+            }
+            else
+            {
+                root.Accounts.Add(new Account()
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = NameTextbox.Text,
+                    Username = UsernameTextbox.Text,
+                    EmailAddress = EmailAddressTextbox.Text,
+                    Password = PasswordTextbox.Text,
+                });
+            }
 
             // Save file
             SaveFile(root);
 
             // Update thing
-            var contentWindow = App.Current.Windows.OfType<ContentWindow>().FirstOrDefault();
-            contentWindow.Accounts.Add(new AccountListModel()
+            if (context?.Guid == Guid.Empty)
             {
-                Name = NameTextbox.Text,
-                Username = UsernameTextbox.Text,
-                EmailAddress= EmailAddressTextbox.Text,
-                Password= PasswordTextbox.Text
-            });
+                var contentWindow = App.Current.Windows.OfType<ContentWindow>().FirstOrDefault();
+                contentWindow.Accounts.Add(new AccountListModel()
+                {
+                    Name = NameTextbox.Text,
+                    Username = UsernameTextbox.Text,
+                    EmailAddress = EmailAddressTextbox.Text,
+                    Password = PasswordTextbox.Text
+                });
+            }
 
             Close();
         }
