@@ -1,11 +1,6 @@
-﻿using OnePass.Models;
-using OnePass.WPF.Models;
+﻿using OnePass.WPF.Models;
 using System;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
 using System.Windows;
 
 namespace OnePass.WPF.Windows
@@ -15,150 +10,48 @@ namespace OnePass.WPF.Windows
     /// </summary>
     public partial class AccountWindow : Window
     {
-        public AccountWindow()
+        private readonly ContentWindow _contentWindow;
+
+        public AccountWindow(ContentWindow contentWindow, bool edit)
         {
+            _contentWindow = contentWindow ?? throw new ArgumentNullException(nameof(contentWindow));
+
             InitializeComponent();
-            DataContext = new AccountListModel();
+            Owner = _contentWindow;
+            DataContext = new AccountModel();
+
+            AddAccountButton.Visibility = edit ? Visibility.Collapsed : Visibility.Visible;
+            EditAccountButton.Visibility = edit ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Button_Click_AddAccount(object sender, RoutedEventArgs e)
         {
-            // Read file
-            var root = ReadFile();
+            if (DataContext is AccountModel model)
+            {
+                model.AddAccount();
 
-            // Add new account
-            var context = DataContext as AccountListModel;
-            if (context?.Guid != Guid.Empty)
-            {
-                var account = root.Accounts.FirstOrDefault(x => x.Guid == context.Guid);
-                account.Name = NameTextbox.Text;
-                account.Username = UsernameTextbox.Text;
-                account.EmailAddress = EmailAddressTextbox.Text;
-                account.Password = PasswordTextbox.Text;
-            }
-            else
-            {
-                root.Accounts.Add(new Account()
+                // Update content window and return
+                _contentWindow.Accounts.Add(new AccountListModel()
                 {
-                    Guid = Guid.NewGuid(),
-                    Name = NameTextbox.Text,
-                    Username = UsernameTextbox.Text,
-                    EmailAddress = EmailAddressTextbox.Text,
-                    Password = PasswordTextbox.Text,
+                    Name = model.Name,
                 });
+
+                Close();
             }
-
-            // Save file
-            SaveFile(root);
-
-            // Update thing
-            if (context?.Guid == Guid.Empty)
-            {
-                var contentWindow = App.Current.Windows.OfType<ContentWindow>().FirstOrDefault();
-                contentWindow.Accounts.Add(new AccountListModel()
-                {
-                    Name = NameTextbox.Text,
-                    Username = UsernameTextbox.Text,
-                    EmailAddress = EmailAddressTextbox.Text,
-                    Password = PasswordTextbox.Text
-                });
-            }
-
-            Close();
         }
 
-        private static RootAccount ReadFile()
+        private void Button_Click_EditAccount(object sender, RoutedEventArgs e)
         {
-            var fileSignature = ".ONEPASS";
-            var filename = App.Current.Filename;
-
-            using var file = File.OpenRead(filename);
-            using var reader = new BinaryReader(file);
-
-            // Read signature
-            var signature = reader.ReadBytes(Encoding.UTF8.GetByteCount(fileSignature));
-            if (Encoding.UTF8.GetString(signature) != fileSignature)
+            if (DataContext is AccountModel model)
             {
-                throw new InvalidOperationException("Not a valid OnePass file");
+                model.RegisterAccount();
+
+                // Update content window and return
+                var accountListModel = _contentWindow.Accounts.First(x => x.Guid == model.Guid);
+                accountListModel.Name = model.Name;
+
+                Close();
             }
-
-            // Read version
-            var version = reader.ReadInt32();
-
-            // Read password hash
-            var passwordHashLength = reader.ReadInt32();
-            var passwordHash = reader.ReadBytes(passwordHashLength);
-
-            // Read salt
-            var saltLength = reader.ReadInt32();
-            var salt = reader.ReadBytes(saltLength);
-
-            // Read IV
-            var ivLength = reader.ReadInt32();
-            var iv = reader.ReadBytes(ivLength);
-
-            // Generate keys
-            var rfc = new Rfc2898DeriveBytes(App.Current.Password, salt);
-            using var aes = Aes.Create();
-            aes.Key = rfc.GetBytes(16);
-            aes.IV = iv;
-
-            // Decrypt
-            using var cryptoStream = new CryptoStream(file, aes.CreateDecryptor(), CryptoStreamMode.Read);
-            using var cryptoReader = new StreamReader(cryptoStream);
-            var content = cryptoReader.ReadToEnd();
-
-            var root = JsonSerializer.Deserialize<RootAccount>(content);
-            return root;
-        }
-
-        private static void SaveFile(RootAccount rootAccount)
-        {
-            var fileSignature = ".ONEPASS";
-            var fileVersion = 1;
-
-            // Generate salt
-            var salt = RandomNumberGenerator.GetBytes(8);
-
-            // Generate keys
-            var rfc = new Rfc2898DeriveBytes(App.Current.Password, salt);
-            using var aes = Aes.Create();
-            aes.Key = rfc.GetBytes(16);
-
-            using var file = File.Create(App.Current.Filename);
-            using var writer = new BinaryWriter(file);
-
-            // Write signature
-            writer.Write(Encoding.UTF8.GetBytes(fileSignature));
-
-            // Write version
-            writer.Write(fileVersion);
-
-            // Write password hash
-            using (var sha = SHA512.Create())
-            {
-                var passwordBytes = Encoding.UTF8.GetBytes(App.Current.Password);
-                var bytes = passwordBytes.Concat(salt).ToArray();
-                var passwordHash = sha.ComputeHash(bytes);
-
-                writer.Write(passwordHash.Length);
-                writer.Write(passwordHash);
-            }
-
-            // Write salt
-            writer.Write(salt.Length);
-            writer.Write(salt);
-
-            // Write IV
-            writer.Write(aes.IV.Length);
-            writer.Write(aes.IV);
-
-            // Encrypt
-            using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
-            using var cryptoWriter = new StreamWriter(cryptoStream);
-
-            var content = JsonSerializer.Serialize(rootAccount);
-            cryptoWriter.Write(content);
         }
     }
 }

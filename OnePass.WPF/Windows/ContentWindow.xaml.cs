@@ -67,11 +67,7 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_AddAccount(object sender, RoutedEventArgs e)
         {
-            var window = new AccountWindow
-            {
-                Owner = this
-            };
-
+            var window = new AccountWindow(this, edit: false);
             window.Show();
         }
 
@@ -128,8 +124,14 @@ namespace OnePass.WPF.Windows
             var model = item.DataContext as AccountListModel;
 
             // Window
-            var accountWindow = new AccountWindow() { Owner = this };
-            accountWindow.DataContext = model;
+            var accountWindow = new AccountWindow(this, edit: true)
+            {
+                DataContext = new AccountModel()
+                {
+                    Guid = model.Guid,
+                    Name = model.Name,
+                }
+            };
 
             accountWindow.Show();
         }
