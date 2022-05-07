@@ -16,11 +16,15 @@
 
             <MenuItem Header="File">
                 <MenuItem Header="Add Account" Click="MenuItem_Click_AddAccount" />
+                <Separator />
                 <MenuItem Header="Logout" IsEnabled="False" />
                 <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
-            <MenuItem Header="Tools" IsEnabled="False" />
+            <MenuItem Header="Tools">
+                <MenuItem Header="Clear clipboard" Click="MenuItem_Click_ClearClipboard" />
+            </MenuItem>
+
             <MenuItem Header="Options" IsEnabled="False" />
 
             <MenuItem Header="Help">
@@ -103,6 +107,8 @@
 
                             <Grid.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Copy Password" Click="MenuItem_Click_CopyPassword" />
+                                    <Separator />
                                     <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />
                                     <MenuItem Header="Remove" Click="MenuItem_Click_RemoveAccount" />
                                 </ContextMenu>

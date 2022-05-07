@@ -41,7 +41,6 @@ namespace OnePass.WPF.Windows
         {
             var menu = sender as MenuItem;
             var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
-
             var model = item.DataContext as AccountListModel;
 
             // Window
@@ -82,6 +81,24 @@ namespace OnePass.WPF.Windows
         {
             var aboutWindow = new AboutWindow() { Owner = this };
             aboutWindow.ShowDialog();
+        }
+
+        private void MenuItem_Click_CopyPassword(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+            var model = item.DataContext as AccountListModel;
+
+            // Copy to clipboard
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                Clipboard.SetText(model.Password);
+            }
+        }
+
+        private void MenuItem_Click_ClearClipboard(object sender, RoutedEventArgs e)
+        {
+            Clipboard.Clear();
         }
     }
 }

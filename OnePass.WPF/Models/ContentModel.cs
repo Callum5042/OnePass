@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
 using OnePass.WPF.Services;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -17,12 +16,13 @@ namespace OnePass.WPF.Models
             _fileEncoder = new FileEncoder();
             _fileEncoder.Load();
 
-            Accounts = new ObservableCollection<AccountListModel>(_fileEncoder.Accounts.Select(x => new AccountListModel()
+            Accounts = new ObservableCollection<AccountListModel>(_fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
             {
                 Guid = x.Guid,
                 Name = x.Name,
                 Username = x.Username,
                 EmailAddress = x.EmailAddress,
+                Password = x.Password,
                 DateModified = x.DateModified,
             }));
         }
