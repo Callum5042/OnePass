@@ -1,13 +1,5 @@
-﻿using OnePass.Models;
-using OnePass.WPF.Models;
-using System;
-using System.IO;
+﻿using OnePass.WPF.Models;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -62,7 +54,7 @@ namespace OnePass.WPF.Windows
             if (DataContext is LoginModel model)
             {
                 await model.LoadOptions();
-                if (model.RememberMe)
+                if (model.Login.RememberMe)
                 {
                     LoginPasswordTextbox.Focus();
                 }
@@ -101,16 +93,16 @@ namespace OnePass.WPF.Windows
 
         private async void OnClickLoginButton(object sender, RoutedEventArgs e)
         {
-            if (LoginStackPanel.DataContext is LoginModel model)
+            if (DataContext is LoginModel model)
             {
-                if (model.IsValid())
+                if (model.Login.IsValid())
                 {
                     // Save options
                     await model.SaveOptions();
 
                     // Set login details
-                    App.Current.Username = model.Username;
-                    App.Current.Password = model.Password;
+                    App.Current.Username = model.Login.Username;
+                    App.Current.Password = model.Login.Password;
 
                     // Change window
                     var contentWindow = new ContentWindow();
@@ -136,142 +128,23 @@ namespace OnePass.WPF.Windows
 
         private void OnClickCreateAccountButton(object sender, RoutedEventArgs e)
         {
-            //if (ValidateCreateAccount())
-            //{
-            //    // Check if file already exists
-            //    if (File.Exists($"{RegisterUsernameTextbox.Text}.bin"))
-            //    {
-            //        RegisterUsernameValidationLabel.Visibility= Visibility.Visible;
-            //        RegisterUsernameValidationLabel.Content = $"{RegisterUsernameTextbox.Text}.bin already exists";
-            //        return;
-            //    }
-
-            //    // Create new file
-            //    CreateFile();
-
-            //    // Set login details
-            //    App.Current.Username = RegisterUsernameTextbox.Text;
-            //    App.Current.Password = RegisterPasswordTextbox.Text;
-
-            //    // Change window
-            //    var contentWindow = new ContentWindow();
-            //    contentWindow.Show();
-            //    Close();
-            //}
-        }
-
-        private void CreateFile()
-        {
-            var fileSignature = ".ONEPASS";
-            var fileVersion = 1;
-
-            // Generate salt
-            var salt = RandomNumberGenerator.GetBytes(8);
-
-            // Generate keys
-            var rfc = new Rfc2898DeriveBytes(RegisterPasswordTextbox.Text, salt);
-            using var aes = Aes.Create();
-            aes.Key = rfc.GetBytes(16);
-
-            using var file = File.Create($"{RegisterUsernameTextbox.Text}.bin");
-            using var writer = new BinaryWriter(file);
-
-            // Write signature
-            writer.Write(Encoding.UTF8.GetBytes(fileSignature));
-
-            // Write version
-            writer.Write(fileVersion);
-
-            // Write password hash
-            using (var sha = SHA512.Create())
+            if (DataContext is LoginModel model)
             {
-                var passwordBytes = Encoding.UTF8.GetBytes(RegisterPasswordTextbox.Text);
-                var bytes = passwordBytes.Concat(salt).ToArray();
-                var passwordHash = sha.ComputeHash(bytes);
+                if (model.Register.IsValid())
+                {
+                    // Create account
+                    model.CreateAccount(model.Register.Username, model.Register.Password);
 
-                writer.Write(passwordHash.Length);
-                writer.Write(passwordHash);
+                    // Set login details
+                    App.Current.Username = model.Register.Username;
+                    App.Current.Password = model.Register.Password;
+
+                    // Change window
+                    var contentWindow = new ContentWindow();
+                    contentWindow.Show();
+                    Close();
+                }
             }
-
-            // Write salt
-            writer.Write(salt.Length);
-            writer.Write(salt);
-
-            // Write IV
-            writer.Write(aes.IV.Length);
-            writer.Write(aes.IV);
-
-            // Encrypt
-            using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
-            using var cryptoWriter = new StreamWriter(cryptoStream);
-
-            var accountRoot = new RootAccount();
-            var content = JsonSerializer.Serialize(accountRoot);
-            cryptoWriter.Write(content);
         }
-
-        //private bool ValidateCreateAccount()
-        //{
-        //    var username = RegisterUsernameTextbox.Text;
-        //    var password = RegisterPasswordTextbox.Text;
-        //    var repeatPassword = RegisterPasswordRepeatTextbox.Text;
-        //    var isValid = true;
-
-        //    // Validate repeat password
-        //    if (string.IsNullOrEmpty(repeatPassword))
-        //    {
-        //        RegisterRepeatPasswordValidationLabel.Content = "Password is required.";
-        //        RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
-        //        isValid = false;
-        //    }
-        //    else
-        //    {
-        //        if (password != repeatPassword)
-        //        {
-        //            RegisterRepeatPasswordValidationLabel.Content = "Password must match Repeat Password.";
-        //            RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
-        //            isValid = false;
-        //        }
-        //        else
-        //        {
-        //            RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Collapsed;
-        //        }
-        //    }
-
-        //    // Validate password
-        //    if (string.IsNullOrEmpty(password))
-        //    {
-        //        RegisterPasswordValidationLabel.Content = "Password is required.";
-        //        RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
-        //        isValid = false;
-        //    }
-        //    else
-        //    {
-        //        if (password.Length < 10)
-        //        {
-        //            RegisterPasswordValidationLabel.Content = "Password must be at least 10 characters.";
-        //            RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
-        //            isValid = false;
-        //        }
-        //        else
-        //        {
-        //            RegisterPasswordValidationLabel.Visibility = Visibility.Collapsed;
-        //        }
-        //    }
-
-        //    // Validate username
-        //    if (string.IsNullOrEmpty(username))
-        //    {
-        //        RegisterUsernameValidationLabel.Content = "Username is required.";
-        //        RegisterUsernameValidationLabel.Visibility = Visibility.Visible;
-        //        isValid = false;
-        //    }
-        //    else
-        //    {
-        //        RegisterUsernameValidationLabel.Visibility = Visibility.Collapsed;
-        //    }
-
-        //    return isValid;
-        //}
     }
 }

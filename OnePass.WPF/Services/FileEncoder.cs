@@ -25,9 +25,9 @@ namespace OnePass.WPF.Services
 
         public IList<Account> Accounts { get; private set; } = new List<Account>();
 
-        public void Load()
+        public void Load(string username, string password)
         {
-            var filename = App.Current.Filename;
+            var filename = $"{username}.bin";
 
             using var file = File.OpenRead(filename);
             using var reader = new BinaryReader(file);
@@ -55,7 +55,7 @@ namespace OnePass.WPF.Services
             var iv = reader.ReadBytes(ivLength);
 
             // Generate keys
-            var rfc = new Rfc2898DeriveBytes(App.Current.Password, salt);
+            var rfc = new Rfc2898DeriveBytes(password, salt);
             using var aes = Aes.Create();
             aes.Key = rfc.GetBytes(16);
             aes.IV = iv;
@@ -71,17 +71,19 @@ namespace OnePass.WPF.Services
             Loaded = true;
         }
 
-        public void Save()
+        public void Save(string username, string password)
         {
+            var filename = $"{username}.bin";
+
             // Generate salt
             var salt = RandomNumberGenerator.GetBytes(8);
 
             // Generate keys
-            var rfc = new Rfc2898DeriveBytes(App.Current.Password, salt);
+            var rfc = new Rfc2898DeriveBytes(password, salt);
             using var aes = Aes.Create();
             aes.Key = rfc.GetBytes(16);
 
-            using var file = File.Create(App.Current.Filename);
+            using var file = File.Create(filename);
             using var writer = new BinaryWriter(file);
 
             // Write signature
@@ -93,7 +95,7 @@ namespace OnePass.WPF.Services
             // Write password hash
             using (var sha = SHA512.Create())
             {
-                var passwordBytes = Encoding.UTF8.GetBytes(App.Current.Password);
+                var passwordBytes = Encoding.UTF8.GetBytes(password);
                 var bytes = passwordBytes.Concat(salt).ToArray();
                 var passwordHash = sha.ComputeHash(bytes);
 

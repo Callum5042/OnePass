@@ -18,7 +18,7 @@ namespace OnePass.WPF.Models
         public ContentModel()
         {
             _fileEncoder = new FileEncoder();
-            _fileEncoder.Load();
+            _fileEncoder.Load(App.Current.Username, App.Current.Password);
 
             _accountListModel = _fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
             {
@@ -38,11 +38,11 @@ namespace OnePass.WPF.Models
 
         public void Remove(AccountListModel model)
         {
-            _fileEncoder.Load();
+            _fileEncoder.Load(App.Current.Username, App.Current.Password);
 
             var account = _fileEncoder.Accounts.First(x => x.Guid == model.Guid);
             _fileEncoder.Accounts.Remove(account);
-            _fileEncoder.Save();
+            _fileEncoder.Save(App.Current.Username, App.Current.Password);
 
             // Remove from view
             Accounts.Remove(model);

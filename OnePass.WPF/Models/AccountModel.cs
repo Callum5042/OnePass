@@ -17,7 +17,7 @@ namespace OnePass.WPF.Models
         public AccountModel()
         {
             _fileEncoder = new FileEncoder();
-            _fileEncoder.Load();
+            _fileEncoder.Load(App.Current.Username, App.Current.Password);
 
             ErrorsChanged += OnErrorsChanged;
         }
@@ -65,7 +65,7 @@ namespace OnePass.WPF.Models
                 DateModified = DateTime.Now,
             });
 
-            _fileEncoder.Save();
+            _fileEncoder.Save(App.Current.Username, App.Current.Password);
             return guid;
         }
 
@@ -78,7 +78,7 @@ namespace OnePass.WPF.Models
             account.Password = Password;
             account.DateModified = DateTime.Now;
 
-            _fileEncoder.Save();
+            _fileEncoder.Save(App.Current.Username, App.Current.Password);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }
