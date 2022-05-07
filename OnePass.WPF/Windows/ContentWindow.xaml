@@ -38,7 +38,7 @@
             </MenuItem>
 
             <MenuItem Header="Tools">
-                <MenuItem Header="Clear clipboard" Click="MenuItem_Click_ClearClipboard" />
+                <MenuItem Header="Clear Clipboard" Click="MenuItem_Click_ClearClipboard" />
             </MenuItem>
 
             <MenuItem Header="Options" IsEnabled="False" />
@@ -70,13 +70,26 @@
             <!-- Toolbar -->
             <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0">
 
-                <StackPanel Orientation="Horizontal">
+                <Grid>
 
-                    <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
-                    <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" IsEnabled="False" />
-                    <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
 
-                </StackPanel>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" IsEnabled="False" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Refresh" Margin="0,0,10,0" IsEnabled="False" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Options" Margin="0,0,10,0" IsEnabled="False" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" IsEnabled="False" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+                    </StackPanel>
+
+                </Grid>
 
             </Border>
             
