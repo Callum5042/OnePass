@@ -120,5 +120,40 @@ namespace OnePass.WPF.Services
 
             cryptoWriter.Write(content);
         }
+
+        public bool Verify(string username, string password)
+        {
+            var filename = $"{username}.bin";
+
+            using var file = File.OpenRead(filename);
+            using var reader = new BinaryReader(file);
+
+            // Read signature
+            var signature = reader.ReadBytes(Encoding.UTF8.GetByteCount(_fileSignature));
+            if (Encoding.UTF8.GetString(signature) != _fileSignature)
+            {
+                throw new InvalidOperationException("Not a valid OnePass file");
+            }
+
+            // Read version
+            Version = reader.ReadInt32();
+
+            // Read password hash
+            var passwordHashLength = reader.ReadInt32();
+            var passwordHash = reader.ReadBytes(passwordHashLength);
+
+            // Read salt
+            var saltLength = reader.ReadInt32();
+            var salt = reader.ReadBytes(saltLength);
+
+            // Verify password
+            using var sha = SHA512.Create();
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            var bytes = passwordBytes.Concat(salt).ToArray();
+            var passwordHashTmp = sha.ComputeHash(bytes);
+
+            var valid = passwordHashTmp.SequenceEqual(passwordHash);
+            return valid;
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -27,7 +28,7 @@ namespace OnePass.WPF.Windows
         public LoginWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new LoginModel();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -128,90 +129,53 @@ namespace OnePass.WPF.Windows
 
         private void OnClickLoginButton(object sender, RoutedEventArgs e)
         {
-            if (ValidateLoginModel())
+            if (LoginStackPanel.DataContext is LoginModel model)
             {
-                if (VerifyFile())
+                var (valid, fileNotFound, invalidPassword) = model.IsValid();
+                if (valid)
                 {
                     // Save options
-                    if (RememberMeCheckbox.IsChecked == true)
-                    {
-                        SaveOptions(new AppOptions()
-                        {
-                            RememberUsername = LoginUsernameTextbox.Text,
-                        });
-                    }
-                    else
-                    {
-                        SaveOptions(new AppOptions()
-                        {
-                            RememberUsername = string.Empty,
-                        });
-                    }
+                    // if (RememberMeCheckbox.IsChecked == true)
+                    // {
+                    //     SaveOptions(new AppOptions()
+                    //     {
+                    //         RememberUsername = LoginUsernameTextbox.Text,
+                    //     });
+                    // }
+                    // else
+                    // {
+                    //     SaveOptions(new AppOptions()
+                    //     {
+                    //         RememberUsername = string.Empty,
+                    //     });
+                    // }
 
                     // Set login details
-                    App.Current.Username = LoginUsernameTextbox.Text;
-                    App.Current.Password = LoginPasswordTextbox.Text;
+                    App.Current.Username = model.Username;
+                    App.Current.Password = model.Password;
 
                     // Change window
                     var contentWindow = new ContentWindow();
                     contentWindow.Show();
                     Close();
                 }
-            }
-        }
-
-        private bool VerifyFile()
-        {
-            var fileSignature = ".ONEPASS";
-            var filename = $"{LoginUsernameTextbox.Text}.bin";
-
-            if (!File.Exists(filename))
-            {
-                LoginUsernameValidationLabel.Visibility = Visibility.Visible;
-                LoginUsernameValidationLabel.Content = $"{filename} doesn't exist.";
-                return false;
-            }
-
-            using var file = File.OpenRead(filename);
-            using var reader = new BinaryReader(file);
-
-            // Read signature
-            var signature = reader.ReadBytes(Encoding.UTF8.GetByteCount(fileSignature));
-            if (Encoding.UTF8.GetString(signature) != fileSignature)
-            {
-                LoginUsernameValidationLabel.Visibility = Visibility.Visible;
-                LoginUsernameValidationLabel.Content = $"{filename} is not a valid OnePass file.";
-                return false;
-            }
-
-            // Read version
-            var version = reader.ReadInt32();
-
-            // Read password hash
-            var passwordHashLength = reader.ReadInt32();
-            var passwordHash = reader.ReadBytes(passwordHashLength);
-
-            // Read salt
-            var saltLength = reader.ReadInt32();
-            var salt = reader.ReadBytes(saltLength);
-
-            // Verify password
-            using (var sha = SHA512.Create())
-            {
-                var passwordBytes = Encoding.UTF8.GetBytes(LoginPasswordTextbox.Text);
-                var bytes = passwordBytes.Concat(salt).ToArray();
-                var passwordHashTmp = sha.ComputeHash(bytes);
-
-                var valid = passwordHashTmp.SequenceEqual(passwordHash);
-                if (!valid)
+                else if (fileNotFound)
                 {
-                    LoginPasswordValidationLabel.Visibility = Visibility.Visible;
-                    LoginPasswordValidationLabel.Content = "Password is invalid.";
-                    return false;
+                    var bindingExpression = BindingOperations.GetBindingExpression(LoginUsernameTextbox, TextBox.TextProperty);
+                    var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(LoginUsernameTextbox, TextBox.TextProperty);
+                    var validationError = new ValidationError(new ExceptionValidationRule(), bindingExpression);
+
+                    Validation.MarkInvalid(bindingExpressionBase, validationError);
+                }
+                else if (invalidPassword)
+                {
+                    var bindingExpression = BindingOperations.GetBindingExpression(LoginPasswordTextbox, TextBox.TextProperty);
+                    var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(LoginPasswordTextbox, TextBox.TextProperty);
+                    var validationError = new ValidationError(new ExceptionValidationRule(), bindingExpression);
+
+                    Validation.MarkInvalid(bindingExpressionBase, validationError);
                 }
             }
-
-            return true;
         }
 
         private void OnClickRegisterButton(object sender, RoutedEventArgs e)
@@ -230,28 +194,28 @@ namespace OnePass.WPF.Windows
 
         private void OnClickCreateAccountButton(object sender, RoutedEventArgs e)
         {
-            if (ValidateCreateAccount())
-            {
-                // Check if file already exists
-                if (File.Exists($"{RegisterUsernameTextbox.Text}.bin"))
-                {
-                    RegisterUsernameValidationLabel.Visibility= Visibility.Visible;
-                    RegisterUsernameValidationLabel.Content = $"{RegisterUsernameTextbox.Text}.bin already exists";
-                    return;
-                }
+            //if (ValidateCreateAccount())
+            //{
+            //    // Check if file already exists
+            //    if (File.Exists($"{RegisterUsernameTextbox.Text}.bin"))
+            //    {
+            //        RegisterUsernameValidationLabel.Visibility= Visibility.Visible;
+            //        RegisterUsernameValidationLabel.Content = $"{RegisterUsernameTextbox.Text}.bin already exists";
+            //        return;
+            //    }
 
-                // Create new file
-                CreateFile();
+            //    // Create new file
+            //    CreateFile();
 
-                // Set login details
-                App.Current.Username = RegisterUsernameTextbox.Text;
-                App.Current.Password = RegisterPasswordTextbox.Text;
+            //    // Set login details
+            //    App.Current.Username = RegisterUsernameTextbox.Text;
+            //    App.Current.Password = RegisterPasswordTextbox.Text;
 
-                // Change window
-                var contentWindow = new ContentWindow();
-                contentWindow.Show();
-                Close();
-            }
+            //    // Change window
+            //    var contentWindow = new ContentWindow();
+            //    contentWindow.Show();
+            //    Close();
+            //}
         }
 
         private void CreateFile()
@@ -304,110 +268,68 @@ namespace OnePass.WPF.Windows
             cryptoWriter.Write(content);
         }
 
-        private bool ValidateCreateAccount()
-        {
-            var username = RegisterUsernameTextbox.Text;
-            var password = RegisterPasswordTextbox.Text;
-            var repeatPassword = RegisterPasswordRepeatTextbox.Text;
-            var isValid = true;
+        //private bool ValidateCreateAccount()
+        //{
+        //    var username = RegisterUsernameTextbox.Text;
+        //    var password = RegisterPasswordTextbox.Text;
+        //    var repeatPassword = RegisterPasswordRepeatTextbox.Text;
+        //    var isValid = true;
 
-            // Validate repeat password
-            if (string.IsNullOrEmpty(repeatPassword))
-            {
-                RegisterRepeatPasswordValidationLabel.Content = "Password is required.";
-                RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
-                isValid = false;
-            }
-            else
-            {
-                if (password != repeatPassword)
-                {
-                    RegisterRepeatPasswordValidationLabel.Content = "Password must match Repeat Password.";
-                    RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
-                    isValid = false;
-                }
-                else
-                {
-                    RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Collapsed;
-                }
-            }
+        //    // Validate repeat password
+        //    if (string.IsNullOrEmpty(repeatPassword))
+        //    {
+        //        RegisterRepeatPasswordValidationLabel.Content = "Password is required.";
+        //        RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
+        //        isValid = false;
+        //    }
+        //    else
+        //    {
+        //        if (password != repeatPassword)
+        //        {
+        //            RegisterRepeatPasswordValidationLabel.Content = "Password must match Repeat Password.";
+        //            RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Visible;
+        //            isValid = false;
+        //        }
+        //        else
+        //        {
+        //            RegisterRepeatPasswordValidationLabel.Visibility = Visibility.Collapsed;
+        //        }
+        //    }
 
-            // Validate password
-            if (string.IsNullOrEmpty(password))
-            {
-                RegisterPasswordValidationLabel.Content = "Password is required.";
-                RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
-                isValid = false;
-            }
-            else
-            {
-                if (password.Length < 10)
-                {
-                    RegisterPasswordValidationLabel.Content = "Password must be at least 10 characters.";
-                    RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
-                    isValid = false;
-                }
-                else
-                {
-                    RegisterPasswordValidationLabel.Visibility = Visibility.Collapsed;
-                }
-            }
+        //    // Validate password
+        //    if (string.IsNullOrEmpty(password))
+        //    {
+        //        RegisterPasswordValidationLabel.Content = "Password is required.";
+        //        RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
+        //        isValid = false;
+        //    }
+        //    else
+        //    {
+        //        if (password.Length < 10)
+        //        {
+        //            RegisterPasswordValidationLabel.Content = "Password must be at least 10 characters.";
+        //            RegisterPasswordValidationLabel.Visibility = Visibility.Visible;
+        //            isValid = false;
+        //        }
+        //        else
+        //        {
+        //            RegisterPasswordValidationLabel.Visibility = Visibility.Collapsed;
+        //        }
+        //    }
 
-            // Validate username
-            if (string.IsNullOrEmpty(username))
-            {
-                RegisterUsernameValidationLabel.Content = "Username is required.";
-                RegisterUsernameValidationLabel.Visibility = Visibility.Visible;
-                isValid = false;
-            }
-            else
-            {
-                RegisterUsernameValidationLabel.Visibility = Visibility.Collapsed;
-            }
+        //    // Validate username
+        //    if (string.IsNullOrEmpty(username))
+        //    {
+        //        RegisterUsernameValidationLabel.Content = "Username is required.";
+        //        RegisterUsernameValidationLabel.Visibility = Visibility.Visible;
+        //        isValid = false;
+        //    }
+        //    else
+        //    {
+        //        RegisterUsernameValidationLabel.Visibility = Visibility.Collapsed;
+        //    }
 
-            return isValid;
-        }
-
-        private bool ValidateLoginModel()
-        {
-            var username = LoginUsernameTextbox.Text;
-            var password = LoginPasswordTextbox.Text;
-            var isValid = true;
-
-            // Validate password
-            if (string.IsNullOrEmpty(password))
-            {
-                LoginPasswordValidationLabel.Content = "Password is required.";
-                LoginPasswordValidationLabel.Visibility = Visibility.Visible;
-                isValid = false;
-            }
-            else
-            {
-                if (password.Length < 10)
-                {
-                    LoginPasswordValidationLabel.Content = "Password must be at least 10 characters.";
-                    LoginPasswordValidationLabel.Visibility = Visibility.Visible;
-                    isValid = false;
-                }
-                else
-                {
-                    LoginPasswordValidationLabel.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            // Validate username
-            if (string.IsNullOrEmpty(username))
-            {
-                LoginUsernameValidationLabel.Content = "Username is required.";
-                LoginUsernameValidationLabel.Visibility = Visibility.Visible;
-                isValid = false;
-            }
-            else
-            {
-                LoginUsernameValidationLabel.Visibility = Visibility.Collapsed;
-            }
-
-            return isValid;
-        }
+        //    return isValid;
+        //}
     }
 }

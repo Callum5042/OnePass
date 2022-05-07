@@ -19,13 +19,13 @@ namespace OnePass.WPF.Models
             _fileEncoder = new FileEncoder();
             _fileEncoder.Load();
 
-            ErrorsChanged += AccountModel_ErrorsChanged;
+            ErrorsChanged += OnErrorsChanged;
         }
 
-        private void AccountModel_ErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+        private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
         {
             var error = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
-            var validationLabel = typeof(AccountModel).GetProperties().FirstOrDefault(x => x.Name == $"{e.PropertyName}Validation");
+            var validationLabel = GetType().GetProperties().FirstOrDefault(x => x.Name == $"{e.PropertyName}Validation");
             validationLabel?.SetValue(this, error);
         }
 
