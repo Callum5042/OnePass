@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OnePass.Services;
-using OnePass.Services.Interfaces;
 using System;
 using System.IO.Abstractions;
 using System.Linq;
@@ -32,10 +31,7 @@ namespace OnePass.Infrastructure
             InjectServices(services);
             InjectConventions(services);
 
-            services.AddTransient<IEncryptor, Encryptor>();
             services.AddTransient<IPasswordGenerator, PasswordGenerator>();
-
-            services.AddTransient<IFileEncryptor, FileEncryptor>();
             services.AddTransient<IFileSystem, FileSystem>();
         }
 
