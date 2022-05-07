@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OnePass.Services
 {
-    public class PasswordGeneratorV2
+    public class PasswordGenerator : IPasswordGenerator
     {
         private const string _lowerCase = "abcdefghijklmnopqrstuvwxyz";
         private const string _upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -23,7 +23,7 @@ namespace OnePass.Services
 
         public int MinLength { get; set; }
 
-        public PasswordGeneratorV2()
+        public PasswordGenerator()
         {
             HasLowercase = true;
             HasUppercase = true;

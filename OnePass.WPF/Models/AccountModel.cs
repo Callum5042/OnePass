@@ -88,7 +88,7 @@ namespace OnePass.WPF.Models
 
         public void GeneratePassword()
         {
-            var generator = new PasswordGeneratorV2();
+            var generator = new PasswordGenerator();
             Password = generator.Generate();
         }
 
