@@ -41,10 +41,66 @@ namespace OnePass.Services
                 throw new InvalidOperationException($"{nameof(MinLength)} cannot be bigger than {nameof(MaxLength)}");
             }
 
-            var random = new Random();
+            if (!HasLowercase && !HasUppercase && !HasNumbers && !HasSymbols)
+            {
+                throw new InvalidOperationException("Cannot generate password with all settings to off");
+            }
+
             var builder = new StringBuilder();
 
             // Fit criteria
+            SetCriteria(builder);
+
+            // Fill out rest with random characters
+            FillRandom(builder);
+
+            // Randomise the string
+            var list = builder.ToString().ToArray();
+            KnuthShuffle(list);
+
+            return new string(list);
+        }
+
+        private void FillRandom(StringBuilder builder)
+        {
+            var random = new Random();
+
+            var minLength = MinLength - builder.Length;
+            var maxLength = MaxLength - builder.Length;
+            var length = random.Next(minLength, Math.Max(maxLength, minLength));
+
+            // Append list
+            var chars = string.Empty;
+            if (HasLowercase)
+            {
+                chars += _lowerCase;
+            }
+
+            if (HasUppercase)
+            {
+                chars += _upperCase;
+            }
+
+            if (HasNumbers)
+            {
+                chars += _numbers;
+            }
+
+            if (HasSymbols)
+            {
+                chars += _symbols;
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                builder.Append(chars[random.Next(0, chars.Length - 1)]);
+            }
+        }
+
+        private void SetCriteria(StringBuilder builder)
+        {
+            var random = new Random();
+
             if (HasLowercase)
             {
                 builder.Append(_lowerCase[random.Next(0, _lowerCase.Length - 1)]);
@@ -64,26 +120,9 @@ namespace OnePass.Services
             {
                 builder.Append(_symbols[random.Next(0, _symbols.Length - 1)]);
             }
-
-            // Fill out rest with random characters
-            var minLength = MinLength - builder.Length;
-            var maxLength = MaxLength - builder.Length;
-            var length = random.Next(minLength, Math.Max(maxLength, minLength));
-
-            var chars = _lowerCase + _upperCase + _numbers + _symbols;
-            for (int i = 0; i < length; i++)
-            {
-                builder.Append(chars[random.Next(0, chars.Length - 1)]);
-            }
-
-            // Randomise the string
-            var list = builder.ToString().ToArray();
-            KnuthShuffle(list);
-
-            return new string(list);
         }
 
-        public static void KnuthShuffle<T>(T[] array)
+        private static void KnuthShuffle<T>(T[] array)
         {
             var random = new Random();
             for (var i = 0; i < array.Length; i++)
