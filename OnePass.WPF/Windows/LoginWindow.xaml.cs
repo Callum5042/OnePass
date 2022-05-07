@@ -3,13 +3,13 @@ using OnePass.WPF.Models;
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -22,8 +22,6 @@ namespace OnePass.WPF.Windows
     {
         private const string _passwordEye = "";
         private const string _passwordEyeBlocked = "";
-
-        public static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
         public LoginWindow()
         {
@@ -56,48 +54,22 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             SetCapsLockWarning();
 
             // Check if selected
-            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var path = Path.Combine(appdata, @"OnePass", "options.json");
-            if (File.Exists(path))
+            if (DataContext is LoginModel model)
             {
-                using var file = File.OpenRead(path);
-                var options = JsonSerializer.Deserialize<AppOptions>(file);
-
-                if (string.IsNullOrEmpty(options.RememberUsername))
+                await model.LoadOptions();
+                if (model.RememberMe)
                 {
-                    LoginUsernameTextbox.Focus();
+                    LoginPasswordTextbox.Focus();
                 }
                 else
                 {
-                    LoginUsernameTextbox.Text = options.RememberUsername;
-                    LoginPasswordTextbox.Focus();
-                    RememberMeCheckbox.IsChecked = true;
+                    LoginUsernameTextbox.Focus();
                 }
-            }
-            else
-            {
-                LoginUsernameTextbox.Focus();
-            }
-        }
-
-        private static void SaveOptions(AppOptions appOptions)
-        {
-            try
-            {
-                var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
-                var path = Path.Combine(appdata, @"OnePass", "options.json");
-                using var file = File.Create(path);
-                JsonSerializer.Serialize(file, appOptions);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Waring", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -127,27 +99,14 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void OnClickLoginButton(object sender, RoutedEventArgs e)
+        private async void OnClickLoginButton(object sender, RoutedEventArgs e)
         {
             if (LoginStackPanel.DataContext is LoginModel model)
             {
                 if (model.IsValid())
                 {
                     // Save options
-                    // if (RememberMeCheckbox.IsChecked == true)
-                    // {
-                    //     SaveOptions(new AppOptions()
-                    //     {
-                    //         RememberUsername = LoginUsernameTextbox.Text,
-                    //     });
-                    // }
-                    // else
-                    // {
-                    //     SaveOptions(new AppOptions()
-                    //     {
-                    //         RememberUsername = string.Empty,
-                    //     });
-                    // }
+                    await model.SaveOptions();
 
                     // Set login details
                     App.Current.Username = model.Username;

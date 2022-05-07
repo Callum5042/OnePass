@@ -4,6 +4,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OnePass.WPF.Models
 {
@@ -17,6 +20,8 @@ namespace OnePass.WPF.Models
 
             ErrorsChanged += OnErrorsChanged;
         }
+
+        public static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
         {
@@ -42,9 +47,30 @@ namespace OnePass.WPF.Models
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
 
-        [Required]
+        public bool RememberMe { get => rememberMe; set => SetProperty(ref rememberMe, value); }
+        private bool rememberMe;
+
         public string RegisterUsername { get => registerUsername; set => SetProperty(ref registerUsername, value, validate: true); }
         private string registerUsername;
+
+        public async Task LoadOptions()
+        {
+            // Check if selected
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+
+            if (File.Exists(path))
+            {
+                using var file = File.OpenRead(path);
+                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+
+                if (!string.IsNullOrEmpty(options.RememberUsername))
+                {
+                    Username = options.RememberUsername;
+                    RememberMe = true;
+                }
+            }
+        }
 
         public bool IsValid()
         {
@@ -56,22 +82,23 @@ namespace OnePass.WPF.Models
                 return false;
             }
 
-            // Verify password
-            //try
-            //{
-            //    if (!_fileEncoder.Verify(Username, Password))
-            //    {
-            //        PasswordValidation = "Password is incorrect.";
-            //        return (false, false, true);
-            //    }
-            //}
-            //catch (InvalidOperationException)
-            //{
-            //    UsernameValidation = $"{Username}.bin is not a valid OnePass file.";
-            //    return (false, true, false);
-            //}
-
             return true;
+        }
+
+        public async Task SaveOptions()
+        {
+            var options = new AppOptions
+            {
+                RememberUsername = RememberMe ? Username : string.Empty
+            };
+
+            // Save options
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+
+            using var file = File.Create(path);
+            await JsonSerializer.SerializeAsync(file, options);
         }
 
         private sealed class FileExistsAttribute : ValidationAttribute
