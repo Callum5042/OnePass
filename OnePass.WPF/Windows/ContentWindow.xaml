@@ -20,6 +20,9 @@
                 <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
+            <MenuItem Header="Tools" IsEnabled="False" />
+            <MenuItem Header="Options" IsEnabled="False" />
+
             <MenuItem Header="Help">
                 <MenuItem Header="About OnePass" IsEnabled="False" />
             </MenuItem>
