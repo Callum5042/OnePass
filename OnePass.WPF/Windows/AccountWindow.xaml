@@ -6,7 +6,7 @@
         xmlns:models="clr-namespace:OnePass.WPF.Models"
         d:DataContext="{d:DesignInstance Type=models:AccountModel}"
         mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" 
-        ShowInTaskbar="False" WindowStyle="SingleBorderWindow"
+        ShowInTaskbar="False" WindowStyle="SingleBorderWindow" Loaded="Window_Loaded"
         Title="Account" Topmost="True" SizeToContent="WidthAndHeight">
 
     <!-- Resources -->

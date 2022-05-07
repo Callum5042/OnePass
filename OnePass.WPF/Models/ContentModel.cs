@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 
 namespace OnePass.WPF.Models
 {
@@ -13,12 +13,16 @@ namespace OnePass.WPF.Models
     public class ContentModel : ObservableObject
     {
         private readonly FileEncoder _fileEncoder;
-        private readonly IEnumerable<AccountListModel> _accountListModel;
+        private IEnumerable<AccountListModel> _accountListModel;
 
         public ContentModel()
         {
             _fileEncoder = new FileEncoder();
-            _fileEncoder.Load(App.Current.Username, App.Current.Password);
+        }
+
+        public async Task LoadAsync()
+        {
+            await _fileEncoder.LoadAsync(App.Current.Username, App.Current.Password);
 
             _accountListModel = _fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
             {
@@ -34,15 +38,16 @@ namespace OnePass.WPF.Models
         }
 
         public ObservableCollection<AccountListModel> Accounts { get => accounts; private set => SetProperty(ref accounts, value); }
-        private ObservableCollection<AccountListModel> accounts = new ObservableCollection<AccountListModel>();
+        private ObservableCollection<AccountListModel> accounts = new();
 
-        public void Remove(AccountListModel model)
+        public async Task RemoveAsync(AccountListModel model)
         {
-            _fileEncoder.Load(App.Current.Username, App.Current.Password);
+            await _fileEncoder.LoadAsync(App.Current.Username, App.Current.Password);
 
             var account = _fileEncoder.Accounts.First(x => x.Guid == model.Guid);
             _fileEncoder.Accounts.Remove(account);
-            _fileEncoder.Save(App.Current.Username, App.Current.Password);
+
+            await _fileEncoder.SaveAsync(App.Current.Username, App.Current.Password);
 
             // Remove from view
             Accounts.Remove(model);

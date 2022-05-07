@@ -6,6 +6,7 @@ using OnePass.WPF.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnePass.WPF.Models
 {
@@ -17,9 +18,12 @@ namespace OnePass.WPF.Models
         public AccountModel()
         {
             _fileEncoder = new FileEncoder();
-            _fileEncoder.Load(App.Current.Username, App.Current.Password);
-
             ErrorsChanged += OnErrorsChanged;
+        }
+
+        public async Task LoadAsync()
+        {
+            await _fileEncoder.LoadAsync(App.Current.Username, App.Current.Password);
         }
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -51,7 +55,7 @@ namespace OnePass.WPF.Models
             return !HasErrors;
         }
 
-        public Guid AddAccount()
+        public async Task<Guid> AddAccountAsync()
         {
             var guid = Guid.NewGuid();
             _fileEncoder.Accounts.Add(new Account()
@@ -65,11 +69,11 @@ namespace OnePass.WPF.Models
                 DateModified = DateTime.Now,
             });
 
-            _fileEncoder.Save(App.Current.Username, App.Current.Password);
+            await _fileEncoder.SaveAsync(App.Current.Username, App.Current.Password);
             return guid;
         }
 
-        public void UpdateAccount()
+        public async Task UpdateAccountAsync()
         {
             var account = _fileEncoder.Accounts.First(x => x.Guid == Guid);
             account.Name = Name;
@@ -78,7 +82,7 @@ namespace OnePass.WPF.Models
             account.Password = Password;
             account.DateModified = DateTime.Now;
 
-            _fileEncoder.Save(App.Current.Username, App.Current.Password);
+            await _fileEncoder.SaveAsync(App.Current.Username, App.Current.Password);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }

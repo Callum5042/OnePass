@@ -208,9 +208,9 @@ namespace OnePass.WPF.Models
 
         public RegisterValidationModel Register { get; set; } = new RegisterValidationModel();
 
-        public void CreateAccount(string username, string password)
+        public async Task CreateAccountAsync(string username, string password)
         {
-            _fileEncoder.Save(username, password);
+            await _fileEncoder.SaveAsync(username, password);
         }
 
         public async Task LoadOptions()

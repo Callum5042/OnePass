@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OnePass.WPF.Services
 {
@@ -25,7 +26,7 @@ namespace OnePass.WPF.Services
 
         public IList<Account> Accounts { get; private set; } = new List<Account>();
 
-        public void Load(string username, string password)
+        public async Task LoadAsync(string username, string password)
         {
             var filename = $"{username}.bin";
 
@@ -62,16 +63,13 @@ namespace OnePass.WPF.Services
 
             // Decrypt
             using var cryptoStream = new CryptoStream(file, aes.CreateDecryptor(), CryptoStreamMode.Read);
-            using var cryptoReader = new StreamReader(cryptoStream);
-            var content = cryptoReader.ReadToEnd();
-
-            var root = JsonSerializer.Deserialize<RootAccount>(content);
+            var root = await JsonSerializer.DeserializeAsync<RootAccount>(cryptoStream);
             Accounts = root.Accounts;
 
             Loaded = true;
         }
 
-        public void Save(string username, string password)
+        public async Task SaveAsync(string username, string password)
         {
             var filename = $"{username}.bin";
 
@@ -113,14 +111,10 @@ namespace OnePass.WPF.Services
 
             // Encrypt
             using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
-            using var cryptoWriter = new StreamWriter(cryptoStream);
-
-            var content = JsonSerializer.Serialize(new RootAccount()
+            await JsonSerializer.SerializeAsync(cryptoStream, new RootAccount()
             {
                 Accounts = Accounts
             });
-
-            cryptoWriter.Write(content);
         }
 
         public bool Verify(string username, string password)

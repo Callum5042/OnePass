@@ -24,13 +24,13 @@ namespace OnePass.WPF.Windows
             EditAccountButton.Visibility = edit ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void Button_Click_AddAccount(object sender, RoutedEventArgs e)
+        private async void Button_Click_AddAccount(object sender, RoutedEventArgs e)
         {
             if (DataContext is AccountModel model)
             {
                 if (model.IsValid())
                 {
-                    var guid = model.AddAccount();
+                    var guid = await model.AddAccountAsync();
 
                     // Update content window and return
                     if (_contentWindow.DataContext is ContentModel contentModel)
@@ -51,11 +51,11 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void Button_Click_EditAccount(object sender, RoutedEventArgs e)
+        private async void Button_Click_EditAccount(object sender, RoutedEventArgs e)
         {
             if (DataContext is AccountModel accountModel)
             {
-                accountModel.UpdateAccount();
+                await accountModel.UpdateAccountAsync();
 
                 // Update content window and return
                 if (_contentWindow.DataContext is ContentModel contentModel)
@@ -77,6 +77,14 @@ namespace OnePass.WPF.Windows
             if (DataContext is AccountModel model)
             {
                 model.GeneratePassword();
+            }
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AccountModel model)
+            {
+                await model.LoadAsync();
             }
         }
     }

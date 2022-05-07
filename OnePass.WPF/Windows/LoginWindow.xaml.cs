@@ -126,14 +126,14 @@ namespace OnePass.WPF.Windows
             RegisterStackPanel.Visibility = Visibility.Collapsed;
         }
 
-        private void OnClickCreateAccountButton(object sender, RoutedEventArgs e)
+        private async void OnClickCreateAccountButton(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginModel model)
             {
                 if (model.Register.IsValid())
                 {
                     // Create account
-                    model.CreateAccount(model.Register.Username, model.Register.Password);
+                    await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
 
                     // Set login details
                     App.Current.Username = model.Register.Username;

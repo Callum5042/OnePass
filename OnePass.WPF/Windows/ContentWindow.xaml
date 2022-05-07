@@ -6,7 +6,7 @@
         xmlns:models="clr-namespace:OnePass.WPF.Models"
         d:DataContext="{d:DesignInstance Type=models:ContentModel}"
         mc:Ignorable="d" 
-        ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded"
         Title="OnePass" Height="450" Width="800" MinWidth="400">
 
     <Window.Resources>

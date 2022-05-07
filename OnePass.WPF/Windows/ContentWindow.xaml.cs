@@ -19,8 +19,8 @@ namespace OnePass.WPF.Windows
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = sender as ListView;
-            var selected = item.SelectedItem as AccountListModel;
+            //var item = sender as ListView;
+            //var selected = item.SelectedItem as AccountListModel;
 
             //ProductDetailsGrid.Visibility = Visibility.Visible;
             //ProductDetailsGrid.DataContext = selected;
@@ -59,7 +59,7 @@ namespace OnePass.WPF.Windows
             accountWindow.Show();
         }
 
-        private void MenuItem_Click_RemoveAccount(object sender, RoutedEventArgs e)
+        private async void MenuItem_Click_RemoveAccount(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
             var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
@@ -71,7 +71,7 @@ namespace OnePass.WPF.Windows
                 {
                     if (DataContext is ContentModel contentModel)
                     {
-                        contentModel.Remove(model);
+                        await contentModel.RemoveAsync(model);
                     }
                 }
             }
@@ -99,6 +99,14 @@ namespace OnePass.WPF.Windows
         private void MenuItem_Click_ClearClipboard(object sender, RoutedEventArgs e)
         {
             Clipboard.Clear();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ContentModel model)
+            {
+                await model.LoadAsync();
+            }
         }
     }
 }
