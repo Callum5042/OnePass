@@ -123,7 +123,7 @@
             </ListView>
 
             <!-- Details -->
-            <WrapPanel Grid.Row="2" Name="ProductDetailsGrid" Visibility="Collapsed" HorizontalAlignment="Center">
+            <WrapPanel Grid.Row="2" Name="ProductDetailsGrid" Visibility="Collapsed" HorizontalAlignment="Center" d:DataContext="{d:DesignInstance Type=models:AccountListModel}" >
 
                 <Border Padding="10,0">
                     <StackPanel Orientation="Horizontal">

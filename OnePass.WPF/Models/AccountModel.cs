@@ -1,13 +1,10 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 using OnePass.Infrastructure;
 using OnePass.Models;
 using OnePass.WPF.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 
 namespace OnePass.WPF.Models
 {
@@ -20,9 +17,16 @@ namespace OnePass.WPF.Models
         {
             _fileEncoder = new FileEncoder();
             _fileEncoder.Load();
+
+            ErrorsChanged += AccountModel_ErrorsChanged;
         }
 
-        public ICommand Command { get; set; }
+        private void AccountModel_ErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+        {
+            var error = GetErrors(e.PropertyName).Select(x => x.ErrorMessage).FirstOrDefault();
+            var validationLabel = typeof(AccountModel).GetProperties().FirstOrDefault(x => x.Name == $"{e.PropertyName}Validation");
+            validationLabel?.SetValue(this, error);
+        }
 
         public Guid Guid { get; set; }
 
@@ -43,15 +47,7 @@ namespace OnePass.WPF.Models
         public bool IsValid()
         {
             ValidateAllProperties();
-            NameValidation = FirstError(nameof(Name));
-            EmailAddressValidation = FirstError(nameof(EmailAddress));
-
             return !HasErrors;
-        }
-
-        public string FirstError(string property)
-        {
-            return GetErrors(property).Select(x => x.ErrorMessage).FirstOrDefault();
         }
 
         public Guid AddAccount()

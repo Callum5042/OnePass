@@ -23,6 +23,27 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Height" Value="30" />
             <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="BorderThickness" Value="1"></Setter>
+                                <Setter Property="BorderBrush" Value="#FF1164B4"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF0080FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
                     <Setter Property="BorderBrush" Value="Red" />
@@ -53,25 +74,25 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
             <Label Content="Name" />
-            <TextBox Text="{Binding Name}" TabIndex="1" />
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TabIndex="1" />
             <Label Style="{StaticResource ValidationLabel}" Content="{Binding NameValidation}" />
         </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
             <Label Content="Username" />
-            <TextBox Text="{Binding Username}" TabIndex="2" />
+            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" TabIndex="2" />
             <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidation}" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
             <Label Content="Email Address" />
-            <TextBox Text="{Binding EmailAddress}" TabIndex="3" />
+            <TextBox Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" />
             <Label Style="{StaticResource ValidationLabel}" Content="{Binding EmailAddressValidation}" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
             <Label Content="Password" />
-            <TextBox Text="{Binding Password}" TabIndex="4" />
+            <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" TabIndex="4" />
             <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidation}" />
         </StackPanel>
 
