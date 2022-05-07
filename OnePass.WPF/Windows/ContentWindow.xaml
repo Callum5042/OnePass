@@ -24,7 +24,7 @@
             <MenuItem Header="Options" IsEnabled="False" />
 
             <MenuItem Header="Help">
-                <MenuItem Header="About OnePass" IsEnabled="False" />
+                <MenuItem Header="About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
             </MenuItem>
 
         </Menu>

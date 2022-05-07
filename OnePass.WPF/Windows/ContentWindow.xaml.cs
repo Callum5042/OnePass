@@ -77,5 +77,11 @@ namespace OnePass.WPF.Windows
                 }
             }
         }
+
+        private void MenuItem_Click_ShowAboutWindow(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new AboutWindow() { Owner = this };
+            aboutWindow.ShowDialog();
+        }
     }
 }
