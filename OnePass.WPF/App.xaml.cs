@@ -1,7 +1,9 @@
 ﻿using OnePass.Infrastructure;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace OnePass
 {
@@ -10,10 +12,13 @@ namespace OnePass
     /// </summary>
     public partial class App : Application
     {
-        private readonly ServiceBuilder _serviceBuilder = new ServiceBuilder();
+        private readonly ServiceBuilder _serviceBuilder = new();
 
         public App()
         {
+            // Set culture from operating system because WPF defaults to en-US
+            var metadata = new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag));
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), metadata);
         }
 
         public T GetService<T>()
@@ -34,5 +39,13 @@ namespace OnePass
 
             Environment.Exit(0);
         }
+
+        public new static App Current => (App)Application.Current;
+
+        public string Filename => $"{Username}.bin";
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
     }
 }

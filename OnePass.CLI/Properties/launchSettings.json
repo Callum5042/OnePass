@@ -1,7 +1,8 @@
 {
   "profiles": {
     "OnePass.CLI": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-decrypt -file \"Callum.bin\" -password \"IntelNvidiaGigabyteCorsair\""
     }
   }
 }
