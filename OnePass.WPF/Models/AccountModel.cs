@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
 using OnePass.Models;
+using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -84,6 +85,13 @@ namespace OnePass.WPF.Models
         private string nameValidation;
 
         public string UsernameValidation { get => usernameValidation; set => SetProperty(ref usernameValidation, value); }
+
+        public void GeneratePassword()
+        {
+            var generator = new PasswordGeneratorV2();
+            Password = generator.Generate();
+        }
+
         private string usernameValidation;
 
         public string EmailAddressValidation { get => emailAddressValidation; set => SetProperty(ref emailAddressValidation, value); }

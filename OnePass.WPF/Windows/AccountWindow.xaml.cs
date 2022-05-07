@@ -71,5 +71,13 @@ namespace OnePass.WPF.Windows
                 Close(); 
             }
         }
+
+        private void Button_Click_GeneratePassword(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AccountModel model)
+            {
+                model.GeneratePassword();
+            }
+        }
     }
 }

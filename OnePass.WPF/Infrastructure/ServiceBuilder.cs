@@ -31,7 +31,6 @@ namespace OnePass.Infrastructure
             InjectServices(services);
             InjectConventions(services);
 
-            services.AddTransient<IPasswordGenerator, PasswordGenerator>();
             services.AddTransient<IFileSystem, FileSystem>();
         }
 

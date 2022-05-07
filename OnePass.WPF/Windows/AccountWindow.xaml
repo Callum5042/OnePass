@@ -98,7 +98,7 @@
 
         <Button Grid.Row="2" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
         <Button Grid.Row="2" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" IsDefault="True" />
-        <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" IsEnabled="False" />
+        <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" Click="Button_Click_GeneratePassword" />
 
     </Grid>
 
