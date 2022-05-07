@@ -9,6 +9,22 @@
         ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
         Title="OnePass" Height="450" Width="800" MinWidth="400">
 
+    <Window.Resources>
+        
+        <!-- TextBox style -->
+        <Style TargetType="TextBox">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        
+    </Window.Resources>
+    
     <DockPanel>
 
         <!-- Menu bar -->
@@ -58,6 +74,7 @@
 
                     <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
                     <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" IsEnabled="False" />
+                    <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" />
 
                 </StackPanel>
 
