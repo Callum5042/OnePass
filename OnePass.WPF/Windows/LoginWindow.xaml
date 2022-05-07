@@ -151,16 +151,8 @@
 
                     <!-- Username -->
                     <Label Style="{StaticResource LoginLabel}" Content="Username" />
-                    <TextBox TabIndex="1" x:Name="RegisterUsernameTextbox" Height="30" VerticalContentAlignment="Center">
-                        <Validation.ErrorTemplate>
-                            <ControlTemplate>
-                                <Border BorderBrush="Red" BorderThickness="1" CornerRadius="3">
-                                    <AdornedElementPlaceholder />
-                                </Border>
-                            </ControlTemplate>
-                        </Validation.ErrorTemplate>
-                    </TextBox>
-                    <Label x:Name="RegisterUsernameValidationLabel" Style="{StaticResource ValidationLabel}" />
+                    <TextBox x:Name="RegisterUsernameTextbox" Text="{Binding RegisterUsername, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidation}" />
 
                     <!-- Password -->
                     <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />

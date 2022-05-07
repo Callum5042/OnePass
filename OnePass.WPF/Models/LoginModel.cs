@@ -26,12 +26,14 @@ namespace OnePass.WPF.Models
         }
 
         [Required]
-        public string Username { get => username; set => SetProperty(ref username, value, validate: true); }
+        [FileExists]
+        public string Username { get => username; set => SetProperty(ref username, value); }
         private string username;
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
-        public string Password { get => password; set => SetProperty(ref password, value, validate: true); }
+        [CheckPassword]
+        public string Password { get => password; set => SetProperty(ref password, value); }
         private string password;
 
         public string UsernameValidation { get => usernameValidation; set => SetProperty(ref usernameValidation, value); }
@@ -40,39 +42,81 @@ namespace OnePass.WPF.Models
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
 
-        public (bool valid, bool fileNotFound, bool invalidPassword) IsValid()
+        [Required]
+        public string RegisterUsername { get => registerUsername; set => SetProperty(ref registerUsername, value, validate: true); }
+        private string registerUsername;
+
+        public bool IsValid()
         {
             ValidateAllProperties();
 
             // Has UX errors
             if (HasErrors)
             {
-                return (false, false, false);
-            }
-
-            // Check if file exists
-            if (!File.Exists($"{Username}.bin"))
-            {
-                UsernameValidation = $"File {Username}.bin could not be found.";
-                return (false, true, false);
+                return false;
             }
 
             // Verify password
-            try
+            //try
+            //{
+            //    if (!_fileEncoder.Verify(Username, Password))
+            //    {
+            //        PasswordValidation = "Password is incorrect.";
+            //        return (false, false, true);
+            //    }
+            //}
+            //catch (InvalidOperationException)
+            //{
+            //    UsernameValidation = $"{Username}.bin is not a valid OnePass file.";
+            //    return (false, true, false);
+            //}
+
+            return true;
+        }
+
+        private sealed class FileExistsAttribute : ValidationAttribute
+        {
+            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
-                if (!_fileEncoder.Verify(Username, Password))
+                if (!File.Exists($"{value}.bin"))
                 {
-                    PasswordValidation = "Password is incorrect.";
-                    return (false, false, true);
+                    return new ValidationResult($"File {value}.bin could not be found.");
                 }
+
+                return ValidationResult.Success;
             }
-            catch (InvalidOperationException)
+        }
+
+        private sealed class CheckPasswordAttribute : ValidationAttribute
+        {
+            private readonly FileEncoder _fileEncoder;
+
+            public CheckPasswordAttribute()
             {
-                UsernameValidation = $"{Username}.bin is not a valid OnePass file.";
-                return (false, true, false);
+                _fileEncoder = new FileEncoder();
             }
 
-            return (true, false, false);
+            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            {
+                try
+                {
+                    var model = validationContext.ObjectInstance as LoginModel;
+                    if (File.Exists($"{value}.bin"))
+                    {
+                        if (!_fileEncoder.Verify(model.Username, model.Password))
+                        {
+                            return new ValidationResult("Password is incorrect.");
+                        }
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // This might be worth checking elsewhere
+                    return new ValidationResult("Not a valid OnePass file.");
+                }
+
+                return ValidationResult.Success;
+            }
         }
     }
 }

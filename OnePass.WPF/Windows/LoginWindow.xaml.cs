@@ -131,8 +131,7 @@ namespace OnePass.WPF.Windows
         {
             if (LoginStackPanel.DataContext is LoginModel model)
             {
-                var (valid, fileNotFound, invalidPassword) = model.IsValid();
-                if (valid)
+                if (model.IsValid())
                 {
                     // Save options
                     // if (RememberMeCheckbox.IsChecked == true)
@@ -158,22 +157,6 @@ namespace OnePass.WPF.Windows
                     var contentWindow = new ContentWindow();
                     contentWindow.Show();
                     Close();
-                }
-                else if (fileNotFound)
-                {
-                    var bindingExpression = BindingOperations.GetBindingExpression(LoginUsernameTextbox, TextBox.TextProperty);
-                    var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(LoginUsernameTextbox, TextBox.TextProperty);
-                    var validationError = new ValidationError(new ExceptionValidationRule(), bindingExpression);
-
-                    Validation.MarkInvalid(bindingExpressionBase, validationError);
-                }
-                else if (invalidPassword)
-                {
-                    var bindingExpression = BindingOperations.GetBindingExpression(LoginPasswordTextbox, TextBox.TextProperty);
-                    var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(LoginPasswordTextbox, TextBox.TextProperty);
-                    var validationError = new ValidationError(new ExceptionValidationRule(), bindingExpression);
-
-                    Validation.MarkInvalid(bindingExpressionBase, validationError);
                 }
             }
         }
