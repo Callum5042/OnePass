@@ -22,8 +22,8 @@ namespace OnePass.WPF.Windows
             var item = sender as ListView;
             var selected = item.SelectedItem as AccountListModel;
 
-            ProductDetailsGrid.Visibility = Visibility.Visible;
-            ProductDetailsGrid.DataContext = selected;
+            //ProductDetailsGrid.Visibility = Visibility.Visible;
+            //ProductDetailsGrid.DataContext = selected;
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
@@ -51,6 +51,9 @@ namespace OnePass.WPF.Windows
                 {
                     Guid = model.Guid,
                     Name = model.Name,
+                    Username = model.Username,
+                    EmailAddress = model.EmailAddress,
+                    Password = model.Password,
                 }
             };
 

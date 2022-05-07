@@ -109,11 +109,13 @@
                                 <ColumnDefinition MinWidth="200"  />
                                 <ColumnDefinition MinWidth="200" />
                                 <ColumnDefinition MinWidth="200" />
+                                <ColumnDefinition MinWidth="200" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Grid.Column="0" Text="{Binding Name}" />
                             <TextBlock Grid.Column="1" Text="{Binding Username}" />
                             <TextBlock Grid.Column="2" Text="{Binding EmailAddress}" />
+                            <TextBlock Grid.Column="3" Text="{Binding DateModified, StringFormat=g}" />
 
                         </Grid>
 

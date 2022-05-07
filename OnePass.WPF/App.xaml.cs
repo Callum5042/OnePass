@@ -1,7 +1,9 @@
 ﻿using OnePass.Infrastructure;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace OnePass
 {
@@ -14,6 +16,9 @@ namespace OnePass
 
         public App()
         {
+            // Set culture from operating system because WPF defaults to en-US
+            var metadata = new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag));
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), metadata);
         }
 
         public T GetService<T>()

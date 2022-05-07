@@ -10,11 +10,14 @@ namespace OnePass.WPF.Models
         public string Name { get => name; set => SetProperty(ref name, value); }
         private string name;
 
-        public string Username { get; set; }
+        public string Username { get => username; set => SetProperty(ref username, value); }
+        private string username;
 
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get => emailAddress; set => SetProperty(ref emailAddress, value); }
+        private string emailAddress;
 
-        public string Password { get; set; }
+        public string Password { get => password; set => SetProperty(ref password, value); }
+        private string password;
 
         public bool Favourite { get; set; }
 
@@ -22,6 +25,7 @@ namespace OnePass.WPF.Models
 
         public string Notes { get; set; }
 
-        public DateTime? LastChanged { get; set; }
+        public DateTime? DateModified { get => dateModified; set => SetProperty(ref dateModified, value); }
+        private DateTime? dateModified;
     }
 }

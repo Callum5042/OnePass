@@ -57,16 +57,25 @@ namespace OnePass.WPF.Models
             {
                 Guid = guid,
                 Name = Name,
+                Username = Username,
+                EmailAddress = EmailAddress,
+                Password = Password,
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now,
             });
 
             _fileEncoder.Save();
             return guid;
         }
 
-        public void RegisterAccount()
+        public void UpdateAccount()
         {
             var account = _fileEncoder.Accounts.First(x => x.Guid == Guid);
             account.Name = Name;
+            account.Username = Username;
+            account.EmailAddress = EmailAddress;
+            account.Password = Password;
+            account.DateModified = DateTime.Now;
 
             _fileEncoder.Save();
         }

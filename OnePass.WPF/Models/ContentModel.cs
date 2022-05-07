@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
 using OnePass.WPF.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -22,6 +23,7 @@ namespace OnePass.WPF.Models
                 Name = x.Name,
                 Username = x.Username,
                 EmailAddress = x.EmailAddress,
+                DateModified = x.DateModified,
             }));
         }
 

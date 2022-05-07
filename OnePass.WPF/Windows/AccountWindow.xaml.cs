@@ -39,6 +39,10 @@ namespace OnePass.WPF.Windows
                         {
                             Guid = guid,
                             Name = model.Name,
+                            Username = model.Username,
+                            EmailAddress = model.EmailAddress,
+                            Password = model.Password,
+                            DateModified = DateTime.Now,
                         });
                     }
 
@@ -51,16 +55,20 @@ namespace OnePass.WPF.Windows
         {
             if (DataContext is AccountModel accountModel)
             {
-                accountModel.RegisterAccount();
+                accountModel.UpdateAccount();
 
                 // Update content window and return
                 if (_contentWindow.DataContext is ContentModel contentModel)
                 {
                     var accountListModel = contentModel.Accounts.First(x => x.Guid == accountModel.Guid);
                     accountListModel.Name = accountModel.Name;
+                    accountListModel.Username = accountModel.Username;
+                    accountListModel.EmailAddress = accountModel.EmailAddress;
+                    accountListModel.Password = accountModel.Password;
+                    accountListModel.DateModified = DateTime.Now;
                 }
 
-                Close();
+                Close(); 
             }
         }
     }
