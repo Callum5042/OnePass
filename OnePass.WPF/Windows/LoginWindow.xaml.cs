@@ -1,4 +1,5 @@
 ﻿using OnePass.WPF.Models;
+using OnePass.WPF.Services;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +19,7 @@ namespace OnePass.WPF.Windows
         public LoginWindow()
         {
             InitializeComponent();
-            DataContext = new LoginModel();
+            DataContext = App.Current.GetService<LoginModel>();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -101,8 +102,9 @@ namespace OnePass.WPF.Windows
                     await model.SaveOptions();
 
                     // Set login details
-                    App.Current.Username = model.Login.Username;
-                    App.Current.Password = model.Login.Password;
+                    var data = App.Current.GetService<OnePassData>();
+                    data.Username = model.Login.Username;
+                    data.Password = model.Login.Password;
 
                     // Change window
                     var contentWindow = new ContentWindow();
@@ -136,8 +138,9 @@ namespace OnePass.WPF.Windows
                     await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
 
                     // Set login details
-                    App.Current.Username = model.Register.Username;
-                    App.Current.Password = model.Register.Password;
+                    var data = App.Current.GetService<OnePassData>();
+                    data.Username = model.Register.Username;
+                    data.Password = model.Register.Password;
 
                     // Change window
                     var contentWindow = new ContentWindow();

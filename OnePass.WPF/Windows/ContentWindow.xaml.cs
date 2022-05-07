@@ -12,7 +12,7 @@ namespace OnePass.WPF.Windows
         public ContentWindow()
         {
             InitializeComponent();
-            DataContext = new ContentModel();
+            DataContext = App.Current.GetService<ContentModel>();
 
             AccountsListView.Visibility = Visibility.Visible;
         }
@@ -44,16 +44,16 @@ namespace OnePass.WPF.Windows
             var model = item.DataContext as AccountListModel;
 
             // Window
+            var accountModel = App.Current.GetService<AccountModel>();
+            accountModel.Guid = model.Guid;
+            accountModel.Name = model.Name;
+            accountModel.Username = model.Username;
+            accountModel.EmailAddress = model.EmailAddress;
+            accountModel.Password = model.Password;
+
             var accountWindow = new AccountWindow(this, edit: true)
             {
-                DataContext = new AccountModel()
-                {
-                    Guid = model.Guid,
-                    Name = model.Name,
-                    Username = model.Username,
-                    EmailAddress = model.EmailAddress,
-                    Password = model.Password,
-                }
+                DataContext = accountModel
             };
 
             accountWindow.Show();

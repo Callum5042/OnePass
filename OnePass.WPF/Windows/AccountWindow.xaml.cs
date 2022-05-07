@@ -18,7 +18,7 @@ namespace OnePass.WPF.Windows
 
             InitializeComponent();
             Owner = _contentWindow;
-            DataContext = new AccountModel();
+            DataContext = App.Current.GetService<AccountModel>();
 
             AddAccountButton.Visibility = edit ? Visibility.Collapsed : Visibility.Visible;
             EditAccountButton.Visibility = edit ? Visibility.Visible : Visibility.Collapsed;

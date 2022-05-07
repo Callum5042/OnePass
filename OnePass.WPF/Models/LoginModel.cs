@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using OnePass.Infrastructure;
 using OnePass.WPF.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -184,13 +185,14 @@ namespace OnePass.WPF.Models
         }
     }
 
+    [Inject]
     public class LoginModel : ObservableValidator
     {
         private readonly FileEncoder _fileEncoder;
 
-        public LoginModel()
+        public LoginModel(FileEncoder fileEncoder)
         {
-            _fileEncoder = new FileEncoder();
+            _fileEncoder = fileEncoder;
 
             ErrorsChanged += OnErrorsChanged;
         }

@@ -41,11 +41,5 @@ namespace OnePass
         }
 
         public new static App Current => (App)Application.Current;
-
-        public string Filename => $"{Username}.bin";
-
-        public string Username { get; set; }
-
-        public string Password { get; set; }
     }
 }

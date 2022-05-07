@@ -14,16 +14,19 @@ namespace OnePass.WPF.Models
     public class AccountModel : ObservableValidator
     {
         private readonly FileEncoder _fileEncoder;
+        private readonly OnePassData _onePassData;
 
-        public AccountModel()
+        public AccountModel(FileEncoder fileEncoder, OnePassData onePassData)
         {
-            _fileEncoder = new FileEncoder();
+            _fileEncoder = fileEncoder;
+            _onePassData = onePassData;
+
             ErrorsChanged += OnErrorsChanged;
         }
 
         public async Task LoadAsync()
         {
-            await _fileEncoder.LoadAsync(App.Current.Username, App.Current.Password);
+            await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
         }
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -69,7 +72,7 @@ namespace OnePass.WPF.Models
                 DateModified = DateTime.Now,
             });
 
-            await _fileEncoder.SaveAsync(App.Current.Username, App.Current.Password);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password);
             return guid;
         }
 
@@ -82,7 +85,7 @@ namespace OnePass.WPF.Models
             account.Password = Password;
             account.DateModified = DateTime.Now;
 
-            await _fileEncoder.SaveAsync(App.Current.Username, App.Current.Password);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }
