@@ -60,22 +60,24 @@ namespace OnePass.Droid.Activities
 
         private async Task<IList<Account>> Accounts()
         {
-            var encryptor = new FileEncryptor();
+            //var encryptor = new FileEncryptor();
 
-            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            var filename = $"{Username}.bin";
-            var path = Path.Combine(documentsPath, filename);
+            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            //var filename = $"{Username}.bin";
+            //var path = Path.Combine(documentsPath, filename);
 
-            using var input = File.OpenRead(path);
-            using var output = new MemoryStream();
-            await encryptor.DecryptAsync(input, output, Password);
+            //using var input = File.OpenRead(path);
+            //using var output = new MemoryStream();
+            //await encryptor.DecryptAsync(input, output, Password);
 
-            output.Seek(0, SeekOrigin.Begin);
-            using var reader = new StreamReader(output);
-            var jsonOutput = await reader.ReadToEndAsync();
+            //output.Seek(0, SeekOrigin.Begin);
+            //using var reader = new StreamReader(output);
+            //var jsonOutput = await reader.ReadToEndAsync();
 
-            var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
-            return accounts.OrderBy(x => x.Name).ToList();
+            //var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
+            //return accounts.OrderBy(x => x.Name).ToList();
+
+            return new List<Account>();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -100,13 +102,16 @@ namespace OnePass.Droid.Activities
             //var alert = dialog.Create();
             //alert.Show();
 
-            int id = ProductAdapter.Accounts[position].Id;
 
-            var intent = new Intent(this, typeof(AccountEditActivity));
-            intent.PutExtra("Id", id);
-            intent.PutExtra(nameof(Username), Username);
-            intent.PutExtra(nameof(Password), Password);
-            StartActivityForResult(intent, _activityResultEdited);
+
+
+            //int id = ProductAdapter.Accounts[position].Id;
+
+            //var intent = new Intent(this, typeof(AccountEditActivity));
+            //intent.PutExtra("Id", id);
+            //intent.PutExtra(nameof(Username), Username);
+            //intent.PutExtra(nameof(Password), Password);
+            //StartActivityForResult(intent, _activityResultEdited);
         }
 
         private void AddFab_Click(object sender, EventArgs e)

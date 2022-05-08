@@ -46,41 +46,41 @@ namespace OnePass.Droid.Activities
 
         private async void RegisterButton_Click(object sender, EventArgs e)
         {
-            var encryptor = new FileEncryptor();
+            //var encryptor = new FileEncryptor();
 
-            var isValid = Validate();
-            if (!isValid)
-            {
-                return;
-            }
+            //var isValid = Validate();
+            //if (!isValid)
+            //{
+            //    return;
+            //}
 
-            // Create initial encrypted file
-            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            var filename = $"{_username.Text}.bin";
-            var path = Path.Combine(documentsPath, filename);
+            //// Create initial encrypted file
+            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            //var filename = $"{_username.Text}.bin";
+            //var path = Path.Combine(documentsPath, filename);
 
-            if (File.Exists(path))
-            {
-                _usernameTextView.Text = "Username already exists";
-                _usernameTextView.Visibility = ViewStates.Visible;
+            //if (File.Exists(path))
+            //{
+            //    _usernameTextView.Text = "Username already exists";
+            //    _usernameTextView.Visibility = ViewStates.Visible;
 
-                Toast.MakeText(this, "Username already exists", ToastLength.Short).Show();
-                return;
-            }
+            //    Toast.MakeText(this, "Username already exists", ToastLength.Short).Show();
+            //    return;
+            //}
 
-            var json = JsonSerializer.Serialize(new List<Account>());
-            var buffer = Encoding.UTF8.GetBytes(json);
-            using var memory = new MemoryStream(buffer);
-            using var file = File.OpenWrite(path);
+            //var json = JsonSerializer.Serialize(new List<Account>());
+            //var buffer = Encoding.UTF8.GetBytes(json);
+            //using var memory = new MemoryStream(buffer);
+            //using var file = File.OpenWrite(path);
 
-            await encryptor.EncryptAsync(memory, file, _password.Text);
+            //await encryptor.EncryptAsync(memory, file, _password.Text);
 
-            var intent = new Intent();
-            intent.PutExtra("ProfileName", _username.Text);
-            SetResult(Result.Ok, intent);
+            //var intent = new Intent();
+            //intent.PutExtra("ProfileName", _username.Text);
+            //SetResult(Result.Ok, intent);
 
-            // Finish
-            Finish();
+            //// Finish
+            //Finish();
         }
 
         private bool Validate()

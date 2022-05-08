@@ -24,8 +24,8 @@ namespace OnePass.Droid
         {
             var viewHolder = holder as ProductViewHolder;
 
-            viewHolder.Name.Text = Accounts[position].Name;
-            viewHolder.Login.Text = Accounts[position].Login;
+            //viewHolder.Name.Text = Accounts[position].Name;
+            //viewHolder.Login.Text = Accounts[position].Login;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
