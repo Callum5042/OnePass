@@ -18,21 +18,10 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '5.x'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    feedsToUse: 'select'
-    vstsFeed: '3e812210-512f-48b2-aa4c-15ac454ff157'
+    version: '6.x'
 
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
