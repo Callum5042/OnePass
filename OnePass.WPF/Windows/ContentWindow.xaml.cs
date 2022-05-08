@@ -1,4 +1,5 @@
 ﻿using OnePass.WPF.Models;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,7 +15,7 @@ namespace OnePass.WPF.Windows
             InitializeComponent();
             DataContext = App.Current.GetService<ContentModel>();
 
-            AccountsListView.Visibility = Visibility.Visible;
+            // AccountsListView.Visibility = Visibility.Visible;
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

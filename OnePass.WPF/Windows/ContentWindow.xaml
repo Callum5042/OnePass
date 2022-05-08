@@ -94,12 +94,12 @@
             </Border>
             
             <!-- Products empty -->
-            <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+            <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyStackPanelVisibility}">
                 <Label Content="Accounts list is empty" FontStyle="Italic" />
             </StackPanel>
 
             <!-- Products -->
-            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged" ItemsSource="{Binding Accounts}">
+            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged" ItemsSource="{Binding Accounts}"  Visibility="{Binding ListViewVisibility}">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">

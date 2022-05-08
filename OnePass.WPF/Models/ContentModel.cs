@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OnePass.WPF.Models
 {
@@ -37,6 +38,7 @@ namespace OnePass.WPF.Models
             });
 
             Accounts = new ObservableCollection<AccountListModel>(_accountListModel);
+            CheckVisibility();
         }
 
         public ObservableCollection<AccountListModel> Accounts { get => accounts; private set => SetProperty(ref accounts, value); }
@@ -53,6 +55,7 @@ namespace OnePass.WPF.Models
 
             // Remove from view
             Accounts.Remove(model);
+            CheckVisibility();
         }
 
         public string Search
@@ -94,5 +97,25 @@ namespace OnePass.WPF.Models
             }
         }
         private string search;
+
+        public Visibility ListViewVisibility { get => listViewVisibility; set => SetProperty(ref listViewVisibility, value); }
+        private Visibility listViewVisibility = Visibility.Collapsed;
+
+        public Visibility EmptyStackPanelVisibility { get => emptyStackPanelVisibility; set => SetProperty(ref emptyStackPanelVisibility, value); }
+        private Visibility emptyStackPanelVisibility = Visibility.Collapsed;
+
+        public void CheckVisibility()
+        {
+            if (Accounts.Any())
+            {
+                ListViewVisibility = Visibility.Visible;
+                EmptyStackPanelVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ListViewVisibility = Visibility.Collapsed;
+                EmptyStackPanelVisibility = Visibility.Visible;
+            }
+        }
     }
 }

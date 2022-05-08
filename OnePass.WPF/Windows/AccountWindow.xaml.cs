@@ -44,6 +44,8 @@ namespace OnePass.WPF.Windows
                             Password = model.Password,
                             DateModified = DateTime.Now,
                         });
+
+                        contentModel.CheckVisibility();
                     }
 
                     Close();
