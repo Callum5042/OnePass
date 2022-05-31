@@ -26,3 +26,10 @@ steps:
     projects: '$(projects)'
     feedsToUse: 'select'
     vstsFeed: '3e812210-512f-48b2-aa4c-15ac454ff157'
+
+- task: DotNetCoreCLI@2
+  displayName: Build Projects
+  inputs:
+    command: 'build'
+    projects: '$(projects)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
