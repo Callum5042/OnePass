@@ -11,6 +11,7 @@ pool:
 
 variables:
   projects: '**/*.csproj'
+  WpfProject: 'OnePass.WPF/OnePass.WPF.csproj'
   buildConfiguration: 'Release'
 
 steps:
@@ -31,5 +32,5 @@ steps:
   displayName: Build Projects
   inputs:
     command: 'build'
-    projects: '$(projects)'
+    projects: '$(WpfProject)'
     arguments: '--configuration $(buildConfiguration) --no-restore'
