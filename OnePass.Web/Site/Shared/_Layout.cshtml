@@ -9,9 +9,19 @@
 </head>
 <body>
 
-    <header>
-
-    </header>
+    <nav>
+        @*<div class="nav-item">
+            <a asp-controller="Home" asp-action="index" class="nav-link">
+                <img src="~/images/OnePassIcon.png" class="nav-icon" />
+            </a>
+        </div>*@
+        <div class="nav-item">
+            <a asp-controller="Home" asp-action="index" class="nav-link">OnePass</a>
+        </div>
+        <div class="nav-item">
+            <a asp-controller="PasswordGenerator" asp-action="index" class="nav-link">Password Generator</a>
+        </div>
+    </nav>
 
     <content>
         @RenderBody()
