@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnePass.Tests", "OnePass.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePass.Android", "OnePass.Android\OnePass.Android.csproj", "{31A00CD7-59B8-4F2B-8451-0EC2E3107EBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePass.Web", "OnePass.Web\OnePass.Web.csproj", "{13FD6C4C-11CB-457F-BBC9-01FC1A579D34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{31A00CD7-59B8-4F2B-8451-0EC2E3107EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31A00CD7-59B8-4F2B-8451-0EC2E3107EBC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31A00CD7-59B8-4F2B-8451-0EC2E3107EBC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{13FD6C4C-11CB-457F-BBC9-01FC1A579D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FD6C4C-11CB-457F-BBC9-01FC1A579D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FD6C4C-11CB-457F-BBC9-01FC1A579D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FD6C4C-11CB-457F-BBC9-01FC1A579D34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{5B5D6394-4A92-459F-8EC7-EF1012E58D65} = {F8B4028C-ED5F-4C4C-AB9D-823B2A85461E}
 		{57327FF0-169E-48A7-9CB9-64629EE1F839} = {2C8E0012-F943-4592-A106-B7FA2FD47EFA}
 		{31A00CD7-59B8-4F2B-8451-0EC2E3107EBC} = {F8B4028C-ED5F-4C4C-AB9D-823B2A85461E}
+		{13FD6C4C-11CB-457F-BBC9-01FC1A579D34} = {F8B4028C-ED5F-4C4C-AB9D-823B2A85461E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3FA0FEB-C825-4921-8269-029766A3CBA4}
