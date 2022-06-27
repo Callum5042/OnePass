@@ -115,6 +115,10 @@
         searchParams.set("Symbols", this.symbolsEl.checked);
         const url = `${this.baseUrl}?${searchParams.toString()}`;
 
+        // Push URL
+        const windowUrl = `/generate-password?${searchParams.toString()}`;
+        window.history.pushState({}, null, windowUrl);
+
         // HTTP Request
         const response = await fetch(url);
         const data = await response.json();
