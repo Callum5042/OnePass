@@ -1,1 +1,96 @@
-﻿<h1>Password Generator</h1>
+﻿@using OnePass.Web.Site.PasswordGenerator
+@model IndexModel
+
+@{
+    ViewBag.PasswordGeneratorActive = "active";
+}
+
+<noscript>
+    <div class="alert alert-danger mt-3 mb-0">
+        <strong>JavaScript is turned off, the site will not function correctly.</strong>
+    </div>
+</noscript>
+
+<h1>Password Generator</h1>
+
+<form id="generate-password-form" asp-controller="PasswordGenerator" asp-action="index" method="post">
+
+    <div class="row">
+
+        <div class="col-12 col-sm-4">
+
+            <div class="input-group input-group-sm">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Amount</span>
+                <input asp-for="Amount" class="form-control">
+            </div>
+            <input asp-for="Amount" type="range" class="form-range" id="amount-range">
+
+        </div>
+
+        <div class="col-12 col-sm-4">
+
+            <div class="input-group input-group-sm">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Min length</span>
+                <input asp-for="MinLength" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <input asp-for="MinLength" type="range" class="form-range" id="minlength-range">
+
+        </div>
+
+        <div class="col-12 col-sm-4">
+
+            <div class="input-group input-group-sm">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Max length</span>
+                <input asp-for="MaxLength" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <input asp-for="MaxLength" type="range" class="form-range" id="maxlength-range">
+
+        </div>
+
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-between justify-content-sm-start">
+
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" asp-for="Uppercase" type="checkbox" id="uppercase-switch">
+            <label class="form-check-label" for="uppercase-switch">Uppercase</label>
+        </div>
+
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" asp-for="Lowercase" type="checkbox" id="lowercase-switch">
+            <label class="form-check-label" for="lowercase-switch">Lowercase</label>
+        </div>
+
+        @*<div class="flex-break"></div>*@
+
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" asp-for="Numbers" type="checkbox" id="numbers-switch">
+            <label class="form-check-label" for="numbers-switch">Numbers</label>
+        </div>
+
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" asp-for="Symbols" type="checkbox" id="symbols-switch">
+            <label class="form-check-label" for="symbols-switch">Symbols</label>
+        </div>
+
+    </div>
+
+    <div class="row mt-3 mb-3">
+        <div class="col-md-12">
+            <textarea asp-for="Passwords" class="form-control" style="height: 140px;"></textarea>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate Password</button>
+
+</form>
+
+@section Scripts {
+    <script src="~/js/passwordgenerator.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const url = "@(Url.Action("Get", "PasswordGenerate"))";
+            const generator = new PasswordGenerator(url);
+        });
+    </script>
+}

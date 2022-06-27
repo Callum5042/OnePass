@@ -2,29 +2,34 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewBag.Title</title>
     <link rel="icon" type="image/x-icon" href="OnePassIcon.ico">
     <link href="~/css/site.css" type="text/css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-
-    <nav>
-        @*<div class="nav-item">
-            <a asp-controller="Home" asp-action="index" class="nav-link">
-                <img src="~/images/OnePassIcon.png" class="nav-icon" />
-            </a>
-        </div>*@
-        <div class="nav-item">
-            <a asp-controller="Home" asp-action="index" class="nav-link">OnePass</a>
-        </div>
-        <div class="nav-item">
-            <a asp-controller="PasswordGenerator" asp-action="index" class="nav-link">Password Generator</a>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+        <div class="container">
+            @*<a class="navbar-brand" href="#">
+                <img src="~/images/OnePassIcon.png" alt="" width="50" />
+            </a>*@
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a asp-controller="Home" asp-action="index" class="nav-link @ViewBag.HomeActive">OnePass</a>
+                    <a asp-controller="PasswordGenerator" asp-action="index" class="nav-link @ViewBag.PasswordGeneratorActive">Password Generator</a>
+                    <a class="nav-link">About</a>
+                </div>
+            </div>
         </div>
     </nav>
-
-    <content>
+    <main class="container">
         @RenderBody()
-    </content>
+    </main>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
