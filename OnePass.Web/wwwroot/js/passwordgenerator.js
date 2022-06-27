@@ -33,6 +33,12 @@
             await this.generatePassword();
         });
 
+        // Clamp min/max length
+        this.minLengthRange.addEventListener("input", () => this.clampMinLength());
+        this.minLengthEl.addEventListener("input", () => this.clampMinLength());
+        this.maxLengthRange.addEventListener("input", () => this.clampMaxLength());
+        this.maxLengthEl.addEventListener("input", () => this.clampMaxLength());
+
         // Auto-submit when changing a value
         this.amountRange.addEventListener("input", () => this.generatePassword());
         this.amountEl.addEventListener("input", () => this.generatePassword());
@@ -41,10 +47,59 @@
         this.maxLengthRange.addEventListener("input", () => this.generatePassword());
         this.maxLengthEl.addEventListener("input", () => this.generatePassword());
 
-        this.uppercaseEl.addEventListener("input", () => this.generatePassword());
-        this.lowercaseEl.addEventListener("input", () => this.generatePassword());
-        this.numbersEl.addEventListener("input", () => this.generatePassword());
-        this.symbolsEl.addEventListener("input", () => this.generatePassword());
+        // Restrict turning off all combinations
+        this.uppercaseEl.addEventListener("input", async (e) => await this.checkCombinationBeforeSubmit(e));
+        this.lowercaseEl.addEventListener("input", async (e) => await this.checkCombinationBeforeSubmit(e));
+        this.numbersEl.addEventListener("input", async (e) => await this.checkCombinationBeforeSubmit(e));
+        this.symbolsEl.addEventListener("input", async (e) => await this.checkCombinationBeforeSubmit(e));
+    }
+
+    clampMinLength() {
+        if (Number(this.minLengthEl.value) > Number(this.maxLengthEl.value)) {
+            this.maxLengthEl.value = this.minLengthEl.value;
+        }
+
+        if (Number(this.minLengthRange.value) > Number(this.maxLengthRange.value)) {
+            this.maxLengthRange.value = this.minLengthRange.value;
+        }
+    }
+
+    clampMaxLength() {
+        if (Number(this.maxLengthEl.value) < Number(this.minLengthEl.value)) {
+            this.minLengthEl.value = this.maxLengthEl.value;
+        }
+
+        if (Number(this.maxLengthRange.value) < Number(this.minLengthRange.value)) {
+            this.minLengthRange.value = this.maxLengthRange.value;
+        }
+    }
+
+    async checkCombinationBeforeSubmit(e) {
+
+        let activeCount = 0;
+
+        if (this.uppercaseEl.checked) {
+            activeCount++;
+        }
+
+        if (this.lowercaseEl.checked) {
+            activeCount++;
+        }
+
+        if (this.numbersEl.checked) {
+            activeCount++;
+        }
+
+        if (this.symbolsEl.checked) {
+            activeCount++;
+        }
+
+        if (activeCount === 0) {
+            e.target.checked = true;
+        }
+        else {
+            await this.generatePassword();
+        }
     }
 
     async generatePassword() {

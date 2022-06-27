@@ -4,9 +4,9 @@
     {
         public int Amount { get; set; } = 5;
 
-        public int MinLength { get; set; } = 5;
+        public int MinLength { get; set; } = 10;
 
-        public int MaxLength { get; set; } = 10;
+        public int MaxLength { get; set; } = 20;
 
         public bool Uppercase { get; set; } = true;
 
