@@ -49,8 +49,6 @@
 
     async generatePassword() {
 
-        console.log("Submit");
-
         // Build URL
         const searchParams = new URLSearchParams();
         searchParams.set("Amount", this.amountEl.value);
