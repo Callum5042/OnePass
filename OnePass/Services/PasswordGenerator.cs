@@ -38,12 +38,17 @@ namespace OnePass.Services
         {
             if (MinLength > MaxLength)
             {
-                throw new InvalidOperationException($"{nameof(MinLength)} cannot be bigger than {nameof(MaxLength)}");
+                throw new ArgumentException($"{nameof(MinLength)} cannot be bigger than {nameof(MaxLength)}");
             }
 
             if (!HasLowercase && !HasUppercase && !HasNumbers && !HasSymbols)
             {
-                throw new InvalidOperationException("Cannot generate password with all settings to off");
+                throw new ArgumentException("Cannot generate password with all settings to off");
+            }
+
+            if (MaxLength > 100)
+            {
+                throw new ArgumentException("Cannot generate passwords with a max length greater than 100");
             }
 
             var builder = new StringBuilder();

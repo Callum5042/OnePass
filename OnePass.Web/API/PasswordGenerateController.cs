@@ -11,6 +11,16 @@ namespace OnePass.Web.API
         [HttpGet]
         public IActionResult Get(int amount, int minLength, int maxLength, bool uppercase, bool lowercase, bool numbers, bool symbols)
         {
+            if (maxLength > 100)
+            {
+                throw new ArgumentException("Cannot generate passwords longer than 100");
+            }
+
+            if (amount > 100)
+            {
+                throw new ArgumentException("Cannot generate more than 100 passwords at once");
+            }
+
             var generator = new PasswordGenerator()
             {
                 MinLength = minLength,

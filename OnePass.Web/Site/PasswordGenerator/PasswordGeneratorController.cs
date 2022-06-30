@@ -8,6 +8,16 @@ namespace OnePass.Web.Site.PasswordGenerator
         [Route("generate-password")]
         public IActionResult Index(IndexQuery query)
         {
+            if (query.MaxLength > 100)
+            {
+                throw new ArgumentException("Cannot generate passwords longer than 100");
+            }
+
+            if (query.Amount > 100)
+            {
+                throw new ArgumentException("Cannot generate more than 100 passwords at once");
+            }
+
             var generator = new Services.PasswordGenerator()
             {
                 MinLength = query.MinLength,
