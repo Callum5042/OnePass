@@ -137,6 +137,8 @@
 
                             <Grid.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Copy Username" Click="MenuItem_Click_CopyUsername" />
+                                    <MenuItem Header="Copy Email Address" Click="MenuItem_Click_CopyEmailAddress" />
                                     <MenuItem Header="Copy Password" Click="MenuItem_Click_CopyPassword" />
                                     <Separator />
                                     <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />

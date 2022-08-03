@@ -84,6 +84,32 @@ namespace OnePass.WPF.Windows
             aboutWindow.ShowDialog();
         }
 
+        private void MenuItem_Click_CopyUsername(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+            var model = item.DataContext as AccountListModel;
+
+            // Copy to clipboard
+            if (!string.IsNullOrEmpty(model.Username))
+            {
+                Clipboard.SetText(model.Username);
+            }
+        }
+
+        private void MenuItem_Click_CopyEmailAddress(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+            var model = item.DataContext as AccountListModel;
+
+            // Copy to clipboard
+            if (!string.IsNullOrEmpty(model.EmailAddress))
+            {
+                Clipboard.SetText(model.EmailAddress);
+            }
+        }
+
         private void MenuItem_Click_CopyPassword(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
