@@ -236,18 +236,33 @@ namespace OnePass.WPF.Models
 
         public async Task SaveOptions()
         {
-            var options = new AppOptions
-            {
-                RememberUsername = Login.RememberMe ? Login.Username : string.Empty
-            };
-
             // Save options
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
             var path = Path.Combine(appdata, @"OnePass", "options.json");
 
-            using var file = File.Create(path);
-            await JsonSerializer.SerializeAsync(file, options);
+            if (File.Exists(path))
+            {
+                AppOptions options = null;
+                using (var file = File.OpenRead(path))
+                {
+                    options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+                }
+
+                using (var file = File.Open(path, FileMode.Truncate))
+                {
+                    options.RememberUsername = Login.RememberMe ? Login.Username : string.Empty;
+                    await JsonSerializer.SerializeAsync(file, options);
+                }
+            }
+            else
+            {
+                using var file = File.Create(path);
+                await JsonSerializer.SerializeAsync(file, new AppOptions
+                {
+                    RememberUsername = Login.RememberMe ? Login.Username : string.Empty
+                });
+            }
         }
     }
 }
