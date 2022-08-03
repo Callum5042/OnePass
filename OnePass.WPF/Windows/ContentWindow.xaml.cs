@@ -72,6 +72,8 @@ namespace OnePass.WPF.Windows
                 {
                     if (DataContext is ContentModel contentModel)
                     {
+                        contentModel.AccountListModel.Remove(model);
+                        contentModel.Accounts.Remove(model);
                         await contentModel.RemoveAsync(model);
                     }
                 }

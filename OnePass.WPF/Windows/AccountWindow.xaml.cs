@@ -35,7 +35,7 @@ namespace OnePass.WPF.Windows
                     // Update content window and return
                     if (_contentWindow.DataContext is ContentModel contentModel)
                     {
-                        contentModel.Accounts.Add(new AccountListModel()
+                        var accountModel = new AccountListModel()
                         {
                             Guid = guid,
                             Name = model.Name,
@@ -43,7 +43,10 @@ namespace OnePass.WPF.Windows
                             EmailAddress = model.EmailAddress,
                             Password = model.Password,
                             DateModified = DateTime.Now,
-                        });
+                        };
+
+                        contentModel.Accounts.Add(accountModel);
+                        contentModel.AccountListModel.Add(accountModel);
 
                         contentModel.CheckVisibility();
                     }

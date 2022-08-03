@@ -15,7 +15,8 @@ namespace OnePass.WPF.Models
     {
         private readonly FileEncoder _fileEncoder;
         private readonly OnePassData _onePassData;
-        private IEnumerable<AccountListModel> _accountListModel;
+
+        public IList<AccountListModel> AccountListModel { get; set; }
 
         public ContentModel(FileEncoder fileEncoder, OnePassData onePassData)
         {
@@ -27,7 +28,7 @@ namespace OnePass.WPF.Models
         {
             await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
 
-            _accountListModel = _fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
+            AccountListModel = _fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
             {
                 Guid = x.Guid,
                 Name = x.Name,
@@ -35,9 +36,9 @@ namespace OnePass.WPF.Models
                 EmailAddress = x.EmailAddress,
                 Password = x.Password,
                 DateModified = x.DateModified,
-            });
+            }).ToList();
 
-            Accounts = new ObservableCollection<AccountListModel>(_accountListModel);
+            Accounts = new ObservableCollection<AccountListModel>(AccountListModel);
             CheckVisibility();
         }
 
@@ -71,12 +72,12 @@ namespace OnePass.WPF.Models
                 // Filter list
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    Accounts = new ObservableCollection<AccountListModel>(_accountListModel);
+                    Accounts = new ObservableCollection<AccountListModel>(AccountListModel);
                     EmptyStackPanelContent = "Accounts list is empty";
                 }
                 else
                 {
-                    var filter = _accountListModel.Where(x =>
+                    var filter = AccountListModel.Where(x =>
                     { 
                         if (x.Name?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true)
                         {
