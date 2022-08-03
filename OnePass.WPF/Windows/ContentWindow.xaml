@@ -95,7 +95,7 @@
             
             <!-- Products empty -->
             <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyStackPanelVisibility}">
-                <Label Content="Accounts list is empty" FontStyle="Italic" />
+                <Label Content="{Binding EmptyStackPanelContent}" FontStyle="Italic" />
             </StackPanel>
 
             <!-- Products -->

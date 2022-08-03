@@ -58,6 +58,9 @@ namespace OnePass.WPF.Models
             CheckVisibility();
         }
 
+        public string EmptyStackPanelContent { get => emptyStackPanelContent; set => SetProperty(ref emptyStackPanelContent, value); }
+        private string emptyStackPanelContent = "Accounts list is empty";
+
         public string Search
         {
             get => search;
@@ -69,6 +72,7 @@ namespace OnePass.WPF.Models
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     Accounts = new ObservableCollection<AccountListModel>(_accountListModel);
+                    EmptyStackPanelContent = "Accounts list is empty";
                 }
                 else
                 {
@@ -93,6 +97,19 @@ namespace OnePass.WPF.Models
                     });
 
                     Accounts = new ObservableCollection<AccountListModel>(filter);
+                    EmptyStackPanelContent = "No search results found";
+                }
+
+                // Show what panel to show
+                if (Accounts.Any())
+                {
+                    ListViewVisibility = Visibility.Visible;
+                    EmptyStackPanelVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    EmptyStackPanelVisibility = Visibility.Visible;
+                    ListViewVisibility = Visibility.Collapsed;
                 }
             }
         }
