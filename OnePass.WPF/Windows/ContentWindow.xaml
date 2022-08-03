@@ -86,7 +86,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+                        <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" Keyboard.KeyDown="TextBox_KeyDown" />
                     </StackPanel>
 
                 </Grid>

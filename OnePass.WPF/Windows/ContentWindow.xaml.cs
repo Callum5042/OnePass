@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 
 namespace OnePass.WPF.Windows
@@ -181,6 +182,17 @@ namespace OnePass.WPF.Windows
             }
 
             return IntPtr.Zero;
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                if (DataContext is ContentModel model)
+                {
+                    model.Search = null;
+                }
+            }
         }
     }
 }
