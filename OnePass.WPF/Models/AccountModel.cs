@@ -46,7 +46,23 @@ namespace OnePass.WPF.Models
         private string username;
 
         [EmailAddress(ErrorMessage = "Not a valid email address.")]
-        public string EmailAddress { get => emailAddress; set => SetProperty(ref emailAddress, value, validate: true); }
+        public string EmailAddress 
+        { 
+            get => emailAddress;
+            set 
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    ClearErrors(nameof(EmailAddress));
+                    emailAddress = null;
+                }
+                else
+                {
+                    SetProperty(ref emailAddress, value, validate: true);
+                }
+            }
+        }
+
         private string emailAddress;
 
         public string Password { get => password; set => SetProperty(ref password, value); }
