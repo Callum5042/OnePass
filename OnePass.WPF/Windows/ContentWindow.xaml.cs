@@ -15,16 +15,6 @@ namespace OnePass.WPF.Windows
             InitializeComponent();
             DataContext = App.Current.GetService<ContentModel>();
 
-            // AccountsListView.Visibility = Visibility.Visible;
-        }
-
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //var item = sender as ListView;
-            //var selected = item.SelectedItem as AccountListModel;
-
-            //ProductDetailsGrid.Visibility = Visibility.Visible;
-            //ProductDetailsGrid.DataContext = selected;
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)

@@ -99,7 +99,7 @@
             </StackPanel>
 
             <!-- Products -->
-            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" SelectionChanged="ListView_SelectionChanged" ItemsSource="{Binding Accounts}"  Visibility="{Binding ListViewVisibility}">
+            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Accounts}"  Visibility="{Binding ListViewVisibility}">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
