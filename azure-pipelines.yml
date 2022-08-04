@@ -42,3 +42,8 @@ steps:
     command: 'build'
     projects: '$(WpfProject)'
     arguments: '--configuration $(buildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '$(projects)'
