@@ -44,6 +44,8 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
+  displayName: Test OnePass
   inputs:
     command: 'test'
-    projects: '$(projects)'
+    projects: 'OnePass.Tests\OnePass.Tests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
