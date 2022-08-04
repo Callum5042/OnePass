@@ -35,7 +35,6 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
             Assert.Equal("The Password field is required.", model.PasswordValidation);
         }
 
@@ -53,7 +52,6 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
             Assert.Equal("Password must be at least 10 characters.", model.PasswordValidation);
         }
     }
