@@ -47,5 +47,7 @@ steps:
   displayName: Test OnePass
   inputs:
     command: 'test'
-    projects: 'OnePass.Tests\OnePass.Tests.csproj'
+    projects: |
+      OnePass.Tests\OnePass.Tests.csproj
+      OnePass.WPF.Tests\OnePass.WPF.Tests.csproj
     arguments: '--configuration $(buildConfiguration) --no-restore'
