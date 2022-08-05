@@ -150,6 +150,8 @@ namespace OnePass.WPF.Windows
                 {
                     Width = (double)options.WindowWidth;
                     Height = (double)options.WindowHeight;
+                    Left = (double)options.WindowPositionX;
+                    Top = (double)options.WindowPositionY;
                 }
             }
         }
@@ -180,6 +182,8 @@ namespace OnePass.WPF.Windows
             // Save file
             options.WindowWidth = (int)Width;
             options.WindowHeight = (int)Height;
+            options.WindowPositionX = (int)Left;
+            options.WindowPositionY = (int)Top;
             options.WindowMaximized = WindowState == WindowState.Maximized;
 
             using (var file = File.Open(path, FileMode.Truncate))
