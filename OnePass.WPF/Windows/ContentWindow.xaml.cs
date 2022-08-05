@@ -132,9 +132,6 @@ namespace OnePass.WPF.Windows
                 await model.LoadAsync();
             }
 
-            var source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
-            source.AddHook(new HwndSourceHook(WndProc));
-
             // Resize window
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var path = Path.Combine(appdata, @"OnePass", "options.json");
@@ -142,46 +139,19 @@ namespace OnePass.WPF.Windows
             AppOptions options = null;
             using var file = File.OpenRead(path);
             options = JsonSerializer.Deserialize<AppOptions>(file);
-            if (options?.WindowWidth != null && options?.WindowHeight != null)
+            
+            if (options?.WindowMaximized == true)
             {
-                Width = (double)options.WindowWidth;
-                Height = (double)options.WindowHeight;
+                WindowState = WindowState.Maximized;
             }
-        }
-
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            const int WM_EXITSIZEMOVE = 0x0232;
-            if (msg == WM_EXITSIZEMOVE)
+            else
             {
-                try
+                if (options?.WindowWidth != null && options?.WindowHeight != null)
                 {
-                    // Read file
-                    var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    var path = Path.Combine(appdata, @"OnePass", "options.json");
-
-                    AppOptions options = null;
-                    using (var file = File.OpenRead(path))
-                    {
-                        options = JsonSerializer.Deserialize<AppOptions>(file);
-                    }
-
-                    // Save file
-                    options.WindowWidth = (int)Width;
-                    options.WindowHeight = (int)Height;
-
-                    using (var file = File.Open(path, FileMode.Truncate))
-                    {
-                        JsonSerializer.Serialize(file, options);
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    // Swallow exception
+                    Width = (double)options.WindowWidth;
+                    Height = (double)options.WindowHeight;
                 }
             }
-
-            return IntPtr.Zero;
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -192,6 +162,29 @@ namespace OnePass.WPF.Windows
                 {
                     model.Search = null;
                 }
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Read file
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var path = Path.Combine(appdata, @"OnePass", "options.json");
+
+            AppOptions options = null;
+            using (var file = File.OpenRead(path))
+            {
+                options = JsonSerializer.Deserialize<AppOptions>(file);
+            }
+
+            // Save file
+            options.WindowWidth = (int)Width;
+            options.WindowHeight = (int)Height;
+            options.WindowMaximized = WindowState == WindowState.Maximized;
+
+            using (var file = File.Open(path, FileMode.Truncate))
+            {
+                JsonSerializer.Serialize(file, options);
             }
         }
     }
