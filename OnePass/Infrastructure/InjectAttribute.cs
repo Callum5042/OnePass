@@ -18,5 +18,7 @@ namespace OnePass.Infrastructure
         public Type Interface { get; private set; }
 
         public Type Class { get; private set; }
+
+        public InjectType InjectType { get; set; } = InjectType.Transient;
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -29,36 +27,12 @@ namespace OnePass.Infrastructure
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            InjectServices(services);
             InjectConventions(services);
+            services.InjectServicesFromAttribute();
 
             // services.AddTransient<IFileSystem, FileSystem>();
             services.AddTransient<FileEncoder>();
             services.AddSingleton<OnePassData>();
-        }
-
-        private static void InjectServices(IServiceCollection services)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            foreach (var type in assembly.GetTypes().Where(x => x.CustomAttributes.Any(a => a.AttributeType == typeof(InjectAttribute))))
-            {
-                var attribute = (InjectAttribute)Attribute.GetCustomAttribute(type, typeof(InjectAttribute));
-                if (attribute.Interface != null)
-                {
-                    if (attribute.Class != null)
-                    {
-                        services.AddTransient(attribute.Interface, attribute.Class);
-                    }
-                    else
-                    {
-                        services.AddTransient(attribute.Interface, type);
-                    }
-                }
-                else
-                {
-                    services.AddTransient(type);
-                }
-            }
         }
 
         private static void InjectConventions(IServiceCollection services)
