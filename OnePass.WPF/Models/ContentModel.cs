@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
+using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace OnePass.WPF.Models
     [Inject]
     public class ContentModel : ObservableObject
     {
-        private readonly FileEncoder _fileEncoder;
+        private readonly IFileEncoder _fileEncoder;
         private readonly OnePassData _onePassData;
 
         public IList<AccountListModel> AccountListModel { get; set; }
 
-        public ContentModel(FileEncoder fileEncoder, OnePassData onePassData)
+        public ContentModel(IFileEncoder fileEncoder, OnePassData onePassData)
         {
             _fileEncoder = fileEncoder;
             _onePassData = onePassData;
@@ -26,9 +27,9 @@ namespace OnePass.WPF.Models
 
         public async Task LoadAsync()
         {
-            await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
 
-            AccountListModel = _fileEncoder.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
+            AccountListModel = root.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
             {
                 Guid = x.Guid,
                 Name = x.Name,
@@ -47,12 +48,12 @@ namespace OnePass.WPF.Models
 
         public async Task RemoveAsync(AccountListModel model)
         {
-            await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
 
-            var account = _fileEncoder.Accounts.First(x => x.Guid == model.Guid);
-            _fileEncoder.Accounts.Remove(account);
+            var account = root.Accounts.First(x => x.Guid == model.Guid);
+            root.Accounts.Remove(account);
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, root);
 
             // Remove from view
             Accounts.Remove(model);

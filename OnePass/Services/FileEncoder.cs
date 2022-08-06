@@ -1,6 +1,5 @@
 ﻿using OnePass.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -8,25 +7,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace OnePass.WPF.Services
+namespace OnePass.Services
 {
-    public class FileEncoder
+    public class FileEncoder : IFileEncoder
     {
         private const string _fileSignature = ".ONEPASS";
         private const int _fileVersion = 1;
 
-        public FileEncoder()
-        {
-
-        }
-
-        public bool Loaded { get; private set; }
-
-        public int Version { get; private set; }
-
-        public IList<Account> Accounts { get; private set; } = new List<Account>();
-
-        public async Task LoadAsync(string username, string password)
+        public async Task<RootAccount> LoadAsync(string username, string password)
         {
             var filename = $"{username}.bin";
 
@@ -41,7 +29,7 @@ namespace OnePass.WPF.Services
             }
 
             // Read version
-            Version = reader.ReadInt32();
+            var version = reader.ReadInt32();
 
             // Read password hash
             var passwordHashLength = reader.ReadInt32();
@@ -63,13 +51,10 @@ namespace OnePass.WPF.Services
 
             // Decrypt
             using var cryptoStream = new CryptoStream(file, aes.CreateDecryptor(), CryptoStreamMode.Read);
-            var root = await JsonSerializer.DeserializeAsync<RootAccount>(cryptoStream);
-            Accounts = root.Accounts;
-
-            Loaded = true;
+            return await JsonSerializer.DeserializeAsync<RootAccount>(cryptoStream);
         }
 
-        public async Task SaveAsync(string username, string password)
+        public async Task SaveAsync(string username, string password, RootAccount rootAccount)
         {
             var filename = $"{username}.bin";
 
@@ -111,10 +96,7 @@ namespace OnePass.WPF.Services
 
             // Encrypt
             using var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write);
-            await JsonSerializer.SerializeAsync(cryptoStream, new RootAccount()
-            {
-                Accounts = Accounts
-            });
+            await JsonSerializer.SerializeAsync(cryptoStream, rootAccount);
         }
 
         public bool Verify(string username, string password)
@@ -128,11 +110,11 @@ namespace OnePass.WPF.Services
             var signature = reader.ReadBytes(Encoding.UTF8.GetByteCount(_fileSignature));
             if (Encoding.UTF8.GetString(signature) != _fileSignature)
             {
-                throw new InvalidOperationException("Not a valid OnePass file");
+                throw new InvalidOperationException("Invalid OnePass file");
             }
 
             // Read version
-            Version = reader.ReadInt32();
+            var version = reader.ReadInt32();
 
             // Read password hash
             var passwordHashLength = reader.ReadInt32();

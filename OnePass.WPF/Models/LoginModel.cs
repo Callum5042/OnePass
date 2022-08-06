@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
-using OnePass.WPF.Services;
+using OnePass.Models;
+using OnePass.Services;
 using System;
 using System.IO;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace OnePass.WPF.Models
     [Inject]
     public class LoginModel : ObservableValidator
     {
-        private readonly FileEncoder _fileEncoder;
+        private readonly IFileEncoder _fileEncoder;
 
-        public LoginModel(FileEncoder fileEncoder)
+        public LoginModel(IFileEncoder fileEncoder)
         {
             _fileEncoder = fileEncoder;
 
@@ -37,7 +38,7 @@ namespace OnePass.WPF.Models
 
         public async Task CreateAccountAsync(string username, string password)
         {
-            await _fileEncoder.SaveAsync(username, password);
+            await _fileEncoder.SaveAsync(username, password, new RootAccount());
         }
 
         public async Task LoadOptions()

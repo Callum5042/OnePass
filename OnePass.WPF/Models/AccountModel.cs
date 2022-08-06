@@ -13,10 +13,12 @@ namespace OnePass.WPF.Models
     [Inject]
     public class AccountModel : ObservableValidator
     {
-        private readonly FileEncoder _fileEncoder;
+        private readonly IFileEncoder _fileEncoder;
         private readonly OnePassData _onePassData;
 
-        public AccountModel(FileEncoder fileEncoder, OnePassData onePassData)
+        private RootAccount RootAccount { get; set; }
+
+        public AccountModel(IFileEncoder fileEncoder, OnePassData onePassData)
         {
             _fileEncoder = fileEncoder;
             _onePassData = onePassData;
@@ -26,7 +28,7 @@ namespace OnePass.WPF.Models
 
         public async Task LoadAsync()
         {
-            await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            RootAccount = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
         }
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -77,7 +79,7 @@ namespace OnePass.WPF.Models
         public async Task<Guid> AddAccountAsync()
         {
             var guid = Guid.NewGuid();
-            _fileEncoder.Accounts.Add(new Account()
+            RootAccount.Accounts.Add(new Account()
             {
                 Guid = guid,
                 Name = Name,
@@ -88,20 +90,20 @@ namespace OnePass.WPF.Models
                 DateModified = DateTime.Now,
             });
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
             return guid;
         }
 
         public async Task UpdateAccountAsync()
         {
-            var account = _fileEncoder.Accounts.First(x => x.Guid == Guid);
+            var account = RootAccount.Accounts.First(x => x.Guid == Guid);
             account.Name = Name;
             account.Username = Username;
             account.EmailAddress = EmailAddress;
             account.Password = Password;
             account.DateModified = DateTime.Now;
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }

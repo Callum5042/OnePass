@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -70,7 +71,7 @@ namespace OnePass.WPF.Models
 
         private sealed class CheckPasswordAttribute : ValidationAttribute
         {
-            private readonly FileEncoder _fileEncoder;
+            private readonly IFileEncoder _fileEncoder;
 
             public CheckPasswordAttribute()
             {
