@@ -9,11 +9,12 @@
     <AssemblyVersion>2.0.2287</AssemblyVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
     <FileVersion>2.0.2287</FileVersion>
-    <Version>1.0.0.0</Version>
+    <Version>2.0.2287</Version>
     <ApplicationIcon>OnePassIcon.ico</ApplicationIcon>
     <RepositoryUrl>https://github.com/Callum5042/OnePass/</RepositoryUrl>
     <Copyright>Callum Anning</Copyright>
     <SignAssembly>False</SignAssembly>
+    <Product>OnePass</Product>
   </PropertyGroup>
 
   <ItemGroup>
