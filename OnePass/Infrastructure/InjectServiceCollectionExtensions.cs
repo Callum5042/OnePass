@@ -15,13 +15,25 @@ namespace OnePass.Infrastructure
 
         private static ServiceLifetime ResolveLifetime(InjectType injectType)
         {
-            return injectType switch
+            switch (injectType)
             {
-                InjectType.Transient => ServiceLifetime.Transient,
-                InjectType.Scoped => ServiceLifetime.Scoped,
-                InjectType.Singleton => ServiceLifetime.Singleton,
-                _ => throw new ArgumentException("Not supported"),
-            };
+                case InjectType.Transient: 
+                    return ServiceLifetime.Transient;
+                case InjectType.Scoped: 
+                    return ServiceLifetime.Scoped;
+                case InjectType.Singleton: 
+                    return ServiceLifetime.Singleton;
+                default:
+                    throw new ArgumentException("Not supported");
+            }
+
+            //return injectType switch
+            //{
+            //    InjectType.Transient => ServiceLifetime.Transient,
+            //    InjectType.Scoped => ServiceLifetime.Scoped,
+            //    InjectType.Singleton => ServiceLifetime.Singleton,
+            //    _ => throw new ArgumentException("Not supported"),
+            //};
         }
 
         public static void InjectServicesFromAttribute(this IServiceCollection services, Assembly assembly)

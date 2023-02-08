@@ -73,64 +73,62 @@ namespace OnePass.Droid.Activities
             StartActivityForResult(intent, activityResult);
         }
 
-        private async void LoginButton_Click(object sender, EventArgs e)
+        private void LoginButton_Click(object sender, EventArgs e)
         {
-            //var encryptor = new FileEncryptor();
+            var fileEncoder = new FileEncoder();
 
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            //var filename = $"{_usernameEditText.Text}.bin";
-            //var path = Path.Combine(documentsPath, filename);
+            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var filename = $"{_usernameEditText.Text}.bin";
+            var path = Path.Combine(documentsPath, filename);
 
-            //_usernameValidationTextView.Visibility = ViewStates.Gone;
-            //_passwordValidationTextView.Visibility = ViewStates.Gone;
+            _usernameValidationTextView.Visibility = ViewStates.Gone;
+            _passwordValidationTextView.Visibility = ViewStates.Gone;
 
-            //// Validate fields
-            //var isValid = ValidateFields();
-            //if (!isValid)
-            //{
-            //    return;
-            //}
+            // Validate fields
+            var isValid = ValidateFields();
+            if (!isValid)
+            {
+                return;
+            }
 
-            //// Check if file exists
-            //if (!File.Exists(path))
-            //{
-            //    _usernameValidationTextView.Text = "Invalid username";
-            //    _usernameValidationTextView.Visibility = ViewStates.Visible;
+            // Check if file exists
+            if (!File.Exists(path))
+            {
+                _usernameValidationTextView.Text = "Invalid username";
+                _usernameValidationTextView.Visibility = ViewStates.Visible;
 
-            //    Toast.MakeText(this, "Invalid username", ToastLength.Short).Show();
-            //    return;
-            //}
+                Toast.MakeText(this, "Invalid username", ToastLength.Short).Show();
+                return;
+            }
 
-            //// Attempt to decrypt file with key
-            //try
-            //{
-            //    using var file = File.OpenRead(path);
-            //    using var memory = new MemoryStream();
-            //    await encryptor.DecryptAsync(file, memory, _passwordEditText.Text);
+            // Verify password
+            if (!fileEncoder.Verify(_usernameEditText.Text, _passwordEditText.Text, path))
+            {
+                _passwordValidationTextView.Text = "Invalid password";
+                _passwordValidationTextView.Visibility = ViewStates.Visible;
 
-            //    // Write remember username to filesystem
-            //    if (_remember_usernameCheckbox.Checked)
-            //    {
-            //        SetRememberedUsername(_usernameEditText.Text);
-            //    }
-            //    else
-            //    {
-            //        SetRememberedUsername(null);
-            //    }
+                Toast.MakeText(this, "Invalid password", ToastLength.Short).Show();
+                return;
+            }
 
-            //    // Success
-            //    var intent = new Intent(this, typeof(MainActivity));
-            //    intent.PutExtra("Username", _usernameEditText.Text);
-            //    intent.PutExtra("Password", _passwordEditText.Text);
-            //    StartActivity(intent);
-            //}
-            //catch (CryptographicException)
-            //{
-            //    _passwordValidationTextView.Text = "Invalid password";
-            //    _passwordValidationTextView.Visibility = ViewStates.Visible;
+            // Decrypt file
+            // var data = await fileEncoder.LoadAsync(_usernameEditText.Text, _passwordEditText.Text, path);
 
-            //    Toast.MakeText(this, "Invalid password", ToastLength.Short).Show();
-            //}
+            // Write remember username to filesystem
+            if (_remember_usernameCheckbox.Checked)
+            {
+                SetRememberedUsername(_usernameEditText.Text);
+            }
+            else
+            {
+                SetRememberedUsername(null);
+            }
+
+            // Success
+            var intent = new Intent(this, typeof(MainActivity));
+            intent.PutExtra("Username", _usernameEditText.Text);
+            intent.PutExtra("Password", _passwordEditText.Text);
+            StartActivity(intent);
         }
 
         private async void SetRememberedUsername(string username)

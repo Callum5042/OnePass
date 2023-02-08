@@ -61,59 +61,40 @@ namespace OnePass.Droid.Activities
 
         private async void SubmitButton_Click(object sender, EventArgs e)
         {
-            //var isValid = Validate();
-            //if (!isValid)
-            //{
-            //    return;
-            //}
+            var isValid = Validate();
+            if (!isValid)
+            {
+                return;
+            }
 
-            //// File
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            //var filename = $"{Username}.bin";
-            //var path = Path.Combine(documentsPath, filename);
+            // File
+            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var filename = $"{Username}.bin";
+            var path = Path.Combine(documentsPath, filename);
 
-            //var encryptor = new FileEncryptor();
+            // Decrypt file
+            var fileEncoder = new FileEncoder();
+            var data = await fileEncoder.LoadAsync(Username, Password, path);
 
-            //// Decrypt file
-            //using var input = File.OpenRead(path);
-            //using var output = new MemoryStream();
-            //await encryptor.DecryptAsync(input, output, Password);
+            // Add data
+            data.Accounts.Add(new Account()
+            {
+                Guid = Guid.NewGuid(),
+                Name = _accountNameEditText.Text,
+                Username = _accountLoginEditText.Text,
+                Password = _accountPasswordEditText.Text,
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
+            });
 
-            //output.Seek(0, SeekOrigin.Begin);
-            //using var reader = new StreamReader(output);
-            //var jsonOutput = await reader.ReadToEndAsync();
+            // Save file
+            await fileEncoder.SaveAsync(Username, Password, data, path);
 
-            //var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
-
-            //// Add data
-            //accounts.Add(new Account()
-            //{
-            //    Name = _accountNameEditText.Text,
-            //    Login = _accountLoginEditText.Text,
-            //    Password = _accountPasswordEditText.Text,
-            //    DateCreated = DateTime.Now,
-            //    DateModified = DateTime.Now
-            //});
-
-            //for (int i = 0; i < accounts.Count; i++)
-            //{
-            //    accounts[i].Id = i;
-            //}
-
-            //// Encrypt file
-            //var json = JsonSerializer.Serialize(accounts);
-            //var buffer = Encoding.UTF8.GetBytes(json);
-            //using var memory = new MemoryStream(buffer);
-            //using var file = File.OpenWrite(path);
-
-            //await encryptor.EncryptAsync(memory, file, Password);
-
-            //var intent = new Intent();
-            //intent.PutExtra("AccountName", _accountNameEditText.Text);
-            //SetResult(Result.Ok, intent);
-
-            //// Finish
-            //Finish();
+            // Finish
+            var intent = new Intent();
+            intent.PutExtra("AccountName", _accountNameEditText.Text);
+            SetResult(Result.Ok, intent);
+            Finish();
         }
 
         private bool Validate()
@@ -149,6 +130,9 @@ namespace OnePass.Droid.Activities
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)
         {
+            var generator = new PasswordGenerator();
+            _accountPasswordEditText.Text = generator.Generate();
+
             //var generator = new PasswordGenerator();
             //_accountPasswordEditText.Text = generator.Generate(new PasswordGeneratorOptions()
             //{

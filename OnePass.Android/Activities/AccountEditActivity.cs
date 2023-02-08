@@ -17,7 +17,7 @@ namespace OnePass.Droid.Activities
     [Activity(Theme = "@style/AppTheme")]
     public class AccountEditActivity : Activity
     {
-        private int _accountId;
+        private Guid _accountId;
         private EditText _accountNameEditText;
         private EditText _accountLoginEditText;
         private EditText _accountPasswordEditText;
@@ -36,112 +36,93 @@ namespace OnePass.Droid.Activities
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_account_create);
 
-            //Username = Intent.GetStringExtra(nameof(Username));
-            //Password = Intent.GetStringExtra(nameof(Password));
 
-            //// Cache controls
-            //_accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
-            //_accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
-            //_accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
+            Username = Intent.GetStringExtra(nameof(Username));
+            Password = Intent.GetStringExtra(nameof(Password));
 
-            //_accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
-            //_accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
-            //_accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
+            // Cache controls
+            _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
+            _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
+            _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
 
-            //// Set toolbar
-            //var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-            //SetActionBar(toolbar);
-            //ActionBar.Title = "Edit Account";
+            _accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
+            _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
+            _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
 
-            //// Submit button
-            //var submitButton = FindViewById<Button>(Resource.Id.submit_account_button);
-            //submitButton.Text = "Update Account";
-            //submitButton.Click += SubmitButton_Click;
+            // Set toolbar
+            var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+            SetActionBar(toolbar);
+            ActionBar.Title = "Edit Account";
 
-            //// Generate password
-            //var generatePasswordButton = FindViewById<Button>(Resource.Id.generate_password_button);
-            //generatePasswordButton.Click += GeneratePasswordButton_Click;
+            // Submit button
+            var submitButton = FindViewById<Button>(Resource.Id.submit_account_button);
+            submitButton.Text = "Update Account";
+            submitButton.Click += SubmitButton_Click;
 
-            //// Populate data
-            //_accountId = Intent.GetIntExtra("Id", -1);
-            //var encryptor = new FileEncryptor();
+            // Generate password
+            var generatePasswordButton = FindViewById<Button>(Resource.Id.generate_password_button);
+            generatePasswordButton.Click += GeneratePasswordButton_Click;
 
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            //var filename = $"{Username}.bin";
-            //var path = Path.Combine(documentsPath, filename);
+            // Populate data
+            var guid = Intent.GetStringExtra("Guid");
+            Guid.TryParse(guid, out _accountId);
 
-            //using var input = File.OpenRead(path);
-            //using var output = new MemoryStream();
-            //await encryptor.DecryptAsync(input, output, Password);
+            // Build path
+            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var filename = $"{Username}.bin";
+            var path = Path.Combine(documentsPath, filename);
 
-            //output.Seek(0, SeekOrigin.Begin);
-            //using var reader = new StreamReader(output);
-            //var jsonOutput = await reader.ReadToEndAsync();
+            // Decrypt data
+            var fileEncoder = new FileEncoder();
+            var data = await fileEncoder.LoadAsync(Username, Password, path);
+            var account = data.Accounts.FirstOrDefault(x => x.Guid == _accountId);
 
-            //var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
-            //var account = accounts.FirstOrDefault(x => x.Id == _accountId);
-
-            //_accountNameEditText.Text = account.Name;
-            //_accountLoginEditText.Text = account.Login;
-            //_accountPasswordEditText.Text = account.Password;
+            // Set UI fields
+            _accountNameEditText.Text = account.Name;
+            _accountLoginEditText.Text = account.Username;
+            _accountPasswordEditText.Text = account.Password;
         }
 
         private async void SubmitButton_Click(object sender, EventArgs e)
         {
-            //var isValid = Validate();
-            //if (!isValid)
-            //{
-            //    return;
-            //}
+            var isValid = Validate();
+            if (!isValid)
+            {
+                return;
+            }
 
-            //// File
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
-            //var filename = $"{Username}.bin";
-            //var path = Path.Combine(documentsPath, filename);
+            // File
+            var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+            var filename = $"{Username}.bin";
+            var path = Path.Combine(documentsPath, filename);
 
-            //var encryptor = new FileEncryptor();
+            // Decrypt
+            var fileEncoder = new FileEncoder();
+            var data = await fileEncoder.LoadAsync(Username, Password, path);
 
-            //// Decrypt file
-            //using var input = File.OpenRead(path);
-            //using var output = new MemoryStream();
-            //await encryptor.DecryptAsync(input, output, Password);
+            // Add data
+            var account = data.Accounts.FirstOrDefault(x => x.Guid == _accountId);
+            account.Username = _accountLoginEditText.Text;
+            account.Name = _accountNameEditText.Text;
+            account.Password = _accountPasswordEditText.Text;
+            account.DateModified = DateTime.Now;
+            account.DateCreated ??= DateTime.Now;
 
-            //output.Seek(0, SeekOrigin.Begin);
-            //using var reader = new StreamReader(output);
-            //var jsonOutput = await reader.ReadToEndAsync();
+            // Encrypt file 
+            await fileEncoder.SaveAsync(Username, Password, data, path);
 
-            //var accounts = JsonSerializer.Deserialize<IList<Account>>(jsonOutput);
-
-            //// Add data
-            //var account = accounts.FirstOrDefault(x => x.Id == _accountId);
-            //account.Login = _accountLoginEditText.Text;
-            //account.Name = _accountNameEditText.Text;
-            //account.Password = _accountPasswordEditText.Text;
-            //account.DateModified = DateTime.Now;
-
-            //if (account.DateCreated is null)
-            //{
-            //    account.DateCreated = DateTime.Now;
-            //}
-
-            //// Encrypt file 
-            //var json = JsonSerializer.Serialize(accounts);
-            //var buffer = Encoding.UTF8.GetBytes(json);
-            //using var memory = new MemoryStream(buffer);
-            //using var file = File.OpenWrite(path);
-            //file.SetLength(0);
-            //await encryptor.EncryptAsync(memory, file, Password);
-
-            //var intent = new Intent();
-            //intent.PutExtra("AccountName", _accountNameEditText.Text);
-            //SetResult(Result.Ok, intent);
-
-            //// Finish
-            //Finish();
+            // Finish
+            var intent = new Intent();
+            intent.PutExtra("AccountName", _accountNameEditText.Text);
+            SetResult(Result.Ok, intent);
+            Finish();
         }
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)
         {
+            //var generator = new PasswordGenerator();
+            //_accountPasswordEditText.Text = generator.Generate();
+
             //var generator = new PasswordGenerator();
             //_accountPasswordEditText.Text = generator.Generate(new PasswordGeneratorOptions() 
             //{
