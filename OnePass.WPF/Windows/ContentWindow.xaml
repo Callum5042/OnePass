@@ -80,7 +80,6 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" Click="Toolbar_Click_EditButton" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Refresh" Margin="0,0,10,0" IsEnabled="False" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Options" Margin="0,0,10,0" IsEnabled="False" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" IsEnabled="False" />
                     </StackPanel>
