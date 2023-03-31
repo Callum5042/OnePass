@@ -199,5 +199,15 @@ namespace OnePass.WPF.Windows
                 OpenEditAccountWindow(accountModel);
             }
         }
+
+        private void MenuItem_Click_ExportJson(object sender, RoutedEventArgs e)
+        {
+            var window = new VerifyWindow(this, new VerifyModel()
+            {
+                ButtonText = "Export JSON"
+            });
+
+            window.Show();
+        }
     }
 }

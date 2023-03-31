@@ -39,6 +39,7 @@
 
             <MenuItem Header="Tools">
                 <MenuItem Header="Clear Clipboard" Click="MenuItem_Click_ClearClipboard" />
+                <MenuItem Header="Export JSON" Click="MenuItem_Click_ExportJson" />
             </MenuItem>
 
             <MenuItem Header="Options" IsEnabled="False" />
