@@ -1,4 +1,5 @@
 ﻿using OnePass.Infrastructure;
+using OnePass.WPF.Models;
 using System;
 using System.Globalization;
 using System.IO;
@@ -41,5 +42,7 @@ namespace OnePass
         }
 
         public new static App Current => (App)Application.Current;
+
+        public AppOptions AppOptions { get; set; } = new();
     }
 }

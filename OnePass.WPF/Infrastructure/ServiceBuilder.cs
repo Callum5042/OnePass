@@ -33,7 +33,7 @@ namespace OnePass.Infrastructure
 
             // services.AddTransient<IFileSystem, FileSystem>();
             services.AddSingleton<OnePassData>();
-            services.AddTransient<IFileEncoder, Services.FileEncoder>();
+            services.AddTransient<IFileEncoder, FileEncoder>();
         }
 
         private static void InjectConventions(IServiceCollection services)

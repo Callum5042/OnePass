@@ -57,6 +57,8 @@ namespace OnePass.WPF.Models
                     Login.Username = options.RememberUsername;
                     Login.RememberMe = true;
                 }
+
+                App.Current.AppOptions = options;
             }
         }
 

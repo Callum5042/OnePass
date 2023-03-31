@@ -136,5 +136,17 @@ namespace OnePass.WPF.Models
                 EmptyStackPanelVisibility = Visibility.Visible;
             }
         }
+
+        public bool ShowStatusBar { get => showStatusBar; set => SetProperty(ref showStatusBar, value); }
+        private bool showStatusBar = true;
+
+        public Visibility StatusBarVisibility { get => statusBarVisiblity; set => SetProperty(ref statusBarVisiblity, value); }
+        private Visibility statusBarVisiblity;
+
+        public bool ShowToolbar { get => showToolbar; set => SetProperty(ref showToolbar, value); }
+        private bool showToolbar = true;
+
+        public Visibility ToolbarVisibility { get => toolbarVisiblity; set => SetProperty(ref toolbarVisiblity, value); }
+        private Visibility toolbarVisiblity;
     }
 }

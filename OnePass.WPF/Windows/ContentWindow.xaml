@@ -42,7 +42,12 @@
                 <MenuItem Header="Export JSON" Click="MenuItem_Click_ExportJson" />
             </MenuItem>
 
-            <MenuItem Header="Options" IsEnabled="False" />
+            <MenuItem Header="Options">
+                <MenuItem Header="Configuration" Click="MenuItem_Click_Options" />
+                <Separator />
+                <MenuItem Header="Show Toolbar" IsChecked="{Binding ShowToolbar}" IsCheckable="True" Click="MenuItem_Click_ShowToolbar" />
+                <MenuItem Header="Show Status Bar" IsChecked="{Binding ShowStatusBar}" IsCheckable="True" Click="MenuItem_Click_ShowStatusBar" />
+            </MenuItem>
 
             <MenuItem Header="Help">
                 <MenuItem Header="About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
@@ -51,7 +56,7 @@
         </Menu>
 
         <!-- Status bar -->
-        <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0">
+        <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" Visibility="{Binding StatusBarVisibility}">
 
             <StatusBarItem>
                 <TextBlock Text="" />
@@ -69,7 +74,7 @@
             </Grid.RowDefinitions>
 
             <!-- Toolbar -->
-            <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0">
+            <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0" Visibility="{Binding ToolbarVisibility}">
 
                 <Grid>
 
@@ -81,7 +86,7 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" Click="Toolbar_Click_EditButton" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Options" Margin="0,0,10,0" IsEnabled="False" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Config" Margin="0,0,10,0" Click="MenuItem_Click_Options" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" IsEnabled="False" />
                     </StackPanel>
 

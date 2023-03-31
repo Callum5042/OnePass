@@ -209,5 +209,31 @@ namespace OnePass.WPF.Windows
 
             window.Show();
         }
+
+        private void MenuItem_Click_Options(object sender, RoutedEventArgs e)
+        {
+            var configWindow = new ConfigWindow() 
+            { 
+                Owner = this,
+            };
+
+            configWindow.ShowDialog();
+        }
+
+        private void MenuItem_Click_ShowStatusBar(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ContentModel model)
+            {
+                model.StatusBarVisibility = model.ShowStatusBar ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void MenuItem_Click_ShowToolbar(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ContentModel model)
+            {
+                model.ToolbarVisibility = model.ShowToolbar ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
     }
 }

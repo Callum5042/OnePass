@@ -113,7 +113,16 @@ namespace OnePass.WPF.Models
 
         public void GeneratePassword()
         {
-            var generator = new PasswordGenerator();
+            var generator = new PasswordGenerator()
+            {
+                HasLowercase = App.Current.AppOptions.Lowercase,
+                HasUppercase = App.Current.AppOptions.Uppercase,
+                HasNumbers = App.Current.AppOptions.Numbers,
+                HasSymbols = App.Current.AppOptions.Symbols,
+                MinLength = App.Current.AppOptions.MinLength,
+                MaxLength = App.Current.AppOptions.MaxLength
+            };
+
             Password = generator.Generate();
         }
 

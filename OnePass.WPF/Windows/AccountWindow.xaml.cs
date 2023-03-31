@@ -81,7 +81,14 @@ namespace OnePass.WPF.Windows
         {
             if (DataContext is AccountModel model)
             {
-                model.GeneratePassword();
+                try
+                {
+                    model.GeneratePassword();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(owner: this, exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
