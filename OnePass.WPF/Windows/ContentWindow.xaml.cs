@@ -35,8 +35,11 @@ namespace OnePass.WPF.Windows
             var menu = sender as MenuItem;
             var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
             var model = item.DataContext as AccountListModel;
+            OpenEditAccountWindow(model);
+        }
 
-            // Window
+        private void OpenEditAccountWindow(AccountListModel model)
+        {
             var accountModel = App.Current.GetService<AccountModel>();
             accountModel.Guid = model.Guid;
             accountModel.Name = model.Name;
@@ -186,6 +189,14 @@ namespace OnePass.WPF.Windows
             using (var file = File.Open(path, FileMode.Truncate))
             {
                 JsonSerializer.Serialize(file, options);
+            }
+        }
+
+        private void Toolbar_Click_EditButton(object sender, RoutedEventArgs e)
+        {
+            if (AccountsListView.SelectedItem is AccountListModel accountModel)
+            {
+                OpenEditAccountWindow(accountModel);
             }
         }
     }
