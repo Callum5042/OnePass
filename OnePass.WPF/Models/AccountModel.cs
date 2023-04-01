@@ -4,6 +4,7 @@ using OnePass.Models;
 using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,10 +49,10 @@ namespace OnePass.WPF.Models
         private string username;
 
         [EmailAddress(ErrorMessage = "Not a valid email address.")]
-        public string EmailAddress 
-        { 
+        public string EmailAddress
+        {
             get => emailAddress;
-            set 
+            set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
@@ -79,7 +80,7 @@ namespace OnePass.WPF.Models
         public async Task<Guid> AddAccountAsync()
         {
             var guid = Guid.NewGuid();
-            RootAccount.Accounts.Add(new Account()
+            var model = new Account()
             {
                 Guid = guid,
                 Name = Name,
@@ -88,7 +89,18 @@ namespace OnePass.WPF.Models
                 Password = Password,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
-            });
+            };
+
+            if (App.Current.AppOptions.EnablePasswordHistory)
+            {
+                model.PasswordHistory.Add(new PasswordHistory()
+                {
+                    Password = Password,
+                    DateTime = DateTime.Now,
+                });
+            }
+
+            RootAccount.Accounts.Add(model);
 
             await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
             return guid;
@@ -97,11 +109,22 @@ namespace OnePass.WPF.Models
         public async Task UpdateAccountAsync()
         {
             var account = RootAccount.Accounts.First(x => x.Guid == Guid);
+            var passwordChanged = account.Password != Password;
+
             account.Name = Name;
             account.Username = Username;
             account.EmailAddress = EmailAddress;
             account.Password = Password;
             account.DateModified = DateTime.Now;
+
+            if (passwordChanged && App.Current.AppOptions.EnablePasswordHistory)
+            {
+                account.PasswordHistory.Add(new PasswordHistory()
+                {
+                    Password = Password,
+                    DateTime = DateTime.Now,
+                });
+            }
 
             await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
         }
@@ -133,5 +156,7 @@ namespace OnePass.WPF.Models
 
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
+
+        public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
     }
 }

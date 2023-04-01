@@ -46,5 +46,7 @@ namespace OnePass.WPF.Models
 
         public string ValidationMessage { get => validationMessage; private set => SetProperty(ref validationMessage, value); }
         private string validationMessage;
+
+        public bool EnablePasswordHistory { get; set; }
     }
 }

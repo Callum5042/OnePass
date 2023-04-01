@@ -25,5 +25,7 @@
         public int MinLength { get; set; } = 5;
 
         public int MaxLength { get; set; } = 10;
+
+        public bool EnablePasswordHistory { get; set; } = true;
     }
 }

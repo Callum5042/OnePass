@@ -1,5 +1,7 @@
-﻿using OnePass.WPF.Models;
+﻿using OnePass.WPF.Infrastructure;
+using OnePass.WPF.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -12,7 +14,7 @@ namespace OnePass.WPF.Windows
     {
         private readonly ContentWindow _contentWindow;
 
-        public AccountWindow(ContentWindow contentWindow, bool edit)
+        public AccountWindow(ContentWindow contentWindow, bool edit, bool historyTabSelected)
         {
             _contentWindow = contentWindow ?? throw new ArgumentNullException(nameof(contentWindow));
 
@@ -22,6 +24,8 @@ namespace OnePass.WPF.Windows
 
             AddAccountButton.Visibility = edit ? Visibility.Collapsed : Visibility.Visible;
             EditAccountButton.Visibility = edit ? Visibility.Visible : Visibility.Collapsed;
+
+            TabHistory.IsSelected = historyTabSelected;
         }
 
         private async void Button_Click_AddAccount(object sender, RoutedEventArgs e)
@@ -43,6 +47,14 @@ namespace OnePass.WPF.Windows
                             EmailAddress = model.EmailAddress,
                             Password = model.Password,
                             DateModified = DateTime.Now,
+                            PasswordHistory = new List<PasswordHistoryModel>()
+                            {
+                                new PasswordHistoryModel()
+                                {
+                                    Password = model.Password,
+                                    DateSet = DateTime.Now,
+                                }
+                            }
                         };
 
                         contentModel.Accounts.Add(accountModel);
@@ -66,14 +78,25 @@ namespace OnePass.WPF.Windows
                 if (_contentWindow.DataContext is ContentModel contentModel)
                 {
                     var accountListModel = contentModel.Accounts.First(x => x.Guid == accountModel.Guid);
+                    var passwordChanged = accountListModel.Password != accountModel.Password;
+
                     accountListModel.Name = accountModel.Name;
                     accountListModel.Username = accountModel.Username;
                     accountListModel.EmailAddress = accountModel.EmailAddress;
                     accountListModel.Password = accountModel.Password;
                     accountListModel.DateModified = DateTime.Now;
+
+                    if (passwordChanged)
+                    {
+                        accountListModel.PasswordHistory.Add(new PasswordHistoryModel()
+                        {
+                            Password = accountModel.Password,
+                            DateSet = DateTime.Now,
+                        });
+                    }
                 }
 
-                Close(); 
+                Close();
             }
         }
 
@@ -98,6 +121,11 @@ namespace OnePass.WPF.Windows
             {
                 await model.LoadAsync();
             }
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
     }
 }

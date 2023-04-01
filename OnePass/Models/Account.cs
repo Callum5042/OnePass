@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnePass.Models
 {
@@ -25,5 +26,7 @@ namespace OnePass.Models
         public bool MfaEnabled { get; set; }
 
         public string Notes { get; set; }
+
+        public IList<PasswordHistory> PasswordHistory { get; set; } = new List<PasswordHistory>();
     }
 }

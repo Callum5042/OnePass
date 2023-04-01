@@ -6,7 +6,7 @@
         xmlns:models="clr-namespace:OnePass.WPF.Windows"
         d:DataContext="{d:DesignInstance Type=models:AboutWindow}"
         mc:Ignorable="d" Topmost="True" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize" Title="AboutWindow" Height="200" Width="400">
+        ResizeMode="NoResize" Title="About OnePass" Height="200" Width="400" SourceInitialized="Window_SourceInitialized">
     
     <Grid>
         

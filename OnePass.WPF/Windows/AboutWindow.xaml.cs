@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using OnePass.WPF.Infrastructure;
+using System.Reflection;
 using System.Windows;
 
 namespace OnePass.WPF.Windows
@@ -14,6 +15,11 @@ namespace OnePass.WPF.Windows
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        private void Window_SourceInitialized(object sender, System.EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
     }
 }

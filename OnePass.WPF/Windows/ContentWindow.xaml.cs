@@ -1,6 +1,8 @@
 ﻿using OnePass.WPF.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +28,7 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_AddAccount(object sender, RoutedEventArgs e)
         {
-            var window = new AccountWindow(this, edit: false);
+            var window = new AccountWindow(this, edit: false, historyTabSelected: false);
             window.Show();
         }
 
@@ -35,10 +37,10 @@ namespace OnePass.WPF.Windows
             var menu = sender as MenuItem;
             var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
             var model = item.DataContext as AccountListModel;
-            OpenEditAccountWindow(model);
+            OpenEditAccountWindow(model, historyTab: false);
         }
 
-        private void OpenEditAccountWindow(AccountListModel model)
+        private void OpenEditAccountWindow(AccountListModel model, bool historyTab)
         {
             var accountModel = App.Current.GetService<AccountModel>();
             accountModel.Guid = model.Guid;
@@ -46,8 +48,9 @@ namespace OnePass.WPF.Windows
             accountModel.Username = model.Username;
             accountModel.EmailAddress = model.EmailAddress;
             accountModel.Password = model.Password;
+            accountModel.PasswordHistory = model.PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
 
-            var accountWindow = new AccountWindow(this, edit: true)
+            var accountWindow = new AccountWindow(this, edit: true, historyTab)
             {
                 DataContext = accountModel
             };
@@ -196,7 +199,7 @@ namespace OnePass.WPF.Windows
         {
             if (AccountsListView.SelectedItem is AccountListModel accountModel)
             {
-                OpenEditAccountWindow(accountModel);
+                OpenEditAccountWindow(accountModel, historyTab: false);
             }
         }
 
@@ -233,6 +236,14 @@ namespace OnePass.WPF.Windows
             if (DataContext is ContentModel model)
             {
                 model.ToolbarVisibility = model.ShowToolbar ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void MenuItem_Click_PasswordHistory(object sender, RoutedEventArgs e)
+        {
+            if (AccountsListView.SelectedItem is AccountListModel accountModel)
+            {
+                OpenEditAccountWindow(accountModel, historyTab: true);
             }
         }
     }

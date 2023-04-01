@@ -23,7 +23,8 @@ namespace OnePass.WPF.Windows
                 Numbers = App.Current.AppOptions.Numbers,
                 Symbols = App.Current.AppOptions.Symbols,
                 MinLength = App.Current.AppOptions.MinLength, 
-                MaxLength = App.Current.AppOptions.MaxLength
+                MaxLength = App.Current.AppOptions.MaxLength,
+                EnablePasswordHistory = App.Current.AppOptions.EnablePasswordHistory
             };
         }
 
@@ -46,6 +47,7 @@ namespace OnePass.WPF.Windows
             App.Current.AppOptions.Symbols = model.Symbols;
             App.Current.AppOptions.MinLength = model.MinLength;
             App.Current.AppOptions.MaxLength = model.MaxLength;
+            App.Current.AppOptions.EnablePasswordHistory = model.EnablePasswordHistory;
 
             // Update file
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

@@ -100,6 +100,32 @@
             
         </GroupBox>
 
+        <GroupBox Margin="0,10,0,0">
+
+            <GroupBox.Header>
+                <Label>Password History</Label>
+            </GroupBox.Header>
+
+            <Grid Margin="5">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="160" />
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Content="Enable Password History" Grid.Row="0" Grid.Column="0" IsChecked="{Binding EnablePasswordHistory}" />
+
+            </Grid>
+
+        </GroupBox>
+
         <Label Content="{Binding ValidationMessage}" Style="{StaticResource ValidationLabel}" />
         <Button Style="{StaticResource PrimaryButton}" Content="Save" Margin="0,10" Click="Button_Click_SaveConfig" />
 

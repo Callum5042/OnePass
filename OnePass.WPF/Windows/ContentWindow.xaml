@@ -135,7 +135,6 @@
                 </ListView.ItemContainerStyle>
                 
                 <ListView.ItemTemplate>
-                    
                     <DataTemplate>
 
                         <Grid>
@@ -145,6 +144,8 @@
                                     <MenuItem Header="Copy Username" Click="MenuItem_Click_CopyUsername" />
                                     <MenuItem Header="Copy Email Address" Click="MenuItem_Click_CopyEmailAddress" />
                                     <MenuItem Header="Copy Password" Click="MenuItem_Click_CopyPassword" />
+                                    <Separator />
+                                    <MenuItem Header="Password History" Click="MenuItem_Click_PasswordHistory" />
                                     <Separator />
                                     <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />
                                     <MenuItem Header="Remove" Click="MenuItem_Click_RemoveAccount" />
@@ -169,32 +170,6 @@
                 </ListView.ItemTemplate>
 
             </ListView>
-
-            <!-- Details -->
-            <WrapPanel Grid.Row="2" Name="ProductDetailsGrid" Visibility="Collapsed" HorizontalAlignment="Center" d:DataContext="{d:DesignInstance Type=models:AccountListModel}" >
-
-                <Border Padding="10,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Name" FontWeight="Bold" />
-                        <TextBox Text="{Binding Name}" IsReadOnly="True" VerticalContentAlignment="Center" BorderThickness="0" />
-                    </StackPanel>
-                </Border>
-
-                <Border Padding="10,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Label HorizontalAlignment="Center" Content="Username" FontWeight="Bold" />
-                        <TextBox Text="{Binding Username}" IsReadOnly="True" VerticalContentAlignment="Center" BorderThickness="0" />
-                    </StackPanel>
-                </Border>
-
-                <Border Padding="10,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Label HorizontalAlignment="Center" Content="Email" FontWeight="Bold" />
-                        <TextBox Text="{Binding EmailAddress}" IsReadOnly="True" VerticalContentAlignment="Center" BorderThickness="0" />
-                    </StackPanel>
-                </Border>
-
-            </WrapPanel>
 
         </Grid>
 

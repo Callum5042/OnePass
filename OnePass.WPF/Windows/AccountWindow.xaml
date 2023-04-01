@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:OnePass.WPF.Models"
         d:DataContext="{d:DesignInstance Type=models:AccountModel}"
-        mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" 
-        ShowInTaskbar="False" WindowStyle="SingleBorderWindow" Loaded="Window_Loaded"
-        Title="Account" Topmost="True" SizeToContent="WidthAndHeight">
+        mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False" WindowStyle="SingleBorderWindow" Loaded="Window_Loaded" Background="#FFF0F0F0"
+        Title="Account" SizeToContent="Height" Width="400" SourceInitialized="Window_SourceInitialized">
 
     <!-- Resources -->
     <Window.Resources>
@@ -58,48 +58,69 @@
 
     </Window.Resources>
 
-    <Grid Margin="10">
+    <TabControl Margin="5">
 
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="160" />
-        </Grid.ColumnDefinitions>
+        <TabItem Header="Details">
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
-            <Label Content="Name" />
-            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TabIndex="1" />
-            <Label Style="{StaticResource ValidationLabel}" Content="{Binding NameValidation}" />
-        </StackPanel>
+            <Grid Margin="10">
 
-        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
-            <Label Content="Username" />
-            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" TabIndex="2" />
-            <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidation}" />
-        </StackPanel>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
-            <Label Content="Email Address" />
-            <TextBox Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" />
-            <Label Style="{StaticResource ValidationLabel}" Content="{Binding EmailAddressValidation}" />
-        </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
-            <Label Content="Password" />
-            <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" TabIndex="4" />
-            <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidation}" />
-        </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+                    <Label Content="Name" />
+                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TabIndex="1" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding NameValidation}" />
+                </StackPanel>
 
-        <Button Grid.Row="2" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
-        <Button Grid.Row="2" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" IsDefault="True" />
-        <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" Click="Button_Click_GeneratePassword" />
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
+                    <Label Content="Username" />
+                    <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" TabIndex="2" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding UsernameValidation}" />
+                </StackPanel>
 
-    </Grid>
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+                    <Label Content="Email Address" />
+                    <TextBox Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding EmailAddressValidation}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
+                    <Label Content="Password" />
+                    <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" TabIndex="4" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidation}" />
+                </StackPanel>
+
+                <Button Grid.Row="2" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
+                <Button Grid.Row="2" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" IsDefault="True" />
+                <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" Click="Button_Click_GeneratePassword" />
+
+            </Grid>
+
+        </TabItem>
+
+        <TabItem Name="TabHistory" Header="History">
+
+            <ListView Name="PasswordHistoryListView" ItemsSource="{Binding PasswordHistory}" MinHeight="100" MaxHeight="200">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Password" Width="200" DisplayMemberBinding="{Binding Password}" />
+                        <GridViewColumn Header="Date Set" Width="120" DisplayMemberBinding="{Binding DateSet, StringFormat=g}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </TabItem>
+
+    </TabControl>
 
 </Window>

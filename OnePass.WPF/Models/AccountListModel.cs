@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 
 namespace OnePass.WPF.Models
 {
@@ -27,5 +28,7 @@ namespace OnePass.WPF.Models
 
         public DateTime? DateModified { get => dateModified; set => SetProperty(ref dateModified, value); }
         private DateTime? dateModified;
+
+        public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
     }
 }
