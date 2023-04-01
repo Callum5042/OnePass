@@ -20,8 +20,6 @@ namespace OnePass.WPF.Models
         public string Password { get => password; set => SetProperty(ref password, value); }
         private string password;
 
-        public bool Favourite { get; set; }
-
         public bool MfaEnabled { get; set; }
 
         public string Notes { get; set; }
@@ -30,5 +28,8 @@ namespace OnePass.WPF.Models
         private DateTime? dateModified;
 
         public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
+
+        public bool Favourite { get => favourite; set => SetProperty(ref favourite, value); }
+        private bool favourite;
     }
 }

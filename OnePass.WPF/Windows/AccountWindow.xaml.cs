@@ -47,6 +47,7 @@ namespace OnePass.WPF.Windows
                             EmailAddress = model.EmailAddress,
                             Password = model.Password,
                             DateModified = DateTime.Now,
+                            Favourite = model.Favourite,
                             PasswordHistory = new List<PasswordHistoryModel>()
                             {
                                 new PasswordHistoryModel()
@@ -85,6 +86,7 @@ namespace OnePass.WPF.Windows
                     accountListModel.EmailAddress = accountModel.EmailAddress;
                     accountListModel.Password = accountModel.Password;
                     accountListModel.DateModified = DateTime.Now;
+                    accountListModel.Favourite = accountModel.Favourite;
 
                     if (passwordChanged)
                     {

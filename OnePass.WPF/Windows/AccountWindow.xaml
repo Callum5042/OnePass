@@ -68,6 +68,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -100,9 +101,11 @@
                     <Label Style="{StaticResource ValidationLabel}" Content="{Binding PasswordValidation}" />
                 </StackPanel>
 
-                <Button Grid.Row="2" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
-                <Button Grid.Row="2" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" IsDefault="True" />
-                <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" Click="Button_Click_GeneratePassword" />
+                <CheckBox Grid.Row="2" Grid.ColumnSpan="3" Content="Favourite" IsChecked="{Binding Favourite}" Margin="0,0,0,10" />
+
+                <Button Grid.Row="3" Grid.Column="0" x:Name="AddAccountButton" Style="{StaticResource PrimaryButton}" Content="Add Account" Click="Button_Click_AddAccount" IsDefault="True" />
+                <Button Grid.Row="3" Grid.Column="0" x:Name="EditAccountButton" Style="{StaticResource PrimaryButton}" Content="Edit Account" Click="Button_Click_EditAccount" IsDefault="True" />
+                <Button Grid.Row="3" Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Generate Password" Click="Button_Click_GeneratePassword" />
 
             </Grid>
 

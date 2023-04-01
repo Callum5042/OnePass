@@ -89,6 +89,7 @@ namespace OnePass.WPF.Models
                 Password = Password,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
+                Favourite = Favourite
             };
 
             if (App.Current.AppOptions.EnablePasswordHistory)
@@ -116,6 +117,7 @@ namespace OnePass.WPF.Models
             account.EmailAddress = EmailAddress;
             account.Password = Password;
             account.DateModified = DateTime.Now;
+            account.Favourite = Favourite;
 
             if (passwordChanged && App.Current.AppOptions.EnablePasswordHistory)
             {
@@ -158,5 +160,8 @@ namespace OnePass.WPF.Models
         private string passwordValidation;
 
         public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
+
+        public bool Favourite { get => favourite; set => SetProperty(ref favourite, value); }
+        private bool favourite;
     }
 }

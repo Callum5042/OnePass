@@ -29,7 +29,10 @@ namespace OnePass.WPF.Models
         {
             var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
 
-            var accountListModel = root.Accounts.OrderBy(x => x.Name).Select(x => new AccountListModel()
+            var accountListModel = root.Accounts
+                .OrderByDescending(x => x.Favourite)
+                .ThenBy(x => x.Name)
+                .Select(x => new AccountListModel()
             {
                 Guid = x.Guid,
                 Name = x.Name,
@@ -37,8 +40,9 @@ namespace OnePass.WPF.Models
                 EmailAddress = x.EmailAddress,
                 Password = x.Password,
                 DateModified = x.DateModified,
+                Favourite = x.Favourite,
                 PasswordHistory = x.PasswordHistory.Select(x => new PasswordHistoryModel() { Password = x.Password, DateSet = x.DateTime }).ToList()
-            }).ToList();
+            });
 
             AccountListModel = accountListModel.ToList();
             Accounts = new ObservableCollection<AccountListModel>(AccountListModel);
