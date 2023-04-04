@@ -45,6 +45,7 @@
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:backgroundTint="@color/colorAccent"
             android:text="@string/login_button_label" />
 
@@ -52,6 +53,7 @@
             android:id="@+id/register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:backgroundTint="@color/colorSecondary"
             android:text="@string/register_button_label" />
 
