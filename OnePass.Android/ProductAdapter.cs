@@ -13,10 +13,13 @@ namespace OnePass.Droid
 
         public IList<Account> Accounts { get; set; } = new List<Account>();
 
+        public IList<Account> OriginalAccounts { get; set; } = new List<Account>();
+
         public event EventHandler<int> ItemClick;
 
         public ProductAdapter(IList<Account> accounts)
         {
+            OriginalAccounts = accounts;
             Accounts = accounts;
         }
 

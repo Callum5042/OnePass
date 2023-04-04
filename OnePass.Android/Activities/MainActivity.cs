@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -9,9 +10,9 @@ using Google.Android.Material.FloatingActionButton;
 using OnePass.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Path = System.IO.Path;
 
 namespace OnePass.Droid.Activities
 {
@@ -23,6 +24,10 @@ namespace OnePass.Droid.Activities
         private string Password { get; set; }
 
         private ProductAdapter ProductAdapter { get; set; }
+
+        private RecyclerView RecyclerView { get; set; }
+
+        private TextView EmptyListMessage { get; set; }
 
         private const int _activityResultCreated = 1;
         private const int _activityResultEdited = 2;
@@ -50,24 +55,28 @@ namespace OnePass.Droid.Activities
             ProductAdapter = new ProductAdapter(list);
             ProductAdapter.ItemClick += ProductAdapter_ItemClick;
 
-            var recyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
-            recyclerView.SetLayoutManager(new LinearLayoutManager(this));
-            recyclerView.SetAdapter(ProductAdapter);
-            recyclerView.AddItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Vertical));
+            RecyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
+            RecyclerView.SetLayoutManager(new LinearLayoutManager(this));
+            RecyclerView.SetAdapter(ProductAdapter);
+            RecyclerView.AddItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Vertical));
 
-            TriggerComponentVisiblity(list, recyclerView);
+            EmptyListMessage = FindViewById<TextView>(Resource.Id.empty_list_message);
+
+            TriggerComponentVisiblity(list);
         }
 
-        private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, RecyclerView recyclerView)
+        private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, string emptyMessage = null)
         {
             if (list.Any())
             {
-                recyclerView.Visibility = ViewStates.Visible;
+                EmptyListMessage.Visibility = ViewStates.Gone;
+                RecyclerView.Visibility = ViewStates.Visible;
             }
             else
             {
-                var emptyListMessage = FindViewById<TextView>(Resource.Id.empty_list_message);
-                emptyListMessage.Visibility = ViewStates.Visible;
+                EmptyListMessage.Text = emptyMessage;
+                EmptyListMessage.Visibility = ViewStates.Visible;
+                RecyclerView.Visibility = ViewStates.Gone;
             }
         }
 
@@ -87,6 +96,23 @@ namespace OnePass.Droid.Activities
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.top_menus, menu);
+
+            var item = menu.FindItem(Resource.Id.menu_search);
+            var searchView = (Android.Support.V7.Widget.SearchView)item.ActionView;
+            
+            var id = searchView.Context.Resources.GetIdentifier("search_src_text", "id", PackageName);
+            var searchEditText = searchView.FindViewById<EditText>(id);
+            searchEditText.SetTextColor(Color.White);
+
+            searchView.QueryTextChange += (s, e) =>
+            {
+                var filtered = ProductAdapter.OriginalAccounts.Where(x => x.Name.Contains(e.NewText, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                ProductAdapter.Accounts = filtered;
+                ProductAdapter.NotifyDataSetChanged();
+
+                TriggerComponentVisiblity(filtered, emptyMessage: "No results found");
+            };
+
             return base.OnCreateOptionsMenu(menu);
         }
 
@@ -131,8 +157,7 @@ namespace OnePass.Droid.Activities
             ProductAdapter.Accounts = list;
             ProductAdapter.NotifyDataSetChanged();
 
-            var recyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
-            TriggerComponentVisiblity(list, recyclerView);
+            TriggerComponentVisiblity(list);
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)

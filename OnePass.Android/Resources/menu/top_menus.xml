@@ -5,9 +5,10 @@
          android:id="@+id/menu_search"
          android:icon="@drawable/baseline_search_24"
          android:showAsAction="ifRoom"
-         android:title="Search" />
+         android:title="Search"
+         android:actionViewClass="android.support.v7.widget.SearchView" />
   <item
-         android:id="@+id/menu_search"
+         android:id="@+id/menu_sync"
          android:icon="@drawable/baseline_sync_24"
          android:showAsAction="ifRoom"
          android:title="Sync" />
