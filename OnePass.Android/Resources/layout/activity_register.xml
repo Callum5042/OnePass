@@ -60,15 +60,9 @@
             android:id="@+id/register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:backgroundTint="@color/colorAccent"
             android:text="@string/register_create_button" />
-
-        <Button
-            android:id="@+id/import_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorSecondary"
-            android:text="@string/register_import_button" />
 
     </LinearLayout>
 
