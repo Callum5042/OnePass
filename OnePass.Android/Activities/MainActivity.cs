@@ -1,5 +1,4 @@
-﻿using Android.Accounts;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
@@ -7,13 +6,11 @@ using Android.Views;
 using Android.Widget;
 using AndroidX.RecyclerView.Widget;
 using Google.Android.Material.FloatingActionButton;
-using OnePass.Models;
 using OnePass.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OnePass.Droid.Activities
@@ -57,6 +54,21 @@ namespace OnePass.Droid.Activities
             recyclerView.SetLayoutManager(new LinearLayoutManager(this));
             recyclerView.SetAdapter(ProductAdapter);
             recyclerView.AddItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.Vertical));
+
+            TriggerComponentVisiblity(list, recyclerView);
+        }
+
+        private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, RecyclerView recyclerView)
+        {
+            if (list.Any())
+            {
+                recyclerView.Visibility = ViewStates.Visible;
+            }
+            else
+            {
+                var emptyListMessage = FindViewById<TextView>(Resource.Id.empty_list_message);
+                emptyListMessage.Visibility = ViewStates.Visible;
+            }
         }
 
         private async Task<IList<OnePass.Models.Account>> Accounts()
@@ -118,6 +130,9 @@ namespace OnePass.Droid.Activities
             var list = await Accounts();
             ProductAdapter.Accounts = list;
             ProductAdapter.NotifyDataSetChanged();
+
+            var recyclerView = FindViewById<RecyclerView>(Resource.Id.recycler_view);
+            TriggerComponentVisiblity(list, recyclerView);
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
