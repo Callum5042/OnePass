@@ -14,7 +14,7 @@ namespace OnePass.Services
         private const string _fileSignature = ".ONEPASS";
         private const int _fileVersion = 1;
 
-        public async Task<RootAccount> LoadAsync(string username, string password, string filename = null)
+        public async Task<OnePassData> LoadAsync(string username, string password, string filename = null)
         {
             if (filename is null)
             {
@@ -56,12 +56,12 @@ namespace OnePass.Services
 
                     // Decrypt
                     var cryptoStream = new CryptoStream(file, aes.CreateDecryptor(), CryptoStreamMode.Read);
-                    return await JsonSerializer.DeserializeAsync<RootAccount>(cryptoStream);
+                    return await JsonSerializer.DeserializeAsync<OnePassData>(cryptoStream);
                 }
             }
         }
 
-        public async Task SaveAsync(string username, string password, RootAccount rootAccount, string filename = null)
+        public async Task SaveAsync(string username, string password, OnePassData rootAccount, string filename = null)
         {
             if (filename is null)
             {

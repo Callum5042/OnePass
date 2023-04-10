@@ -102,7 +102,7 @@ namespace OnePass.WPF.Windows
                     await model.SaveOptions();
 
                     // Set login details
-                    var data = App.Current.GetService<OnePassData>();
+                    var data = App.Current.GetService<UserData>();
                     data.Username = model.Login.Username;
                     data.Password = model.Login.Password;
 
@@ -138,7 +138,7 @@ namespace OnePass.WPF.Windows
                     await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
 
                     // Set login details
-                    var data = App.Current.GetService<OnePassData>();
+                    var data = App.Current.GetService<UserData>();
                     data.Username = model.Register.Username;
                     data.Password = model.Register.Password;
 

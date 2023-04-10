@@ -15,11 +15,11 @@ namespace OnePass.WPF.Models
     public class AccountModel : ObservableValidator
     {
         private readonly IFileEncoder _fileEncoder;
-        private readonly OnePassData _onePassData;
+        private readonly UserData _onePassData;
 
-        private RootAccount RootAccount { get; set; }
+        public OnePassData OnePassData { get; set; }
 
-        public AccountModel(IFileEncoder fileEncoder, OnePassData onePassData)
+        public AccountModel(IFileEncoder fileEncoder, UserData onePassData)
         {
             _fileEncoder = fileEncoder;
             _onePassData = onePassData;
@@ -29,7 +29,7 @@ namespace OnePass.WPF.Models
 
         public async Task LoadAsync()
         {
-            RootAccount = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            OnePassData = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
         }
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -96,20 +96,21 @@ namespace OnePass.WPF.Models
             {
                 model.PasswordHistory.Add(new PasswordHistory()
                 {
+                    Guid = Guid.NewGuid(),
                     Password = Password,
                     DateTime = DateTime.Now,
                 });
             }
 
-            RootAccount.Accounts.Add(model);
+            OnePassData.Accounts.Add(model);
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData);
             return guid;
         }
 
         public async Task UpdateAccountAsync()
         {
-            var account = RootAccount.Accounts.First(x => x.Guid == Guid);
+            var account = OnePassData.Accounts.First(x => x.Guid == Guid);
             var passwordChanged = account.Password != Password;
 
             account.Name = Name;
@@ -123,12 +124,13 @@ namespace OnePass.WPF.Models
             {
                 account.PasswordHistory.Add(new PasswordHistory()
                 {
+                    Guid = Guid.NewGuid(),
                     Password = Password,
                     DateTime = DateTime.Now,
                 });
             }
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, RootAccount);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }

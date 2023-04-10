@@ -7,7 +7,7 @@
         d:DataContext="{d:DesignInstance Type=models:VerifyModel}"
         mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" 
         Title="Verify Password" ShowInTaskbar="False" WindowStyle="SingleBorderWindow"
-        Topmost="True" SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight">
 
     <!-- Resources -->
     <Window.Resources>

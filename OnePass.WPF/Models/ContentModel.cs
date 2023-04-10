@@ -15,11 +15,11 @@ namespace OnePass.WPF.Models
     public class ContentModel : ObservableObject
     {
         private readonly IFileEncoder _fileEncoder;
-        private readonly OnePassData _onePassData;
+        private readonly UserData _onePassData;
 
         public IList<AccountListModel> AccountListModel { get; set; }
 
-        public ContentModel(IFileEncoder fileEncoder, OnePassData onePassData)
+        public ContentModel(IFileEncoder fileEncoder, UserData onePassData)
         {
             _fileEncoder = fileEncoder;
             _onePassData = onePassData;
@@ -49,12 +49,14 @@ namespace OnePass.WPF.Models
             CheckVisibility();
         }
 
-        public ObservableCollection<AccountListModel> Accounts { get => accounts; private set => SetProperty(ref accounts, value); }
+        public ObservableCollection<AccountListModel> Accounts { get => accounts; set => SetProperty(ref accounts, value); }
         private ObservableCollection<AccountListModel> accounts = new();
 
         public async Task RemoveAsync(AccountListModel model)
         {
             var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+
+            root.DeletedAccounts.Add(model.Guid);
 
             var account = root.Accounts.First(x => x.Guid == model.Guid);
             root.Accounts.Remove(account);

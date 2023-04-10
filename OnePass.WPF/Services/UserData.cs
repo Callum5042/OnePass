@@ -1,6 +1,6 @@
 ﻿namespace OnePass.WPF.Services
 {
-    public class OnePassData
+    public class UserData
     {
         public string Username { get; set; }
 

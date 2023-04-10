@@ -32,7 +32,7 @@ namespace OnePass.Infrastructure
             services.InjectServicesFromAttribute();
 
             // services.AddTransient<IFileSystem, FileSystem>();
-            services.AddSingleton<OnePassData>();
+            services.AddSingleton<UserData>();
             services.AddTransient<IFileEncoder, FileEncoder>();
         }
 

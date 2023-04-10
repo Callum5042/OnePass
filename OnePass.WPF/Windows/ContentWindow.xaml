@@ -40,6 +40,7 @@
             <MenuItem Header="Tools">
                 <MenuItem Header="Clear Clipboard" Click="MenuItem_Click_ClearClipboard" />
                 <MenuItem Header="Export JSON" Click="MenuItem_Click_ExportJson" />
+                <MenuItem Header="Sync Accounts" Click="MenuItem_Click_SyncAccounts" />
             </MenuItem>
 
             <MenuItem Header="Options">
@@ -87,7 +88,7 @@
                         <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" Click="Toolbar_Click_EditButton" />
                         <Button Style="{StaticResource SecondaryButton}" Content="Config" Margin="0,0,10,0" Click="MenuItem_Click_Options" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" IsEnabled="False" />
+                        <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" Click="MenuItem_Click_SyncAccounts" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">

@@ -69,7 +69,7 @@ namespace OnePass.Droid.Activities
                 return;
             }
 
-            await fileEncoder.SaveAsync(_username.Text, _password.Text, new RootAccount(), path);
+            await fileEncoder.SaveAsync(_username.Text, _password.Text, new OnePassData(), path);
 
             var intent = new Intent();
             intent.PutExtra("ProfileName", _username.Text);

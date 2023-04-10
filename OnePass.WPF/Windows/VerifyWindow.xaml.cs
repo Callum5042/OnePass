@@ -31,7 +31,7 @@ namespace OnePass.WPF.Windows
             {
                 if (model.IsValid())
                 {
-                    var data = App.Current.GetService<OnePassData>();
+                    var data = App.Current.GetService<UserData>();
                     if (data.Password == model.Password)
                     {
                         if (_contentWindow.DataContext is ContentModel contentModel)
@@ -47,7 +47,7 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void ExportJSON(OnePassData data, ContentModel contentModel)
+        private void ExportJSON(UserData data, ContentModel contentModel)
         {
             try
             {

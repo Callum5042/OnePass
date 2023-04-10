@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using static Android.Graphics.ColorSpace;
 
 namespace OnePass.Droid.Activities
 {
@@ -77,7 +78,7 @@ namespace OnePass.Droid.Activities
             var data = await fileEncoder.LoadAsync(Username, Password, path);
 
             // Add data
-            data.Accounts.Add(new Account()
+            var account = new Account()
             {
                 Guid = Guid.NewGuid(),
                 Name = _accountNameEditText.Text,
@@ -85,7 +86,16 @@ namespace OnePass.Droid.Activities
                 Password = _accountPasswordEditText.Text,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now
+            };
+
+            account.PasswordHistory.Add(new PasswordHistory()
+            {
+                Guid = Guid.NewGuid(),
+                Password = _accountPasswordEditText.Text,
+                DateTime = DateTime.Now,
             });
+
+            data.Accounts.Add(account);
 
             // Save file
             await fileEncoder.SaveAsync(Username, Password, data, path);

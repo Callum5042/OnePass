@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using static Android.Telephony.CarrierConfigManager;
 
 namespace OnePass.Droid.Activities
 {
@@ -102,11 +103,23 @@ namespace OnePass.Droid.Activities
 
             // Add data
             var account = data.Accounts.FirstOrDefault(x => x.Guid == _accountId);
+            var passwordChanged = account.Password != _accountPasswordEditText.Text;
+
             account.Username = _accountLoginEditText.Text;
             account.Name = _accountNameEditText.Text;
             account.Password = _accountPasswordEditText.Text;
             account.DateModified = DateTime.Now;
             account.DateCreated ??= DateTime.Now;
+
+            if (passwordChanged)
+            {
+                account.PasswordHistory.Add(new PasswordHistory()
+                {
+                    Guid = Guid.NewGuid(),
+                    Password = _accountPasswordEditText.Text,
+                    DateTime = DateTime.Now,
+                });
+            }
 
             // Encrypt file 
             await fileEncoder.SaveAsync(Username, Password, data, path);

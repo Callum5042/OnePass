@@ -247,5 +247,15 @@ namespace OnePass.WPF.Windows
                 OpenEditAccountWindow(accountModel, historyTab: true);
             }
         }
+
+        private void MenuItem_Click_SyncAccounts(object sender, RoutedEventArgs e)
+        {
+            var syncWindow = new SyncWindow(this)
+            {
+                Owner = this
+            };
+
+            syncWindow.ShowDialog();
+        }
     }
 }

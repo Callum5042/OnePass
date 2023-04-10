@@ -5,9 +5,9 @@ namespace OnePass.Services
 {
     public interface IFileEncoder
     {
-        Task<RootAccount> LoadAsync(string username, string password, string path = null);
+        Task<OnePassData> LoadAsync(string username, string password, string path = null);
 
-        Task SaveAsync(string username, string password, RootAccount rootAccount, string path = null);
+        Task SaveAsync(string username, string password, OnePassData rootAccount, string path = null);
 
         bool Verify(string username, string password, string path = null);
     }

@@ -31,6 +31,7 @@ namespace OnePass.Droid.Activities
 
         private const int _activityResultCreated = 1;
         private const int _activityResultEdited = 2;
+        private const int _activityResultSynced = 3;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -62,10 +63,10 @@ namespace OnePass.Droid.Activities
 
             EmptyListMessage = FindViewById<TextView>(Resource.Id.empty_list_message);
 
-            TriggerComponentVisiblity(list);
+            TriggerComponentVisiblity(list, emptyMessage: "No results found");
         }
 
-        private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, string emptyMessage = null)
+        private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, string emptyMessage)
         {
             if (list.Any())
             {
@@ -118,7 +119,18 @@ namespace OnePass.Droid.Activities
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
+            if (item.ItemId ==  Resource.Id.menu_sync)
+            {
+                var intent = new Intent(this, typeof(SyncActivity));
+                intent.PutExtra(nameof(Username), Username);
+                intent.PutExtra(nameof(Password), Password);
+                StartActivityForResult(intent, _activityResultSynced);
+            }
+            else
+            {
+                Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
+            }
+
             return base.OnOptionsItemSelected(item);
         }
 
@@ -157,7 +169,7 @@ namespace OnePass.Droid.Activities
             ProductAdapter.Accounts = list;
             ProductAdapter.NotifyDataSetChanged();
 
-            TriggerComponentVisiblity(list);
+            TriggerComponentVisiblity(list, emptyMessage: "No results found");
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)

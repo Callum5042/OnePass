@@ -38,7 +38,7 @@ namespace OnePass.WPF.Models
 
         public async Task CreateAccountAsync(string username, string password)
         {
-            await _fileEncoder.SaveAsync(username, password, new RootAccount());
+            await _fileEncoder.SaveAsync(username, password, new OnePassData());
         }
 
         public async Task LoadOptions()
