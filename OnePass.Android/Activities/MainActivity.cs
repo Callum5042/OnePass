@@ -91,7 +91,10 @@ namespace OnePass.Droid.Activities
 
             var data = await fileEncoder.LoadAsync(Username, Password, path);
 
-            return data.Accounts.OrderBy(x => x.Name).ToList();
+            return data.Accounts
+                .OrderByDescending(x => x.Favourite)
+                .ThenBy(x => x.Name)
+                .ToList();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)

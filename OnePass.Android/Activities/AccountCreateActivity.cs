@@ -77,6 +77,8 @@ namespace OnePass.Droid.Activities
             var fileEncoder = new FileEncoder();
             var data = await fileEncoder.LoadAsync(Username, Password, path);
 
+            var checkbox = FindViewById<CheckBox>(Resource.Id.favourite_checkbox);
+
             // Add data
             var account = new Account()
             {
@@ -85,7 +87,8 @@ namespace OnePass.Droid.Activities
                 Username = _accountLoginEditText.Text,
                 Password = _accountPasswordEditText.Text,
                 DateCreated = DateTime.Now,
-                DateModified = DateTime.Now
+                DateModified = DateTime.Now,
+                Favourite = checkbox.Checked
             };
 
             account.PasswordHistory.Add(new PasswordHistory()

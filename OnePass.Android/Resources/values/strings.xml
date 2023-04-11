@@ -16,4 +16,5 @@
   <string name="register_import_button">Import Account</string>
   <string name="empty_list_text">Accounts list is empty</string>
   <string name="delete_account_button">Delete Account</string>
+  <string name="favourite_checkbox">Favourite</string>
 </resources>

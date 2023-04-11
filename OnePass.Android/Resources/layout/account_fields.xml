@@ -54,6 +54,12 @@
             android:textColor="@android:color/holo_red_dark"
             android:visibility="gone"/>
 
+        <CheckBox
+            android:id="@+id/favourite_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:text="@string/favourite_checkbox" />
+
         <Button
             android:id="@+id/submit_account_button"
             android:layout_width="match_parent"

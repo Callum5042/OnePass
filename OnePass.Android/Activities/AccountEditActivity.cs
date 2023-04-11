@@ -23,6 +23,7 @@ namespace OnePass.Droid.Activities
         private TextView _accountLoginTextView;
         private TextView _accountPasswordTextView;
         private Button _deleteAccountButton;
+        private CheckBox _accountFavouriteCheckbox;
 
         private string Username { get; set; }
 
@@ -48,6 +49,7 @@ namespace OnePass.Droid.Activities
             _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
 
             _deleteAccountButton = FindViewById<Button>(Resource.Id.delete_account_button);
+            _accountFavouriteCheckbox = FindViewById<CheckBox>(Resource.Id.favourite_checkbox);
 
             // Set toolbar
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
@@ -85,6 +87,7 @@ namespace OnePass.Droid.Activities
             _accountNameEditText.Text = account.Name;
             _accountLoginEditText.Text = account.Username;
             _accountPasswordEditText.Text = account.Password;
+            _accountFavouriteCheckbox.Checked = account.Favourite;
         }
 
         private void DeleteAccountButton_Click(object sender, EventArgs e)
@@ -153,6 +156,7 @@ namespace OnePass.Droid.Activities
             account.Password = _accountPasswordEditText.Text;
             account.DateModified = DateTime.Now;
             account.DateCreated ??= DateTime.Now;
+            account.Favourite = _accountFavouriteCheckbox.Checked;
 
             if (passwordChanged)
             {
