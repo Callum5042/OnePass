@@ -6,12 +6,8 @@ using Android.Widget;
 using OnePass.Models;
 using OnePass.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using static Android.Telephony.CarrierConfigManager;
 
 namespace OnePass.Droid.Activities
 {
@@ -26,6 +22,7 @@ namespace OnePass.Droid.Activities
         private TextView _accountNameTextView;
         private TextView _accountLoginTextView;
         private TextView _accountPasswordTextView;
+        private Button _deleteAccountButton;
 
         private string Username { get; set; }
 
@@ -50,6 +47,8 @@ namespace OnePass.Droid.Activities
             _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
             _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
 
+            _deleteAccountButton = FindViewById<Button>(Resource.Id.delete_account_button);
+
             // Set toolbar
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
             SetActionBar(toolbar);
@@ -63,6 +62,10 @@ namespace OnePass.Droid.Activities
             // Generate password
             var generatePasswordButton = FindViewById<Button>(Resource.Id.generate_password_button);
             generatePasswordButton.Click += GeneratePasswordButton_Click;
+
+            // Set delete button
+            _deleteAccountButton.Visibility = ViewStates.Visible;
+            _deleteAccountButton.Click += DeleteAccountButton_Click;
 
             // Populate data
             var guid = Intent.GetStringExtra("Guid");
@@ -82,6 +85,46 @@ namespace OnePass.Droid.Activities
             _accountNameEditText.Text = account.Name;
             _accountLoginEditText.Text = account.Username;
             _accountPasswordEditText.Text = account.Password;
+        }
+
+        private void DeleteAccountButton_Click(object sender, EventArgs e)
+        {
+            var dialog = new AlertDialog.Builder(this);
+
+            var alert = dialog.Create();
+            alert.SetTitle("Delete Account");
+            alert.SetMessage("Are you sure you want to delete the account?");
+            alert.SetButton("OK", async (c, ev) =>
+            {
+                // File
+                var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
+                var filename = $"{Username}.bin";
+                var path = Path.Combine(documentsPath, filename);
+
+                // Decrypt
+                var fileEncoder = new FileEncoder();
+                var data = await fileEncoder.LoadAsync(Username, Password, path);
+
+                // Add data
+                var account = data.Accounts.FirstOrDefault(x => x.Guid == _accountId);
+                if (account != null)
+                {
+                    data.DeletedAccounts.Add(_accountId);
+                    data.Accounts.Remove(account);
+                }
+
+                // Encrypt file 
+                await fileEncoder.SaveAsync(Username, Password, data, path);
+
+                // Finish
+                var intent = new Intent();
+                intent.PutExtra("AccountName", _accountNameEditText.Text);
+                SetResult(Result.Ok, intent);
+                Finish();
+            });
+
+            alert.SetButton2("CANCEL", (c, ev) => { });
+            alert.Show();
         }
 
         private async void SubmitButton_Click(object sender, EventArgs e)

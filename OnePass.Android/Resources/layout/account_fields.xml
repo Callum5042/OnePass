@@ -70,6 +70,15 @@
             android:textColor="@android:color/white"
             android:backgroundTint="@color/colorSecondary"/>
 
+        <Button
+            android:id="@+id/delete_account_button"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_account_button"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/colorDelete"/>
+
     </LinearLayout>
 
 </ScrollView>
