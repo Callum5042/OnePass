@@ -122,16 +122,17 @@ namespace OnePass.Droid.Activities
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            if (item.ItemId ==  Resource.Id.menu_sync)
+            if (item.ItemId == Resource.Id.menu_sync)
             {
                 var intent = new Intent(this, typeof(SyncActivity));
                 intent.PutExtra(nameof(Username), Username);
                 intent.PutExtra(nameof(Password), Password);
                 StartActivityForResult(intent, _activityResultSynced);
             }
-            else
+            else if (item.ItemId == Resource.Id.menu_settings)
             {
-                Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
+                var intent = new Intent(this, typeof(SettingsActivity));
+                StartActivityForResult(intent, _activityResultSynced);
             }
 
             return base.OnOptionsItemSelected(item);

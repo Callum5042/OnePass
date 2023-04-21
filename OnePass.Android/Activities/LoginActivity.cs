@@ -9,7 +9,6 @@ using OnePass.Services;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace OnePass.Droid.Activities
@@ -24,6 +23,8 @@ namespace OnePass.Droid.Activities
         private CheckBox _remember_usernameCheckbox;
 
         private const int activityResult = 1;
+
+        private AppOptions Options { get; set; }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -46,7 +47,6 @@ namespace OnePass.Droid.Activities
             registerButton.Click += RegisterButton_Click;
 
             // Read appsettings to see if remember username has a value
-            //var documentsPath = GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments).AbsolutePath;
             var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
             var filename = "appsettings.json";
             var path = Path.Combine(documentsPath, filename);
@@ -57,11 +57,12 @@ namespace OnePass.Droid.Activities
                 using var file = File.OpenRead(path);
                 using var reader = new StreamReader(file);
                 var json = await reader.ReadToEndAsync();
-                var options = JsonSerializer.Deserialize<AppOptions>(json);
+                Options = JsonSerializer.Deserialize<AppOptions>(json);
+                OptionsInstance.Options = Options;
 
-                if (!string.IsNullOrEmpty(options.RememberUsername))
+                if (!string.IsNullOrEmpty(Options.RememberUsername))
                 {
-                    _usernameEditText.Text = options.RememberUsername;
+                    _usernameEditText.Text = Options.RememberUsername;
                     _remember_usernameCheckbox.Checked = true;
                 }
             }
@@ -139,12 +140,9 @@ namespace OnePass.Droid.Activities
             var path = Path.Combine(documentsPath, filename);
 
             // Appsettings
-            var option = new AppOptions
-            {
-                RememberUsername = username
-            };
+            Options.RememberUsername = username;
 
-            var json = JsonSerializer.Serialize(option);
+            var json = JsonSerializer.Serialize(Options);
 
             // Read file
             using var file = File.Open(path, FileMode.OpenOrCreate, FileAccess.Write);

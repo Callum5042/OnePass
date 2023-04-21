@@ -3,6 +3,7 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using OnePass.Droid.Models;
 using OnePass.Models;
 using OnePass.Services;
 using System;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using static Android.Graphics.ColorSpace;
+using static Android.Telephony.CarrierConfigManager;
 
 namespace OnePass.Droid.Activities
 {
@@ -91,12 +93,15 @@ namespace OnePass.Droid.Activities
                 Favourite = checkbox.Checked
             };
 
-            account.PasswordHistory.Add(new PasswordHistory()
+            if (OptionsInstance.Options.EnablePasswordHistory)
             {
-                Guid = Guid.NewGuid(),
-                Password = _accountPasswordEditText.Text,
-                DateTime = DateTime.Now,
-            });
+                account.PasswordHistory.Add(new PasswordHistory()
+                {
+                    Guid = Guid.NewGuid(),
+                    Password = _accountPasswordEditText.Text,
+                    DateTime = DateTime.Now,
+                });
+            }
 
             data.Accounts.Add(account);
 
@@ -143,20 +148,17 @@ namespace OnePass.Droid.Activities
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)
         {
-            var generator = new PasswordGenerator();
-            _accountPasswordEditText.Text = generator.Generate();
+            var generator = new PasswordGenerator()
+            {
+                HasLowercase = OptionsInstance.Options.Lowercase,
+                HasUppercase = OptionsInstance.Options.Uppercase,
+                HasNumbers = OptionsInstance.Options.Numbers,
+                HasSymbols = OptionsInstance.Options.Symbols,
+                MinLength = OptionsInstance.Options.MinLength,
+                MaxLength = OptionsInstance.Options.MaxLength
+            };
 
-            //var generator = new PasswordGenerator();
-            //_accountPasswordEditText.Text = generator.Generate(new PasswordGeneratorOptions()
-            //{
-            //    MinLength = 10,
-            //    MaxLength = 14,
-            //    Uppercase = true,
-            //    Lowercase = true,
-            //    Numbers = true,
-            //    Symbols = true,
-            //    SymbolAmount = 1
-            //});
+            _accountPasswordEditText.Text = generator.Generate();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)

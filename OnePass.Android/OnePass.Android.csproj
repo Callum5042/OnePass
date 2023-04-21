@@ -67,10 +67,12 @@
   <ItemGroup>
     <Compile Include="Activities\AccountCreateActivity.cs" />
     <Compile Include="Activities\AccountEditActivity.cs" />
+    <Compile Include="Activities\SettingsActivity.cs" />
     <Compile Include="Activities\LoginActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
     <Compile Include="Activities\SyncActivity.cs" />
     <Compile Include="Models\AppOptions.cs" />
+    <Compile Include="OptionsInstance.cs" />
     <Compile Include="ProductAdapter.cs" />
     <Compile Include="Activities\RegisterActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -494,6 +496,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_sync.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_settings.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

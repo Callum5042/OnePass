@@ -158,7 +158,7 @@ namespace OnePass.Droid.Activities
             account.DateCreated ??= DateTime.Now;
             account.Favourite = _accountFavouriteCheckbox.Checked;
 
-            if (passwordChanged)
+            if (passwordChanged && OptionsInstance.Options.EnablePasswordHistory)
             {
                 account.PasswordHistory.Add(new PasswordHistory()
                 {
