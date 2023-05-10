@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace OnePass.Droid.Activities
 {
@@ -24,17 +25,36 @@ namespace OnePass.Droid.Activities
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_sync);
 
             Username = Intent.GetStringExtra(nameof(Username));
             Password = Intent.GetStringExtra(nameof(Password));
 
             var syncButton = FindViewById<Button>(Resource.Id.sync_button);
-            syncButton.Click += SyncButton_Click; ;
+            syncButton.Click += SyncOnClick;
         }
 
-        private async void SyncButton_Click(object sender, EventArgs e)
+        private async void SyncOnClick(object sender, EventArgs e)
+        {
+            try
+            {
+                await SyncAccounts();
+            }
+            catch (Exception ex)
+            {
+                var syncLayout = FindViewById<LinearLayout>(Resource.Id.sync_layout);
+                syncLayout.Visibility = ViewStates.Visible;
+
+                var syncButton = FindViewById<Button>(Resource.Id.sync_button);
+                syncButton.Enabled = false;
+
+                var syncStatus = FindViewById<TextView>(Resource.Id.sync_status);
+                syncStatus.Text = ex.Message;
+            }
+        }
+
+        private async Task SyncAccounts()
         {
             var syncLayout = FindViewById<LinearLayout>(Resource.Id.sync_layout);
             syncLayout.Visibility = ViewStates.Visible;
@@ -44,6 +64,15 @@ namespace OnePass.Droid.Activities
 
             var syncStatus = FindViewById<TextView>(Resource.Id.sync_status);
             syncStatus.Text = "Searching for connection";
+
+            // Check if WiFi is connected
+            if (!Connectivity.ConnectionProfiles.Contains(ConnectionProfile.WiFi))
+            {
+                syncLayout.Visibility = ViewStates.Gone;
+                syncButton.Enabled = true;
+                syncStatus.Text = "WiFi is not turned on";
+                return;
+            }
 
             // Find IP
             var ip = FindIP(syncStatus);
@@ -96,7 +125,7 @@ namespace OnePass.Droid.Activities
                     return null;
                 }
 
-                var host = Dns.GetHostEntry(hostname.Text);
+                var host = Dns.GetHostEntry(hostname.Text.Trim());
                 var ip = host.AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
                 return ip.ToString();
             }
