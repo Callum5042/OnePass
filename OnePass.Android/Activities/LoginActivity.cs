@@ -192,5 +192,12 @@ namespace OnePass.Droid.Activities
                 }
             }
         }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            _passwordEditText.Text = string.Empty;
+        }
     }
 }

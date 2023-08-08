@@ -66,6 +66,18 @@ namespace OnePass.Droid.Activities
             TriggerComponentVisiblity(list, emptyMessage: "No results found");
         }
 
+        public override void OnBackPressed()
+        {
+            var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
+            dialog.SetTitle("Logout?");
+            dialog.SetMessage($"Are you sure you want to logout?");
+            dialog.SetPositiveButton("Yes", (sender, args) => base.OnBackPressed());
+            dialog.SetNegativeButton("No", (sender, args) => { /* Do nothing */ });
+
+            var alert = dialog.Create();
+            alert.Show();
+        }
+
         private void TriggerComponentVisiblity(IList<OnePass.Models.Account> list, string emptyMessage)
         {
             if (list.Any())
