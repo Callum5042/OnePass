@@ -5,4 +5,5 @@
     <color name="colorAccent">#3498db</color>
     <color name="colorSecondary">#738182</color>
     <color name="colorDelete">#420D09</color>
+    <color name="colorTransparent">#00000000</color>
 </resources>

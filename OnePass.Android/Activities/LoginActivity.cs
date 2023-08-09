@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Android.Text;
 using Android.Views;
 using Android.Widget;
 using OnePass.Droid.Models;
@@ -21,10 +22,13 @@ namespace OnePass.Droid.Activities
         private TextView _usernameValidationTextView;
         private TextView _passwordValidationTextView;
         private CheckBox _remember_usernameCheckbox;
+        private ImageButton _togglePasswordVisibilityButton;
 
         private const int activityResult = 1;
 
         private AppOptions Options { get; set; }
+
+        private bool PasswordVisibility { get; set; }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -38,6 +42,7 @@ namespace OnePass.Droid.Activities
             _usernameValidationTextView = FindViewById<TextView>(Resource.Id.login_username_validation_message);
             _passwordValidationTextView = FindViewById<TextView>(Resource.Id.login_password_validation_message);
             _remember_usernameCheckbox = FindViewById<CheckBox>(Resource.Id.remember_username);
+            _togglePasswordVisibilityButton = FindViewById<ImageButton>(Resource.Id.toggle_password_visiblity_button);
             SetVersionNumber();
 
             var loginButton = FindViewById<Button>(Resource.Id.login_button);
@@ -45,6 +50,9 @@ namespace OnePass.Droid.Activities
 
             var registerButton = FindViewById<Button>(Resource.Id.register_button);
             registerButton.Click += RegisterButton_Click;
+
+            // Button
+            _togglePasswordVisibilityButton.Click += _togglePasswordVisibilityButton_Click;
 
             // Read appsettings to see if remember username has a value
             var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
@@ -65,6 +73,22 @@ namespace OnePass.Droid.Activities
                     _usernameEditText.Text = Options.RememberUsername;
                     _remember_usernameCheckbox.Checked = true;
                 }
+            }
+        }
+
+        private void _togglePasswordVisibilityButton_Click(object sender, EventArgs e)
+        {
+            PasswordVisibility = !PasswordVisibility;
+
+            if (PasswordVisibility)
+            {
+                _passwordEditText.InputType = InputTypes.ClassText;
+                _passwordEditText.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.eye_24, 0);
+            }
+            else
+            {
+                _passwordEditText.InputType = InputTypes.ClassText | InputTypes.TextVariationPassword;
+                _passwordEditText.SetCompoundDrawablesWithIntrinsicBounds(0, 0, Resource.Drawable.eye_slash_24, 0);
             }
         }
 
