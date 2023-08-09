@@ -4,6 +4,7 @@ using Android.Views;
 using Android.Widget;
 using Google.Android.Material.Tabs;
 using System;
+using System.Text.RegularExpressions;
 
 namespace OnePass.Droid.Activities
 {
@@ -11,11 +12,13 @@ namespace OnePass.Droid.Activities
     {
         protected Guid _accountId;
         protected EditText _accountNameEditText;
-        protected EditText _accountLoginEditText;
+        protected EditText _accountUsernameEditText;
+        protected EditText _accountEmailEditText;
         protected EditText _accountPasswordEditText;
 
         protected TextView _accountNameTextView;
-        protected TextView _accountLoginTextView;
+        protected TextView _accountUsernameTextView;
+        protected TextView _accountEmailTextView;
         protected TextView _accountPasswordTextView;
         protected CheckBox _accountFavouriteCheckbox;
 
@@ -32,11 +35,13 @@ namespace OnePass.Droid.Activities
 
             // Cache controls
             _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
-            _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
+            _accountUsernameEditText = FindViewById<EditText>(Resource.Id.account_username);
+            _accountEmailEditText = FindViewById<EditText>(Resource.Id.account_email);
             _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
 
             _accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
-            _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
+            _accountUsernameTextView = FindViewById<TextView>(Resource.Id.username_validation_message);
+            _accountEmailTextView = FindViewById<TextView>(Resource.Id.email_validation_message);
             _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
 
             // Tabs
@@ -67,7 +72,7 @@ namespace OnePass.Droid.Activities
         protected bool Validate()
         {
             _accountNameTextView.Visibility = ViewStates.Gone;
-            _accountLoginTextView.Visibility = ViewStates.Gone;
+            _accountUsernameTextView.Visibility = ViewStates.Gone;
             _accountPasswordTextView.Visibility = ViewStates.Gone;
 
             var isValid = true;
@@ -78,21 +83,21 @@ namespace OnePass.Droid.Activities
                 _accountNameTextView.Visibility = ViewStates.Visible;
             }
 
-            if (string.IsNullOrEmpty(_accountLoginEditText.Text))
+            var email = _accountEmailEditText.Text;
+            if (!string.IsNullOrEmpty(email) && !ValidateEmail(email))
             {
                 isValid = false;
-                _accountLoginTextView.Text = "Password is required";
-                _accountLoginTextView.Visibility = ViewStates.Visible;
-            }
-
-            if (string.IsNullOrEmpty(_accountPasswordEditText.Text))
-            {
-                isValid = false;
-                _accountPasswordTextView.Text = "Repeat Password is required";
-                _accountPasswordTextView.Visibility = ViewStates.Visible;
+                _accountEmailTextView.Text = "Email is invalid";
+                _accountEmailTextView.Visibility = ViewStates.Visible;
             }
 
             return isValid;
+        }
+
+        private static bool ValidateEmail(string email)
+        {
+            var regex = new Regex(@"^.+@.+$");
+            return regex.IsMatch(email);
         }
     }
 }

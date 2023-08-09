@@ -8,7 +8,8 @@
   <string name="register_button_label">Register</string>
   <string name="remember_username_label">Remember username</string>
   <string name="account_name">Name</string>
-  <string name="account_login">Login</string>
+  <string name="account_username">Username</string>
+  <string name="account_email">Email</string>
   <string name="account_password">Password</string>
   <string name="account_add_button">Add Account</string>
   <string name="account_generate_password_button">Generate Password</string>

@@ -61,14 +61,28 @@
                     android:visibility="gone"/>
 
                 <EditText
-                    android:id="@+id/account_login"
+                    android:id="@+id/account_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/account_login"
+                    android:hint="@string/account_username"
                     android:inputType="text" />
 
                 <TextView
-                    android:id="@+id/login_validation_message"
+                    android:id="@+id/username_validation_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/account_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_email"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/email_validation_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/holo_red_dark"

@@ -59,7 +59,8 @@ namespace OnePass.Droid.Activities
             {
                 Guid = Guid.NewGuid(),
                 Name = _accountNameEditText.Text,
-                Username = _accountLoginEditText.Text,
+                Username = _accountUsernameEditText.Text,
+                EmailAddress = _accountEmailEditText.Text,
                 Password = _accountPasswordEditText.Text,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,

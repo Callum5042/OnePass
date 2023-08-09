@@ -62,7 +62,8 @@ namespace OnePass.Droid.Activities
 
             // Set UI fields
             _accountNameEditText.Text = account.Name;
-            _accountLoginEditText.Text = account.Username;
+            _accountUsernameEditText.Text = account.Username;
+            _accountEmailEditText.Text = account.EmailAddress;
             _accountPasswordEditText.Text = account.Password;
             _accountFavouriteCheckbox.Checked = account.Favourite;
         }
@@ -128,8 +129,9 @@ namespace OnePass.Droid.Activities
             var account = data.Accounts.FirstOrDefault(x => x.Guid == _accountId);
             var passwordChanged = account.Password != _accountPasswordEditText.Text;
 
-            account.Username = _accountLoginEditText.Text;
+            account.Username = _accountUsernameEditText.Text;
             account.Name = _accountNameEditText.Text;
+            account.EmailAddress = _accountEmailEditText.Text;
             account.Password = _accountPasswordEditText.Text;
             account.DateModified = DateTime.Now;
             account.DateCreated ??= DateTime.Now;
