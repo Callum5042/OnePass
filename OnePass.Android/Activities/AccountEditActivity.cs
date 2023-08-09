@@ -12,22 +12,9 @@ using System.Linq;
 namespace OnePass.Droid.Activities
 {
     [Activity(Theme = "@style/AppTheme")]
-    public class AccountEditActivity : Activity
+    public class AccountEditActivity : AccountBaseActivity
     {
-        private Guid _accountId;
-        private EditText _accountNameEditText;
-        private EditText _accountLoginEditText;
-        private EditText _accountPasswordEditText;
-
-        private TextView _accountNameTextView;
-        private TextView _accountLoginTextView;
-        private TextView _accountPasswordTextView;
         private Button _deleteAccountButton;
-        private CheckBox _accountFavouriteCheckbox;
-
-        private string Username { get; set; }
-
-        private string Password { get; set; }
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -35,19 +22,9 @@ namespace OnePass.Droid.Activities
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_account_create);
 
-
-            Username = Intent.GetStringExtra(nameof(Username));
-            Password = Intent.GetStringExtra(nameof(Password));
+            CreateCommon();
 
             // Cache controls
-            _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
-            _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
-            _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
-
-            _accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
-            _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
-            _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
-
             _deleteAccountButton = FindViewById<Button>(Resource.Id.delete_account_button);
             _accountFavouriteCheckbox = FindViewById<CheckBox>(Resource.Id.favourite_checkbox);
 
@@ -206,37 +183,6 @@ namespace OnePass.Droid.Activities
         {
             Toast.MakeText(this, "Action selected: " + item.TitleFormatted, ToastLength.Short).Show();
             return base.OnOptionsItemSelected(item);
-        }
-
-        private bool Validate()
-        {
-            _accountNameTextView.Visibility = ViewStates.Gone;
-            _accountLoginTextView.Visibility = ViewStates.Gone;
-            _accountPasswordTextView.Visibility = ViewStates.Gone;
-
-            var isValid = true;
-            if (string.IsNullOrEmpty(_accountNameEditText.Text))
-            {
-                isValid = false;
-                _accountNameTextView.Text = "Name is required";
-                _accountNameTextView.Visibility = ViewStates.Visible;
-            }
-
-            if (string.IsNullOrEmpty(_accountLoginEditText.Text))
-            {
-                isValid = false;
-                _accountLoginTextView.Text = "Password is required";
-                _accountLoginTextView.Visibility = ViewStates.Visible;
-            }
-
-            if (string.IsNullOrEmpty(_accountPasswordEditText.Text))
-            {
-                isValid = false;
-                _accountPasswordTextView.Text = "Repeat Password is required";
-                _accountPasswordTextView.Visibility = ViewStates.Visible;
-            }
-
-            return isValid;
         }
     }
 }

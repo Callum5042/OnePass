@@ -3,42 +3,23 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using OnePass.Droid.Models;
 using OnePass.Models;
 using OnePass.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.Json;
-using static Android.Graphics.ColorSpace;
-using static Android.Telephony.CarrierConfigManager;
 
 namespace OnePass.Droid.Activities
 {
     [Activity(Theme = "@style/AppTheme")]
-    public class AccountCreateActivity : Activity
+    public class AccountCreateActivity : AccountBaseActivity
     {
-        private EditText _accountNameEditText;
-        private EditText _accountLoginEditText;
-        private EditText _accountPasswordEditText;
-
-        private TextView _accountNameTextView;
-        private TextView _accountLoginTextView;
-        private TextView _accountPasswordTextView;
-
-        private string Username { get; set; }
-
-        private string Password { get; set; }
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            SetContentView(Resource.Layout.activity_account_create);
+            SetContentView(Resource.Layout.activity_account_edit);
 
-            Username = Intent.GetStringExtra(nameof(Username));
-            Password = Intent.GetStringExtra(nameof(Password));
+            CreateCommon();
 
             // Set toolbar
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
@@ -52,14 +33,6 @@ namespace OnePass.Droid.Activities
             // Generate password
             var generatePasswordButton = FindViewById<Button>(Resource.Id.generate_password_button);
             generatePasswordButton.Click += GeneratePasswordButton_Click;
-
-            _accountNameEditText = FindViewById<EditText>(Resource.Id.account_name);
-            _accountLoginEditText = FindViewById<EditText>(Resource.Id.account_login);
-            _accountPasswordEditText = FindViewById<EditText>(Resource.Id.account_password);
-
-            _accountNameTextView = FindViewById<TextView>(Resource.Id.name_validation_message);
-            _accountLoginTextView = FindViewById<TextView>(Resource.Id.login_validation_message);
-            _accountPasswordTextView = FindViewById<TextView>(Resource.Id.password_validation_message);
         }
 
         private async void SubmitButton_Click(object sender, EventArgs e)
@@ -113,37 +86,6 @@ namespace OnePass.Droid.Activities
             intent.PutExtra("AccountName", _accountNameEditText.Text);
             SetResult(Result.Ok, intent);
             Finish();
-        }
-
-        private bool Validate()
-        {
-            _accountNameTextView.Visibility = ViewStates.Gone;
-            _accountLoginTextView.Visibility = ViewStates.Gone;
-            _accountPasswordTextView.Visibility = ViewStates.Gone;
-
-            var isValid = true;
-            if (string.IsNullOrEmpty(_accountNameEditText.Text))
-            {
-                isValid = false;
-                _accountNameTextView.Text = "Name is required";
-                _accountNameTextView.Visibility = ViewStates.Visible;
-            }
-
-            if (string.IsNullOrEmpty(_accountLoginEditText.Text))
-            {
-                isValid = false;
-                _accountLoginTextView.Text = "Password is required";
-                _accountLoginTextView.Visibility = ViewStates.Visible;
-            }
-
-            if (string.IsNullOrEmpty(_accountPasswordEditText.Text))
-            {
-                isValid = false;
-                _accountPasswordTextView.Text = "Repeat Password is required";
-                _accountPasswordTextView.Visibility = ViewStates.Visible;
-            }
-
-            return isValid;
         }
 
         private void GeneratePasswordButton_Click(object sender, EventArgs e)

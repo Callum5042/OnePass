@@ -1,90 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        app:tabMode="fixed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/details_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Details" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/history_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="History" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <ScrollView
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="20dp">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/account_name"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/account_name"
-            android:inputType="text" />
+            android:layout_gravity="center">
 
-        <TextView
-            android:id="@+id/name_validation_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/layout_details"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="20dp">
 
-        <EditText
-            android:id="@+id/account_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/account_login"
-            android:inputType="text" />
+                <EditText
+                    android:id="@+id/account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_name"
+                    android:inputType="text" />
 
-        <TextView
-            android:id="@+id/login_validation_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/name_validation_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"/>
 
-        <EditText
-            android:id="@+id/account_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/account_password"
-            android:inputType="textVisiblePassword" />
+                <EditText
+                    android:id="@+id/account_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_login"
+                    android:inputType="text" />
 
-        <TextView
-            android:id="@+id/password_validation_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/login_validation_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"/>
 
-        <CheckBox
-            android:id="@+id/favourite_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
-            android:text="@string/favourite_checkbox" />
+                <EditText
+                    android:id="@+id/account_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_password"
+                    android:inputType="textVisiblePassword" />
 
-        <Button
-            android:id="@+id/submit_account_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_add_button"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/colorAccent"/>
+                <TextView
+                    android:id="@+id/password_validation_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/generate_password_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_generate_password_button"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/colorSecondary"/>
+                <CheckBox
+                    android:id="@+id/favourite_checkbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/favourite_checkbox" />
 
-        <Button
-            android:id="@+id/delete_account_button"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_account_button"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/colorDelete"/>
+                <Button
+                    android:id="@+id/submit_account_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_add_button"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/colorAccent"/>
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/generate_password_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_generate_password_button"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/colorSecondary"/>
 
-</ScrollView>
+                <Button
+                    android:id="@+id/delete_account_button"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_account_button"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/colorDelete"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/details_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="History - TODO"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

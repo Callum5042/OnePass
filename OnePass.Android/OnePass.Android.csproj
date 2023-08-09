@@ -65,6 +65,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\AccountBaseActivity.cs" />
     <Compile Include="Activities\AccountCreateActivity.cs" />
     <Compile Include="Activities\AccountEditActivity.cs" />
     <Compile Include="Activities\SettingsActivity.cs" />
