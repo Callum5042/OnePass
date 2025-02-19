@@ -41,6 +41,7 @@ namespace OnePass.WPF.Models
                 Password = x.Password,
                 DateModified = x.DateModified,
                 Favourite = x.Favourite,
+                Notes = x.Notes,
                 PasswordHistory = x.PasswordHistory.Select(x => new PasswordHistoryModel() { Password = x.Password, DateSet = x.DateTime }).ToList()
             });
 

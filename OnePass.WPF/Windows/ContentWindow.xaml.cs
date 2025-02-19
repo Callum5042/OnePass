@@ -49,6 +49,7 @@ namespace OnePass.WPF.Windows
             accountModel.EmailAddress = model.EmailAddress;
             accountModel.Password = model.Password;
             accountModel.Favourite = model.Favourite;
+            accountModel.Notes = model.Notes;
             accountModel.PasswordHistory = model.PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
 
             var accountWindow = new AccountWindow(this, edit: true, historyTab)

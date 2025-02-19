@@ -111,6 +111,25 @@
 
         </TabItem>
 
+        <TabItem Name="TabNotes" Header="Notes">
+            <Grid Margin="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+                    <Label Content="Name" />
+                    <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Height="200" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" VerticalContentAlignment="Top" />
+                </StackPanel>
+                
+            </Grid>
+        </TabItem>
+
         <TabItem Name="TabHistory" Header="History">
 
             <ListView Name="PasswordHistoryListView" ItemsSource="{Binding PasswordHistory}" MinHeight="100" MaxHeight="200">
