@@ -19,7 +19,7 @@
             <Setter Property="Foreground" Value="WhiteSmoke" />
             <Setter Property="Padding" Value="0" />
         </Style>
-
+ 
         <!-- Validation label -->
         <Style x:Key="ValidationLabel" TargetType="Label">
             <Style.Setters>
