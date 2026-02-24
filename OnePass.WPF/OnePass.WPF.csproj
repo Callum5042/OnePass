@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SplashScreen Include="SplashScreen.png" />
     <Resource Include="OnePassIcon.png" />
   </ItemGroup>
 
