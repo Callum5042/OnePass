@@ -258,5 +258,14 @@ namespace OnePass.WPF.Windows
 
             syncWindow.ShowDialog();
         }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.F)
+            {
+                SearchBox.Focus();
+                SearchBox.SelectAll();
+            }
+        }
     }
 }

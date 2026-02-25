@@ -7,6 +7,7 @@
         d:DataContext="{d:DesignInstance Type=models:ContentModel}"
         mc:Ignorable="d" 
         ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing"
+        PreviewKeyDown="Window_PreviewKeyDown"
         Title="OnePass" Height="450" Width="800" MinWidth="400">
 
     <Window.Resources>
@@ -92,7 +93,34 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Width="200" Keyboard.KeyDown="TextBox_KeyDown" />
+                        <Grid Width="200">
+                            <!-- Search Bar -->
+                            <TextBox x:Name="SearchBox" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Keyboard.KeyDown="TextBox_KeyDown" Padding="2"/>
+
+                            <!-- Placeholder for textbox -->
+                            <TextBlock 
+                                IsHitTestVisible="False" 
+                                Text="Search.. (CTRL+F)" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" 
+                                Margin="5,0,0,0" 
+                                Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding Text, ElementName=SearchBox}" Value=""/>
+                                                    <Condition Binding="{Binding IsFocused, ElementName=SearchBox}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                 </Grid>
