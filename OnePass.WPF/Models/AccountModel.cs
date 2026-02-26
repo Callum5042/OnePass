@@ -71,6 +71,9 @@ namespace OnePass.WPF.Models
         public string Password { get => password; set => SetProperty(ref password, value); }
         private string password;
 
+        public string Website { get => website; set => SetProperty(ref website, value); }
+        private string website;
+
         public bool IsValid()
         {
             ValidateAllProperties();
@@ -87,6 +90,7 @@ namespace OnePass.WPF.Models
                 Username = Username,
                 EmailAddress = EmailAddress,
                 Password = Password,
+                WebsiteUrl = Website,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
                 Favourite = Favourite,
@@ -119,6 +123,7 @@ namespace OnePass.WPF.Models
             account.EmailAddress = EmailAddress;
             account.Password = Password;
             account.DateModified = DateTime.Now;
+            account.WebsiteUrl = Website;
             account.Favourite = Favourite;
             account.Notes = Notes;
 
@@ -162,6 +167,9 @@ namespace OnePass.WPF.Models
 
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
+
+        public string WebsiteValidation { get => websiteValidation; set => SetProperty(ref websiteValidation, value); }
+        private string websiteValidation;
 
         public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
 

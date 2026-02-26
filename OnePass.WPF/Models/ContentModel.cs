@@ -33,17 +33,18 @@ namespace OnePass.WPF.Models
                 .OrderByDescending(x => x.Favourite)
                 .ThenBy(x => x.Name)
                 .Select(x => new AccountListModel()
-            {
-                Guid = x.Guid,
-                Name = x.Name,
-                Username = x.Username,
-                EmailAddress = x.EmailAddress,
-                Password = x.Password,
-                DateModified = x.DateModified,
-                Favourite = x.Favourite,
-                Notes = x.Notes,
-                PasswordHistory = x.PasswordHistory.Select(x => new PasswordHistoryModel() { Password = x.Password, DateSet = x.DateTime }).ToList()
-            });
+                {
+                    Guid = x.Guid,
+                    Name = x.Name,
+                    Username = x.Username,
+                    EmailAddress = x.EmailAddress,
+                    Password = x.Password,
+                    DateModified = x.DateModified,
+                    WebsiteUrl = x.WebsiteUrl,
+                    Favourite = x.Favourite,
+                    Notes = x.Notes,
+                    PasswordHistory = x.PasswordHistory.Select(x => new PasswordHistoryModel() { Password = x.Password, DateSet = x.DateTime }).ToList()
+                });
 
             AccountListModel = accountListModel.ToList();
             Accounts = new ObservableCollection<AccountListModel>(AccountListModel);
@@ -88,7 +89,7 @@ namespace OnePass.WPF.Models
                 else
                 {
                     var filter = AccountListModel.Where(x =>
-                    { 
+                    {
                         if (x.Name?.Contains(value, StringComparison.CurrentCultureIgnoreCase) == true)
                         {
                             return true;

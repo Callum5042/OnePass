@@ -32,5 +32,8 @@ namespace OnePass.WPF.Models
 
         public string Notes { get => notes; set => SetProperty(ref notes, value); }
         private string notes;
+
+        public string WebsiteUrl { get => websiteUrl; set => SetProperty(ref websiteUrl, value); }
+        private string websiteUrl;
     }
 }

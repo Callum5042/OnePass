@@ -1,6 +1,6 @@
 ﻿using OnePass.WPF.Models;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -49,6 +49,7 @@ namespace OnePass.WPF.Windows
             accountModel.EmailAddress = model.EmailAddress;
             accountModel.Password = model.Password;
             accountModel.Favourite = model.Favourite;
+            accountModel.Website = model.WebsiteUrl;
             accountModel.Notes = model.Notes;
             accountModel.PasswordHistory = model.PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
 
@@ -144,7 +145,7 @@ namespace OnePass.WPF.Windows
             AppOptions options = null;
             using var file = File.OpenRead(path);
             options = JsonSerializer.Deserialize<AppOptions>(file);
-            
+
             if (options?.WindowMaximized == true)
             {
                 WindowState = WindowState.Maximized;
@@ -217,8 +218,8 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_Options(object sender, RoutedEventArgs e)
         {
-            var configWindow = new ConfigWindow() 
-            { 
+            var configWindow = new ConfigWindow()
+            {
                 Owner = this,
             };
 
@@ -238,6 +239,34 @@ namespace OnePass.WPF.Windows
             if (DataContext is ContentModel model)
             {
                 model.ToolbarVisibility = model.ShowToolbar ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void MenuItem_Click_ChangePassword(object sender, RoutedEventArgs e)
+        {
+            if (AccountsListView.SelectedItem is AccountListModel accountModel)
+            {
+                var url = accountModel.WebsiteUrl;
+
+                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = $"{url}/.well-known/change-password",
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to open URL: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Invalid URL", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
@@ -266,6 +295,11 @@ namespace OnePass.WPF.Windows
                 SearchBox.Focus();
                 SearchBox.SelectAll();
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

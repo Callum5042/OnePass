@@ -13,8 +13,6 @@ namespace OnePass.Models
 
         public string Name { get; set; }
 
-        public string Url { get; set; }
-
         public string Username { get; set; }
 
         public string EmailAddress { get; set; }
@@ -22,6 +20,8 @@ namespace OnePass.Models
         public string Password { get; set; }
 
         public bool Favourite { get; set; }
+
+        public string WebsiteUrl { get; set; }
 
         public bool MfaEnabled { get; set; }
 
