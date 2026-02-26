@@ -296,10 +296,5 @@ namespace OnePass.WPF.Windows
                 SearchBox.SelectAll();
             }
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

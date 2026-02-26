@@ -2,6 +2,7 @@
 using OnePass.WPF.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -100,6 +101,14 @@ namespace OnePass.WPF.Windows
                             DateSet = DateTime.Now,
                         });
                     }
+
+                    // Update the sorting
+                    var sorted = contentModel.Accounts
+                        .OrderByDescending(x => x.Favourite)
+                        .ThenBy(x => x.Name)
+                        .ToList();
+
+                    contentModel.Accounts = new ObservableCollection<AccountListModel>(sorted);
                 }
 
                 Close();
