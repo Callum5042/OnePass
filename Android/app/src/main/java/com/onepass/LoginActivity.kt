@@ -1,5 +1,6 @@
 package com.onepass
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,6 +45,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,7 +67,17 @@ class LoginActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier.padding(paddingValues = innerPadding),
                     ) {
-                        LoginView()
+                        LoginView(
+                            onLoginClick = {
+                                val activity = Intent(
+                                    this@LoginActivity,
+                                    MainActivity::class.java
+                                )
+
+                                startActivity(activity)
+                                finish()
+                            }
+                        )
                     }
                 }
             }
@@ -78,7 +90,7 @@ fun LoginView(onLoginClick: () -> Unit = {}) {
     val scrollState = rememberScrollState()
 
     Surface(
-        color = Color(0xFF003264)
+        color = colorResource(R.color.deep_blue)
     ) {
         Column(
             modifier = Modifier
