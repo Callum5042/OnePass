@@ -1,14 +1,19 @@
 package com.onepass
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -69,6 +75,13 @@ class LoginActivity : ComponentActivity() {
                     ) {
                         LoginView(
                             onLoginClick = {
+
+                                // Decrypt data
+                                // FileEncoder().load()
+
+
+
+                                // Change activity
                                 val activity = Intent(
                                     this@LoginActivity,
                                     MainActivity::class.java
@@ -86,8 +99,11 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginView(onLoginClick: () -> Unit = {}) {
+fun LoginView(
+    onLoginClick: () -> Unit = {}
+) {
     val scrollState = rememberScrollState()
+    var isLoading by remember { mutableStateOf(false) }
 
     Surface(
         color = colorResource(R.color.deep_blue)
@@ -109,7 +125,7 @@ fun LoginView(onLoginClick: () -> Unit = {}) {
                 contentScale = ContentScale.FillWidth,
             )
 
-            UsernameInput()
+            FileInput()
 
             Spacer(
                 modifier = Modifier.height(16.dp)
@@ -129,11 +145,22 @@ fun LoginView(onLoginClick: () -> Unit = {}) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF0080FF),
                 ),
-                onClick = onLoginClick
+                onClick = {
+                    //launcher.launch(arrayOf("application/octet-stream", "*/*"))
+                    // onLoginClick
+                },
+                enabled = !isLoading,
             ) {
-                Text(
-                    text = "Login"
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White)
+                    Text(
+                        text = "Decrypting..."
+                    )
+                } else {
+                    Text(
+                        text = "Login"
+                    )
+                }
             }
 
             Text(
@@ -152,38 +179,86 @@ fun LoginView(onLoginClick: () -> Unit = {}) {
 }
 
 @Composable
-fun UsernameInput() {
-    var username by remember { mutableStateOf("") }
+fun FileInput() {
+
+    var fileName by remember { mutableStateOf("") }
+    var fileUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+
+        fileUri = uri
+
+        context.contentResolver.query(
+            uri,
+            arrayOf(OpenableColumns.DISPLAY_NAME),
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val column = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+
+                if (column >= 0) {
+                    fileName = cursor.getString(column)
+                }
+            }
+        }
+
+//        context.contentResolver.openInputStream(uri)?.use { input ->
+//            fileName = uri.path.toString()
+//        }
+    }
 
     Column(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "Username",
+            text = "Filename",
             color = Color(0xFFF5F5F5),
             modifier = Modifier.padding(bottom = 6.dp),
         )
 
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("username_input"),
-            value = username,
-            shape = RoundedCornerShape(8.dp),
-            onValueChange = { username = it },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
+        Box {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("username_input"),
+                value = fileName,
+                onValueChange = {},
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.FolderOpen,
+                        contentDescription = "Choose file"
+                    )
+                },
+                readOnly = true,
+                shape = RoundedCornerShape(8.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
 
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
 
-                focusedBorderColor = Color(0xFF0080FF),
-                unfocusedBorderColor = Color(0xFFABADB3),
+                    focusedBorderColor = Color(0xFF0080FF),
+                    unfocusedBorderColor = Color(0xFFABADB3),
 
-                cursorColor = Color.Black
+                    cursorColor = Color.Black
+                )
             )
-        )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        launcher.launch(arrayOf("application/octet-stream", "*/*"))
+                    }
+            )
+        }
     }
 }
 
@@ -295,19 +370,13 @@ fun FilePicker() {
         modifier = Modifier.fillMaxWidth().padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Password") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            enabled = !isLoading,
-        )
         Button(
             onClick = { launcher.launch(arrayOf("application/octet-stream", "*/*")) },
             enabled = password.isNotEmpty() && !isLoading,
-        ) { Text("Open and decode file") }
+        ) {
+            Text("Open and decode file")
+        }
+
         if (isLoading) CircularProgressIndicator()
         Text(status)
     }
