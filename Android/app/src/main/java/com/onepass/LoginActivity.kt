@@ -259,7 +259,8 @@ fun FileInput(
                 trailingIcon = {
                     Icon(
                         Icons.Default.FolderOpen,
-                        contentDescription = "Choose file"
+                        contentDescription = "Choose file",
+                        tint = Color.Gray,
                     )
                 },
                 readOnly = true,
@@ -319,12 +320,12 @@ fun PasswordInput(
             } else {
                 PasswordVisualTransformation()
             },
-
             trailingIcon = {
                 IconButton(
                     onClick = { passwordVisible = !passwordVisible },
                 ) {
                     Icon(
+                        tint = Color.Gray,
                         imageVector = if (passwordVisible) {
                             Icons.Default.VisibilityOff
                         } else {
