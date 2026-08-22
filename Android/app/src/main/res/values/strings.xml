@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">OnePass</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="search_accounts">Search accounts</string>
+    <string name="settings">Settings</string>
+    <string name="add_account">Add account</string>
+    <string name="favourite_account">Favourite account</string>
+    <string name="unnamed_account">Unnamed account</string>
+    <string name="no_login_details">No login details</string>
+    <string name="no_accounts_title">No accounts yet</string>
+    <string name="no_accounts_guidance">Use Add to create your first account.</string>
+    <string name="vault_locked">Vault is locked</string>
 </resources>

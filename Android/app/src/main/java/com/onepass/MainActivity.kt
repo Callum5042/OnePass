@@ -4,19 +4,35 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,10 +40,16 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.onepass.services.Account
 import com.onepass.services.OnePassData
 import com.onepass.services.VaultState
@@ -35,7 +57,6 @@ import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.UUID
-import androidx.compose.foundation.lazy.items
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,20 +89,20 @@ fun MainScreen(
                     subtitleContentColor = Color.Gray,
                 ),
                 title = {
-                    Text("OnePass")
+                    Text(stringResource(R.string.app_name))
                 },
                 actions = {
-                    IconButton(onClick = { /* Search */ }) {
+                    IconButton(onClick = { /* Search will be implemented later. */ }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = stringResource(R.string.search_accounts),
                         )
                     }
 
-                    IconButton(onClick = { /* Open settings */ }) {
+                    IconButton(onClick = { /* Settings will be implemented later. */ }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(R.string.settings),
                         )
                     }
                 },
@@ -89,14 +110,14 @@ fun MainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* do something */ },
+                onClick = { /* Account creation will be implemented later. */ },
                 containerColor = colorResource(R.color.deep_blue),
                 contentColor = Color.White,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
             ) {
                 Icon(
-                    Icons.Filled.Add,
-                    "Localized description"
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.add_account),
                 )
             }
         }
@@ -107,29 +128,185 @@ fun MainScreen(
                 .padding(innerPadding)
         ) {
 
-            when (vaultState) {
-                VaultState.Locked -> {
-                    Text(text = "Vault is locked")
-                }
-                is VaultState.Unlocked -> {
-                    val onePassData = (vaultState as VaultState.Unlocked).data
-                    val accounts = onePassData.accounts
-
-                    LazyColumn {
-                        items(accounts) { item ->
-                            item.username?.let { Text(it) }
-                        }
-                    }
-                }
+            when (val state = vaultState) {
+                VaultState.Locked -> LockedVaultState()
+                is VaultState.Unlocked -> AccountContent(state.data.accounts)
             }
         }
     }
 }
 
-@Preview(showBackground = false)
 @Composable
-fun MainScreenPreview() {
+private fun AccountContent(accounts: List<Account>) {
+    if (accounts.isEmpty()) {
+        EmptyVaultState()
+    } else {
+        AccountList(accounts = sortAccounts(accounts))
+    }
+}
 
+@Composable
+private fun AccountList(accounts: List<Account>) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(
+            items = accounts,
+            key = { account -> account.guid },
+        ) { account ->
+            AccountRow(account)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        }
+    }
+}
+
+@Composable
+private fun AccountRow(account: Account) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 72.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = accountInitial(account),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = account.name.normalizedOrNull()
+                    ?: stringResource(R.string.unnamed_account),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = displayLogin(account)
+                    ?: stringResource(R.string.no_login_details),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        if (account.favourite) {
+            Spacer(modifier = Modifier.width(12.dp))
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = stringResource(R.string.favourite_account),
+                tint = FavouriteGold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyVaultState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.AccountCircle,
+            contentDescription = null,
+            modifier = Modifier.size(72.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = stringResource(R.string.no_accounts_title),
+            modifier = Modifier.padding(top = 16.dp),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = stringResource(R.string.no_accounts_guidance),
+            modifier = Modifier.padding(top = 8.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+private fun LockedVaultState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Lock,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = stringResource(R.string.vault_locked),
+            modifier = Modifier.padding(top = 16.dp),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+internal fun sortAccounts(accounts: List<Account>): List<Account> =
+    accounts.sortedWith(
+        compareByDescending<Account> { it.favourite }
+            .thenComparator { left, right -> compareAccountNames(left.name, right.name) }
+            .thenBy { it.guid.toString() },
+    )
+
+internal fun displayLogin(account: Account): String? =
+    account.username.normalizedOrNull() ?: account.emailAddress.normalizedOrNull()
+
+internal fun accountInitial(account: Account): String =
+    account.name
+        .normalizedOrNull()
+        ?.firstOrNull(Char::isLetterOrDigit)
+        ?.uppercaseChar()
+        ?.toString()
+        ?: "?"
+
+private fun compareAccountNames(left: String?, right: String?): Int {
+    val leftName = left.normalizedOrNull()
+    val rightName = right.normalizedOrNull()
+    return when {
+        leftName == null && rightName == null -> 0
+        leftName == null -> 1
+        rightName == null -> -1
+        else -> leftName.compareTo(rightName, ignoreCase = true)
+    }
+}
+
+private fun String?.normalizedOrNull(): String? = this?.trim()?.takeIf(String::isNotEmpty)
+
+private val FavouriteGold = Color(0xFFFFB300)
+
+@Preview(name = "Populated vault", showBackground = true)
+@Composable
+private fun PopulatedMainScreenPreview() {
     val previewData = OnePassData(
         accounts = listOf(
             Account(
@@ -159,6 +336,20 @@ fun MainScreenPreview() {
                 mfaEnabled = false,
                 notes = null,
                 passwordHistory = emptyList()
+            ),
+            Account(
+                guid = UUID.randomUUID(),
+                dateCreated = null,
+                dateModified = null,
+                name = null,
+                username = null,
+                emailAddress = null,
+                password = "never-shown-in-the-list",
+                favourite = false,
+                websiteUrl = null,
+                mfaEnabled = false,
+                notes = null,
+                passwordHistory = emptyList()
             )
         )
     )
@@ -169,5 +360,21 @@ fun MainScreenPreview() {
                 VaultState.Unlocked(previewData)
             )
         )
+    }
+}
+
+@Preview(name = "Empty vault", showBackground = true)
+@Composable
+private fun EmptyMainScreenPreview() {
+    OnePassTheme {
+        MainScreen(MutableStateFlow(VaultState.Unlocked(OnePassData())))
+    }
+}
+
+@Preview(name = "Locked vault", showBackground = true)
+@Composable
+private fun LockedMainScreenPreview() {
+    OnePassTheme {
+        MainScreen(MutableStateFlow(VaultState.Locked))
     }
 }

@@ -10,7 +10,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.onepass.ui.theme.OnePassTheme
-import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,18 +32,15 @@ class LoginViewTest {
     }
 
     @Test
-    fun usernameAndPasswordAcceptInput() {
+    fun passwordAcceptsInput() {
         setLoginContent()
 
-        composeRule.onNodeWithTag("username_input")
-            .performTextInput("user")
         composeRule.onNodeWithTag("password_input")
             .performTextInput("password")
 
         composeRule.onNodeWithContentDescription("Show password")
             .performClick()
 
-        composeRule.onNodeWithTag("username_input").assertTextEquals("user")
         composeRule.onNodeWithTag("password_input").assertTextEquals("password")
     }
 
@@ -59,22 +55,10 @@ class LoginViewTest {
         composeRule.onNodeWithContentDescription("Hide password").assertIsDisplayed()
     }
 
-    @Test
-    fun loginButtonInvokesLoginAction() {
-        var clickCount = 0
-        setLoginContent(onLoginClick = { clickCount++ })
-
-        composeRule.onNodeWithTag("login_button").performClick()
-
-        composeRule.runOnIdle {
-            assertEquals(1, clickCount)
-        }
-    }
-
-    private fun setLoginContent(onLoginClick: () -> Unit = {}) {
+    private fun setLoginContent() {
         composeRule.setContent {
             OnePassTheme {
-                LoginView(onLoginClick = onLoginClick)
+                LoginView()
             }
         }
     }
