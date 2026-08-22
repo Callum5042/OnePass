@@ -44,11 +44,58 @@ class MainActivityTest {
         assertEquals("?", accountInitial(account(name = null)))
     }
 
+    @Test
+    fun searchMatchesNameUsernameAndEmailIgnoringCaseAndWhitespace() {
+        val accounts = listOf(
+            account(name = "GitHub"),
+            account(name = "Work", username = "Callum"),
+            account(name = "Mail", emailAddress = "person@example.com"),
+            account(name = "Other"),
+        )
+
+        assertEquals(listOf("GitHub"), filterAccounts(accounts, "  HUB ").map(Account::name))
+        assertEquals(listOf("Work"), filterAccounts(accounts, "CALL").map(Account::name))
+        assertEquals(listOf("Mail"), filterAccounts(accounts, "EXAMPLE").map(Account::name))
+    }
+
+    @Test
+    fun blankSearchReturnsAllAccountsInNormalSortOrder() {
+        val accounts = listOf(
+            account(name = "zebra"),
+            account(name = "Alpha"),
+            account(name = "beta", favourite = true),
+        )
+
+        assertEquals(
+            listOf("beta", "Alpha", "zebra"),
+            filterAccounts(accounts, "   ").map(Account::name),
+        )
+    }
+
+    @Test
+    fun searchDoesNotMatchSensitiveOrUnsupportedFields() {
+        val accounts = listOf(
+            account(
+                name = "Account",
+                password = "password-needle",
+                websiteUrl = "https://website-needle.example",
+                notes = "notes-needle",
+            ),
+        )
+
+        assertEquals(emptyList<Account>(), filterAccounts(accounts, "password-needle"))
+        assertEquals(emptyList<Account>(), filterAccounts(accounts, "website-needle"))
+        assertEquals(emptyList<Account>(), filterAccounts(accounts, "notes-needle"))
+    }
+
     private fun account(
         name: String? = "Account",
         username: String? = null,
         emailAddress: String? = null,
         favourite: Boolean = false,
+        password: String? = "secret",
+        websiteUrl: String? = null,
+        notes: String? = null,
     ) = Account(
         guid = UUID.randomUUID(),
         dateCreated = null,
@@ -56,11 +103,11 @@ class MainActivityTest {
         name = name,
         username = username,
         emailAddress = emailAddress,
-        password = "secret",
+        password = password,
         favourite = favourite,
-        websiteUrl = null,
+        websiteUrl = websiteUrl,
         mfaEnabled = false,
-        notes = null,
+        notes = notes,
         passwordHistory = emptyList(),
     )
 }

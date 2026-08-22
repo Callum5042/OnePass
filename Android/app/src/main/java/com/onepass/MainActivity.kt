@@ -3,10 +3,12 @@ package com.onepass
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +24,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -37,18 +41,29 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -89,6 +104,22 @@ fun MainScreen(
     onAccountSelected: (Account) -> Unit = {},
 ) {
     val vaultState by data.collectAsState()
+    var isSearch by rememberSaveable { mutableStateOf(false) }
+    var search by rememberSaveable { mutableStateOf("") }
+    val searchFocusRequester = remember { FocusRequester() }
+
+    fun closeSearch() {
+        isSearch = false
+        search = ""
+    }
+
+    BackHandler(enabled = isSearch, onBack = ::closeSearch)
+
+    LaunchedEffect(isSearch) {
+        if (isSearch) {
+            searchFocusRequester.requestFocus()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -100,22 +131,72 @@ fun MainScreen(
                     navigationIconContentColor = Color.White,
                     subtitleContentColor = Color.Gray,
                 ),
+                navigationIcon = {
+                    if (isSearch) {
+                        IconButton(onClick = ::closeSearch) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back),
+                            )
+                        }
+                    }
+                },
                 title = {
-                    Text(stringResource(R.string.app_name))
+                    if (isSearch) {
+                        TextField(
+                            value = search,
+                            onValueChange = { search = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(searchFocusRequester)
+                                .testTag("account_search_input"),
+                            placeholder = {
+                                Text(stringResource(R.string.search_accounts_hint))
+                            },
+                            trailingIcon = {
+                                if (search.isNotEmpty()) {
+                                    IconButton(onClick = { search = "" }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = stringResource(R.string.clear_search),
+                                            tint = Color.White
+                                        )
+                                    }
+                                }
+                            },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            colors = TextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                cursorColor = Color.White,
+                                focusedPlaceholderColor = Color.LightGray,
+                                unfocusedPlaceholderColor = Color.LightGray,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                            ),
+                        )
+                    } else {
+                        Text(stringResource(R.string.app_name))
+                    }
                 },
                 actions = {
-                    IconButton(onClick = { /* Search will be implemented later. */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search_accounts),
-                        )
-                    }
+                    if (!isSearch) {
+                        IconButton(onClick = { isSearch = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = stringResource(R.string.search_accounts),
+                            )
+                        }
 
-                    IconButton(onClick = { /* Settings will be implemented later. */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.settings),
-                        )
+                        IconButton(onClick = { /* Settings will be implemented later. */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = stringResource(R.string.settings),
+                            )
+                        }
                     }
                 },
             )
@@ -144,6 +225,7 @@ fun MainScreen(
                 VaultState.Locked -> LockedVaultState()
                 is VaultState.Unlocked -> AccountContent(
                     accounts = state.data.accounts,
+                    search = search,
                     onAccountSelected = onAccountSelected,
                 )
             }
@@ -154,15 +236,21 @@ fun MainScreen(
 @Composable
 private fun AccountContent(
     accounts: List<Account>,
+    search: String,
     onAccountSelected: (Account) -> Unit,
 ) {
     if (accounts.isEmpty()) {
         EmptyVaultState()
     } else {
-        AccountList(
-            accounts = sortAccounts(accounts),
-            onAccountSelected = onAccountSelected,
-        )
+        val filteredAccounts = filterAccounts(accounts, search)
+        if (filteredAccounts.isEmpty()) {
+            NoSearchResultsState()
+        } else {
+            AccountList(
+                accounts = filteredAccounts,
+                onAccountSelected = onAccountSelected,
+            )
+        }
     }
 }
 
@@ -279,6 +367,30 @@ private fun EmptyVaultState() {
 }
 
 @Composable
+private fun NoSearchResultsState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Search,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = stringResource(R.string.no_search_results),
+            modifier = Modifier.padding(top = 16.dp),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
 private fun LockedVaultState() {
     Column(
         modifier = Modifier
@@ -309,6 +421,21 @@ internal fun sortAccounts(accounts: List<Account>): List<Account> =
             .thenBy { it.guid.toString() },
     )
 
+internal fun filterAccounts(accounts: List<Account>, query: String): List<Account> {
+    val normalizedQuery = query.trim()
+    if (normalizedQuery.isEmpty()) {
+        return sortAccounts(accounts)
+    }
+
+    return sortAccounts(
+        accounts.filter { account ->
+            account.name.containsQuery(normalizedQuery) ||
+                account.username.containsQuery(normalizedQuery) ||
+                account.emailAddress.containsQuery(normalizedQuery)
+        },
+    )
+}
+
 internal fun displayLogin(account: Account): String? =
     account.username.normalizedOrNull() ?: account.emailAddress.normalizedOrNull()
 
@@ -332,6 +459,9 @@ private fun compareAccountNames(left: String?, right: String?): Int {
 }
 
 private fun String?.normalizedOrNull(): String? = this?.trim()?.takeIf(String::isNotEmpty)
+
+private fun String?.containsQuery(query: String): Boolean =
+    this?.contains(query, ignoreCase = true) == true
 
 private val FavouriteGold = Color(0xFFFFB300)
 

@@ -2,12 +2,15 @@ package com.onepass
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import com.onepass.services.Account
 import com.onepass.services.OnePassData
 import com.onepass.services.VaultState
@@ -49,6 +52,8 @@ class MainScreenTest {
         composeRule.onNodeWithContentDescription("Search accounts")
             .assertIsDisplayed()
             .performClick()
+        composeRule.onNodeWithTag("account_search_input").assertIsFocused()
+        composeRule.onNodeWithContentDescription("Back").performClick()
         composeRule.onNodeWithContentDescription("Settings")
             .assertIsDisplayed()
             .performClick()
@@ -57,6 +62,39 @@ class MainScreenTest {
             .performClick()
 
         composeRule.onNodeWithText("GitHub").assertIsDisplayed()
+    }
+
+    @Test
+    fun searchFiltersClearsAndClosesWithDedicatedEmptyState() {
+        setMainContent(
+            VaultState.Unlocked(
+                OnePassData(
+                    accounts = listOf(
+                        account(name = "GitHub", username = "callum"),
+                        account(name = "Email", emailAddress = "mail@example.com"),
+                    ),
+                ),
+            ),
+        )
+
+        composeRule.onNodeWithContentDescription("Search accounts").performClick()
+        composeRule.onNodeWithTag("account_search_input").performTextInput("CALL")
+
+        composeRule.onNodeWithText("GitHub").assertIsDisplayed()
+        composeRule.onAllNodesWithText("Email").assertCountEquals(0)
+
+        composeRule.onNodeWithContentDescription("Clear search").performClick()
+        composeRule.onNodeWithText("GitHub").assertIsDisplayed()
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
+
+        composeRule.onNodeWithTag("account_search_input").performTextInput("missing")
+        composeRule.onNodeWithText("No accounts match your search").assertIsDisplayed()
+        composeRule.onAllNodesWithText("GitHub").assertCountEquals(0)
+
+        composeRule.onNodeWithContentDescription("Back").performClick()
+        composeRule.onNodeWithText("OnePass").assertIsDisplayed()
+        composeRule.onNodeWithText("GitHub").assertIsDisplayed()
+        composeRule.onNodeWithText("Email").assertIsDisplayed()
     }
 
     @Test
@@ -108,6 +146,8 @@ class MainScreenTest {
             }
         }
 
+        composeRule.onNodeWithContentDescription("Search accounts").performClick()
+        composeRule.onNodeWithTag("account_search_input").performTextInput("call")
         composeRule.onNodeWithText("GitHub").performClick()
         assertEquals(selectedAccount, selected)
     }
