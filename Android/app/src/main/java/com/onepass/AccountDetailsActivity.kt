@@ -3,9 +3,7 @@ package com.onepass
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -76,6 +74,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.onepass.services.Account
 import com.onepass.services.PasswordHistory
 import com.onepass.services.VaultState
@@ -116,7 +115,12 @@ class AccountDetailsActivity : ComponentActivity() {
                         onEdit = {},
                         onCopy = ::copySensitive,
                         onOpenWebsite = { url ->
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    url.toUri()
+                                )
+                            )
                         },
                     )
                 }
@@ -131,7 +135,7 @@ class AccountDetailsActivity : ComponentActivity() {
                 putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
             }
         }
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(clip)
     }
 
@@ -158,12 +162,12 @@ fun AccountDetailsScreen(
 ) {
     var selectedTabIndex by rememberSaveable(account.guid) { mutableIntStateOf(0) }
     var showRecordDetails by rememberSaveable(account.guid) { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val copiedMessage = stringResource(R.string.copied_to_clipboard)
     val copyValue: (String) -> Unit = { value ->
         onCopy(value)
-        coroutineScope.launch { snackbarHostState.showSnackbar(copiedMessage) }
+        coroutineScope.launch { snackBarHostState.showSnackbar(copiedMessage) }
     }
 
     if (showRecordDetails) {
@@ -181,7 +185,7 @@ fun AccountDetailsScreen(
                 onInfo = { showRecordDetails = true },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -463,7 +467,7 @@ private fun PasswordDetailRow(
             if (normalizedPassword != null) {
                 IconButton(onClick = { visible = !visible }) {
                     Icon(
-                        if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        if (visible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
                         contentDescription = stringResource(
                             if (visible) R.string.hide_password else R.string.show_password,
                         ),
@@ -519,7 +523,7 @@ private fun HistoryRow(
         if (password != null) {
             IconButton(onClick = { visible = !visible }) {
                 Icon(
-                    if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                    if (visible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
                     contentDescription = stringResource(
                         if (visible) R.string.hide_password else R.string.show_password,
                     ),
@@ -758,8 +762,8 @@ private fun previewAccount() = Account(
     dateCreated = "2024-03-14T18:32:00Z",
     dateModified = "2026-08-20T09:15:00Z",
     name = "GitHub",
-    username = "callum",
-    emailAddress = "callum@example.com",
+    username = "Username",
+    emailAddress = "user@example.com",
     password = "not-a-real-password",
     favourite = true,
     websiteUrl = "https://github.com",

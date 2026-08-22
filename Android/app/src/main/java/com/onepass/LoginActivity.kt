@@ -327,9 +327,9 @@ fun PasswordInput(
                     Icon(
                         tint = Color.Gray,
                         imageVector = if (passwordVisible) {
-                            Icons.Default.VisibilityOff
-                        } else {
                             Icons.Default.Visibility
+                        } else {
+                            Icons.Default.VisibilityOff
                         },
                         contentDescription = if (passwordVisible) {
                             "Hide password"
