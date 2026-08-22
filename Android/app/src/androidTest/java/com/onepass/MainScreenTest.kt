@@ -14,6 +14,7 @@ import com.onepass.services.VaultState
 import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.UUID
 
@@ -89,6 +90,26 @@ class MainScreenTest {
 
         composeRule.onNodeWithText("Vault is locked").assertIsDisplayed()
         composeRule.onAllNodesWithText("No accounts yet").assertCountEquals(0)
+    }
+
+    @Test
+    fun tappingAccountSelectsThatAccount() {
+        val selectedAccount = account(name = "GitHub", username = "callum")
+        var selected: Account? = null
+
+        composeRule.setContent {
+            OnePassTheme {
+                MainScreen(
+                    data = MutableStateFlow(
+                        VaultState.Unlocked(OnePassData(accounts = listOf(selectedAccount))),
+                    ),
+                    onAccountSelected = { selected = it },
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("GitHub").performClick()
+        assertEquals(selectedAccount, selected)
     }
 
     private fun setMainContent(state: VaultState) {

@@ -1,10 +1,12 @@
 package com.onepass
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +67,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             OnePassTheme {
                 val repository = (application as OnePassApplication).vaultRepository
-                MainScreen(repository.state)
+                MainScreen(
+                    data = repository.state,
+                    onAccountSelected = { account ->
+                        startActivity(
+                            Intent(this, AccountDetailsActivity::class.java).apply {
+                                putExtra(AccountDetailsActivity.EXTRA_ACCOUNT_GUID, account.guid.toString())
+                            },
+                        )
+                    },
+                )
             }
         }
     }
@@ -74,7 +85,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    data: StateFlow<VaultState>
+    data: StateFlow<VaultState>,
+    onAccountSelected: (Account) -> Unit = {},
 ) {
     val vaultState by data.collectAsState()
 
@@ -130,40 +142,59 @@ fun MainScreen(
 
             when (val state = vaultState) {
                 VaultState.Locked -> LockedVaultState()
-                is VaultState.Unlocked -> AccountContent(state.data.accounts)
+                is VaultState.Unlocked -> AccountContent(
+                    accounts = state.data.accounts,
+                    onAccountSelected = onAccountSelected,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun AccountContent(accounts: List<Account>) {
+private fun AccountContent(
+    accounts: List<Account>,
+    onAccountSelected: (Account) -> Unit,
+) {
     if (accounts.isEmpty()) {
         EmptyVaultState()
     } else {
-        AccountList(accounts = sortAccounts(accounts))
+        AccountList(
+            accounts = sortAccounts(accounts),
+            onAccountSelected = onAccountSelected,
+        )
     }
 }
 
 @Composable
-private fun AccountList(accounts: List<Account>) {
+private fun AccountList(
+    accounts: List<Account>,
+    onAccountSelected: (Account) -> Unit,
+) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(
             items = accounts,
             key = { account -> account.guid },
         ) { account ->
-            AccountRow(account)
+            AccountRow(
+                account = account,
+                onClick = { onAccountSelected(account) },
+            )
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }
 
 @Composable
-private fun AccountRow(account: Account) {
+private fun AccountRow(
+    account: Account,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 72.dp)
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

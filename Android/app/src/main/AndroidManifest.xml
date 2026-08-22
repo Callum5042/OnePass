@@ -29,6 +29,12 @@
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.OnePass"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AccountDetailsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_account_details"
+            android:theme="@style/Theme.OnePass"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
