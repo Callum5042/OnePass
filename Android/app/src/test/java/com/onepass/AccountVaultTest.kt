@@ -2,9 +2,11 @@ package com.onepass
 
 import com.onepass.services.Account
 import com.onepass.services.CredentialEdits
+import com.onepass.services.NewAccountDetails
 import com.onepass.services.OnePassData
 import com.onepass.services.PasswordHistory
 import com.onepass.services.VaultDocumentStore
+import com.onepass.services.VaultAddResult
 import com.onepass.services.VaultEncoder
 import com.onepass.services.VaultRepository
 import com.onepass.services.VaultState
@@ -70,6 +72,58 @@ class AccountVaultTest {
 
         val updated = (repository.state.value as VaultState.Unlocked).data.accounts.single()
         assertEquals(emptyList<PasswordHistory>(), updated.passwordHistory)
+    }
+
+    @Test
+    fun successfulAddPersistsNewAccountBeforePublishingState() = runBlocking {
+        val store = FakeDocumentStore("original".encodeToByteArray())
+        val encoder = CapturingEncoder("encrypted".encodeToByteArray())
+        val repository = repository(store, encoder)
+        repository.unlock(OnePassData(accounts = listOf(account())), "content://vault", charArrayOf('k'))
+
+        val result = repository.addAccount(
+            NewAccountDetails(
+                name = "  New product  ",
+                username = " exact user ",
+                emailAddress = "",
+                password = "new-secret",
+                websiteUrl = " site ",
+                notes = " notes ",
+            ),
+        )
+
+        assertSame(VaultAddResult.Success, result)
+        assertArrayEquals("encrypted".encodeToByteArray(), store.bytes)
+        val added = (repository.state.value as VaultState.Unlocked).data.accounts.last()
+        assertEquals(historyGuid, added.guid)
+        assertEquals(timestamp.toString(), added.dateCreated)
+        assertEquals(timestamp.toString(), added.dateModified)
+        assertEquals("  New product  ", added.name)
+        assertEquals(" exact user ", added.username)
+        assertEquals("", added.emailAddress)
+        assertEquals("new-secret", added.password)
+        assertEquals(" site ", added.websiteUrl)
+        assertEquals(" notes ", added.notes)
+        assertEquals(false, added.favourite)
+        assertEquals(emptyList<PasswordHistory>(), added.passwordHistory)
+        assertEquals(added, encoder.savedData?.accounts?.last())
+    }
+
+    @Test
+    fun failedAddRestoresFileAndDoesNotPublishAccount() = runBlocking {
+        val originalBytes = "original".encodeToByteArray()
+        val store = FakeDocumentStore(originalBytes, failuresRemaining = 1)
+        val repository = repository(store, CapturingEncoder("encrypted".encodeToByteArray()))
+        val original = account()
+        repository.unlock(OnePassData(accounts = listOf(original)), "content://vault", charArrayOf('k'))
+
+        val result = repository.addAccount(
+            NewAccountDetails("New", "user", null, "password", null, null),
+        )
+
+        assertEquals(VaultAddResult.SaveFailed(rollbackSucceeded = true), result)
+        assertArrayEquals(originalBytes, store.bytes)
+        assertEquals(listOf(original), (repository.state.value as VaultState.Unlocked).data.accounts)
     }
 
     @Test

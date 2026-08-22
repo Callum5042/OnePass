@@ -19,11 +19,26 @@ data class CredentialEdits(
     val websiteUrl: String?,
 )
 
+data class NewAccountDetails(
+    val name: String,
+    val username: String?,
+    val emailAddress: String?,
+    val password: String?,
+    val websiteUrl: String?,
+    val notes: String?,
+)
+
 sealed interface VaultUpdateResult {
     data object Success : VaultUpdateResult
     data object VaultLocked : VaultUpdateResult
     data object AccountNotFound : VaultUpdateResult
     data class SaveFailed(val rollbackSucceeded: Boolean) : VaultUpdateResult
+}
+
+sealed interface VaultAddResult {
+    data object Success : VaultAddResult
+    data object VaultLocked : VaultAddResult
+    data class SaveFailed(val rollbackSucceeded: Boolean) : VaultAddResult
 }
 
 interface VaultDocumentStore {
@@ -117,6 +132,54 @@ class VaultRepository(
 
         _state.value = VaultState.Unlocked(updatedData)
         VaultUpdateResult.Success
+    }
+
+    suspend fun addAccount(details: NewAccountDetails): VaultAddResult = updateMutex.withLock {
+        val unlocked = _state.value as? VaultState.Unlocked
+            ?: return@withLock VaultAddResult.VaultLocked
+        val activeSession = session ?: return@withLock VaultAddResult.VaultLocked
+        val timestamp = now().toString()
+        val account = Account(
+            guid = newGuid(),
+            dateCreated = timestamp,
+            dateModified = timestamp,
+            name = details.name,
+            username = details.username,
+            emailAddress = details.emailAddress,
+            password = details.password,
+            favourite = false,
+            websiteUrl = details.websiteUrl,
+            mfaEnabled = false,
+            notes = details.notes,
+            passwordHistory = emptyList(),
+        )
+        val updatedData = unlocked.data.copy(accounts = unlocked.data.accounts + account)
+
+        val encrypted = try {
+            encoder.save(activeSession.password, updatedData)
+        } catch (_: Exception) {
+            return@withLock VaultAddResult.SaveFailed(rollbackSucceeded = true)
+        }
+        val original = try {
+            documentStore.read(activeSession.documentUri)
+        } catch (_: Exception) {
+            return@withLock VaultAddResult.SaveFailed(rollbackSucceeded = true)
+        }
+
+        try {
+            documentStore.write(activeSession.documentUri, encrypted)
+        } catch (_: Exception) {
+            val restored = try {
+                documentStore.write(activeSession.documentUri, original)
+                true
+            } catch (_: Exception) {
+                false
+            }
+            return@withLock VaultAddResult.SaveFailed(rollbackSucceeded = restored)
+        }
+
+        _state.value = VaultState.Unlocked(updatedData)
+        VaultAddResult.Success
     }
 
     private fun clearSession() {

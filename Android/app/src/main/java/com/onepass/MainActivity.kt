@@ -84,6 +84,9 @@ class MainActivity : ComponentActivity() {
                 val repository = (application as OnePassApplication).vaultRepository
                 MainScreen(
                     data = repository.state,
+                    onAddAccount = {
+                        startActivity(Intent(this, AddAccountActivity::class.java))
+                    },
                     onAccountSelected = { account ->
                         startActivity(
                             Intent(this, AccountDetailsActivity::class.java).apply {
@@ -101,6 +104,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     data: StateFlow<VaultState>,
+    onAddAccount: () -> Unit = {},
     onAccountSelected: (Account) -> Unit = {},
 ) {
     val vaultState by data.collectAsState()
@@ -203,7 +207,7 @@ fun MainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Account creation will be implemented later. */ },
+                onClick = onAddAccount,
                 containerColor = colorResource(R.color.deep_blue),
                 contentColor = Color.White,
                 elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),

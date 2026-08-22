@@ -7,6 +7,12 @@
     <string name="no_search_results">No accounts match your search</string>
     <string name="settings">Settings</string>
     <string name="add_account">Add account</string>
+    <string name="title_activity_add_account">Add account</string>
+    <string name="add_account_details">Add account details</string>
+    <string name="account_name">Name</string>
+    <string name="account_name_required">Name is required</string>
+    <string name="account_notes_hint">Add notes</string>
+    <string name="account_added">Account added</string>
     <string name="favourite_account">Favourite account</string>
     <string name="unnamed_account">Unnamed account</string>
     <string name="no_login_details">No login details</string>

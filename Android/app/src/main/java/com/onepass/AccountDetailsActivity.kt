@@ -552,7 +552,7 @@ private fun DetailsTab(
 }
 
 @Composable
-private fun EditableCredentialRow(
+internal fun EditableCredentialRow(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,

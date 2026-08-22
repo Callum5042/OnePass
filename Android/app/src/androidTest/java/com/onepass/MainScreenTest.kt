@@ -152,6 +152,23 @@ class MainScreenTest {
         assertEquals(selectedAccount, selected)
     }
 
+    @Test
+    fun tappingAddRequestsAccountCreation() {
+        var addRequested = false
+        composeRule.setContent {
+            OnePassTheme {
+                MainScreen(
+                    data = MutableStateFlow(VaultState.Unlocked(OnePassData())),
+                    onAddAccount = { addRequested = true },
+                )
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Add account").performClick()
+
+        assertEquals(true, addRequested)
+    }
+
     private fun setMainContent(state: VaultState) {
         setMainContent(MutableStateFlow(state))
     }
