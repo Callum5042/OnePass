@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -49,15 +48,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.onepass.services.FileEncoder
+import com.onepass.services.OnePassData
 import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,12 +74,10 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues = innerPadding),
                     ) {
                         LoginView(
-                            onLoginClick = {
-
-                                // Decrypt data
-                                // FileEncoder().load()
-
-
+                            onLoginSuccess = { data ->
+                                // Store
+                                val repository = (application as OnePassApplication).vaultRepository
+                                repository.unlock(data)
 
                                 // Change activity
                                 val activity = Intent(
@@ -100,9 +98,15 @@ class LoginActivity : ComponentActivity() {
 
 @Composable
 fun LoginView(
-    onLoginClick: () -> Unit = {}
+    onLoginSuccess: (data: OnePassData) -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
+
+    var fileUri by remember { mutableStateOf<Uri?>(null) }
+    var password by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
     var isLoading by remember { mutableStateOf(false) }
 
     Surface(
@@ -125,13 +129,21 @@ fun LoginView(
                 contentScale = ContentScale.FillWidth,
             )
 
-            FileInput()
+            FileInput(
+                onFileSelected = { uri ->
+                    fileUri = uri
+                }
+            )
 
             Spacer(
                 modifier = Modifier.height(16.dp)
             )
 
-            PasswordInput()
+            PasswordInput(
+                onPasswordEntered = {
+                    password = it
+                }
+            )
 
             Spacer(
                 modifier = Modifier.height(16.dp)
@@ -146,8 +158,24 @@ fun LoginView(
                     containerColor = Color(0xFF0080FF),
                 ),
                 onClick = {
-                    //launcher.launch(arrayOf("application/octet-stream", "*/*"))
-                    // onLoginClick
+                    isLoading = true
+                    activity.lifecycleScope.launch {
+                        val result = runCatching {
+                            withContext(Dispatchers.IO) {
+                                fileUri?.let {
+                                    context.contentResolver.openInputStream(it) }?.use { input ->
+                                    FileEncoder().load(password, input)
+                                } ?: error("Unable to open the selected file")
+                            }
+                        }
+                        isLoading = false
+                        result.fold(
+                            onSuccess = { data ->
+                                onLoginSuccess(data)
+                            },
+                            onFailure = { error -> error.message ?: "Unable to decode the selected file" },
+                        )
+                    }
                 },
                 enabled = !isLoading,
             ) {
@@ -179,7 +207,9 @@ fun LoginView(
 }
 
 @Composable
-fun FileInput() {
+fun FileInput(
+    onFileSelected: (Uri) -> Unit
+) {
 
     var fileName by remember { mutableStateOf("") }
     var fileUri by remember { mutableStateOf<Uri?>(null) }
@@ -191,6 +221,7 @@ fun FileInput() {
         uri ?: return@rememberLauncherForActivityResult
 
         fileUri = uri
+        onFileSelected(uri)
 
         context.contentResolver.query(
             uri,
@@ -207,10 +238,6 @@ fun FileInput() {
                 }
             }
         }
-
-//        context.contentResolver.openInputStream(uri)?.use { input ->
-//            fileName = uri.path.toString()
-//        }
     }
 
     Column(
@@ -263,7 +290,9 @@ fun FileInput() {
 }
 
 @Composable
-fun PasswordInput() {
+fun PasswordInput(
+    onPasswordEntered: (password: String) -> Unit
+) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -279,7 +308,10 @@ fun PasswordInput() {
                 .fillMaxWidth()
                 .testTag("password_input"),
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                onPasswordEntered(it)
+            },
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             visualTransformation = if (passwordVisible) {
@@ -302,8 +334,7 @@ fun PasswordInput() {
                             "Hide password"
                         } else {
                             "Show password"
-                        },
-                        tint = Color.Gray
+                        }
                     )
                 }
             },
@@ -329,55 +360,5 @@ fun PasswordInput() {
 fun LoginViewPreview() {
     OnePassTheme {
         LoginView()
-    }
-}
-
-@Composable
-fun FilePicker() {
-    val context = LocalContext.current
-    val activity = context as ComponentActivity
-    var password by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf("Choose a OnePass file to decode.") }
-    var isLoading by remember { mutableStateOf(false) }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-    ) { uri ->
-        if (uri != null) {
-            isLoading = true
-            status = "Decoding."
-            activity.lifecycleScope.launch {
-                val result = runCatching {
-                    withContext(Dispatchers.IO) {
-                        context.contentResolver.openInputStream(uri)?.use { input ->
-                            FileEncoder().load(password, input)
-                        } ?: error("Unable to open the selected file")
-                    }
-                }
-                isLoading = false
-                status = result.fold(
-                    onSuccess = { data ->
-                        val suffix = if (data.accounts.size == 1) "account" else "accounts"
-                        "Decoded ${data.accounts.size} $suffix successfully."
-                    },
-                    onFailure = { error -> error.message ?: "Unable to decode the selected file" },
-                )
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Button(
-            onClick = { launcher.launch(arrayOf("application/octet-stream", "*/*")) },
-            enabled = password.isNotEmpty() && !isLoading,
-        ) {
-            Text("Open and decode file")
-        }
-
-        if (isLoading) CircularProgressIndicator()
-        Text(status)
     }
 }
