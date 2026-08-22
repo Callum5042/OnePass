@@ -8,9 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +41,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,19 +71,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.onepass.services.Account
+import com.onepass.services.CredentialEdits
 import com.onepass.services.PasswordHistory
 import com.onepass.services.VaultState
+import com.onepass.services.VaultUpdateResult
 import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URI
 import java.time.Instant
 import java.time.LocalDateTime
@@ -112,7 +127,11 @@ class AccountDetailsActivity : ComponentActivity() {
                     AccountDetailsScreen(
                         account = account,
                         onBack = ::finish,
-                        onEdit = {},
+                        onSaveCredentials = { edits ->
+                            withContext(Dispatchers.IO) {
+                                repository.updateCredentials(account.guid, edits)
+                            }
+                        },
                         onCopy = ::copySensitive,
                         onOpenWebsite = { url ->
                             startActivity(
@@ -157,18 +176,69 @@ fun AccountDetailsScreen(
     onBack: () -> Unit,
     onOpenWebsite: (String) -> Unit,
     onCopy: (String) -> Unit,
-    onEdit: () -> Unit,
-    editEnabled: Boolean = false,
+    onSaveCredentials: suspend (CredentialEdits) -> VaultUpdateResult = {
+        VaultUpdateResult.Success
+    },
 ) {
     var selectedTabIndex by rememberSaveable(account.guid) { mutableIntStateOf(0) }
     var showRecordDetails by rememberSaveable(account.guid) { mutableStateOf(false) }
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val copiedMessage = stringResource(R.string.copied_to_clipboard)
+    val savedMessage = stringResource(R.string.account_saved)
+    val saveFailedMessage = stringResource(R.string.account_save_failed)
+    val rollbackFailedMessage = stringResource(R.string.account_save_rollback_failed)
     val copyValue: (String) -> Unit = { value ->
         onCopy(value)
         coroutineScope.launch { snackBarHostState.showSnackbar(copiedMessage) }
     }
+
+    var isEditing by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var isSaving by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var username by rememberSaveable(account.guid) { mutableStateOf(account.username.orEmpty()) }
+    var emailAddress by rememberSaveable(account.guid) { mutableStateOf(account.emailAddress.orEmpty()) }
+    var password by rememberSaveable(account.guid) { mutableStateOf(account.password.orEmpty()) }
+    var websiteUrl by rememberSaveable(account.guid) { mutableStateOf(account.websiteUrl.orEmpty()) }
+    var usernameTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var emailTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var passwordTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var websiteTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
+
+    fun beginEditing() {
+        username = account.username.orEmpty()
+        emailAddress = account.emailAddress.orEmpty()
+        password = account.password.orEmpty()
+        websiteUrl = account.websiteUrl.orEmpty()
+        usernameTouched = false
+        emailTouched = false
+        passwordTouched = false
+        websiteTouched = false
+        isEditing = true
+    }
+
+    fun cancelEditing() {
+        if (isSaving) return
+        isEditing = false
+        usernameTouched = false
+        emailTouched = false
+        passwordTouched = false
+        websiteTouched = false
+    }
+
+    val edits = CredentialEdits(
+        username = if (usernameTouched) username else account.username,
+        emailAddress = if (emailTouched) emailAddress else account.emailAddress,
+        password = if (passwordTouched) password else account.password,
+        websiteUrl = if (websiteTouched) websiteUrl else account.websiteUrl,
+    )
+    val isDirty = edits != CredentialEdits(
+        username = account.username,
+        emailAddress = account.emailAddress,
+        password = account.password,
+        websiteUrl = account.websiteUrl,
+    )
+
+    BackHandler(enabled = isEditing) { cancelEditing() }
 
     if (showRecordDetails) {
         ModalBottomSheet(onDismissRequest = { showRecordDetails = false }) {
@@ -179,9 +249,36 @@ fun AccountDetailsScreen(
     Scaffold(
         topBar = {
             AccountDetailsTopBar(
-                onBack = onBack,
-                onEdit = onEdit,
-                editEnabled = editEnabled,
+                isEditing = isEditing,
+                isSaving = isSaving,
+                saveEnabled = isDirty,
+                onBack = { if (isEditing) cancelEditing() else onBack() },
+                onEdit = ::beginEditing,
+                onSave = {
+                    if (!isDirty || isSaving) return@AccountDetailsTopBar
+                    isSaving = true
+                    coroutineScope.launch {
+                        when (val result = onSaveCredentials(edits)) {
+                            VaultUpdateResult.Success -> {
+                                isSaving = false
+                                isEditing = false
+                                snackBarHostState.showSnackbar(savedMessage)
+                            }
+                            is VaultUpdateResult.SaveFailed -> {
+                                isSaving = false
+                                snackBarHostState.showSnackbar(
+                                    if (result.rollbackSucceeded) saveFailedMessage
+                                    else rollbackFailedMessage,
+                                )
+                            }
+                            VaultUpdateResult.AccountNotFound,
+                            VaultUpdateResult.VaultLocked -> {
+                                isSaving = false
+                                snackBarHostState.showSnackbar(saveFailedMessage)
+                            }
+                        }
+                    }
+                },
                 onInfo = { showRecordDetails = true },
             )
         },
@@ -198,6 +295,7 @@ fun AccountDetailsScreen(
                 AccountTab.entries.forEachIndexed { index, tab ->
                     Tab(
                         selected = selectedTabIndex == index,
+                        enabled = !isSaving,
                         onClick = { selectedTabIndex = index },
                         text = { Text(stringResource(tab.titleResource)) },
                         icon = { Icon(tab.icon, contentDescription = null) },
@@ -206,7 +304,21 @@ fun AccountDetailsScreen(
             }
 
             when (AccountTab.entries[selectedTabIndex]) {
-                AccountTab.Details -> DetailsTab(account, copyValue, onOpenWebsite)
+                AccountTab.Details -> DetailsTab(
+                    account = account,
+                    isEditing = isEditing,
+                    enabled = !isSaving,
+                    username = username,
+                    emailAddress = emailAddress,
+                    password = password,
+                    websiteUrl = websiteUrl,
+                    onUsernameChange = { usernameTouched = true; username = it },
+                    onEmailChange = { emailTouched = true; emailAddress = it },
+                    onPasswordChange = { passwordTouched = true; password = it },
+                    onWebsiteChange = { websiteTouched = true; websiteUrl = it },
+                    onCopy = copyValue,
+                    onOpenWebsite = onOpenWebsite,
+                )
                 AccountTab.Notes -> NotesTab(account.notes)
                 AccountTab.History -> HistoryTab(
                     history = sortPasswordHistory(account.passwordHistory),
@@ -220,9 +332,12 @@ fun AccountDetailsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AccountDetailsTopBar(
+    isEditing: Boolean,
+    isSaving: Boolean,
+    saveEnabled: Boolean,
     onBack: () -> Unit,
     onEdit: () -> Unit,
-    editEnabled: Boolean,
+    onSave: () -> Unit,
     onInfo: () -> Unit,
 ) {
     TopAppBar(
@@ -234,7 +349,7 @@ private fun AccountDetailsTopBar(
         ),
         title = { Text(stringResource(R.string.account_details)) },
         navigationIcon = {
-            IconButton(onClick = onBack) {
+            IconButton(enabled = !isSaving, onClick = onBack) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back),
@@ -242,13 +357,22 @@ private fun AccountDetailsTopBar(
             }
         },
         actions = {
-            IconButton(enabled = editEnabled, onClick = onEdit) {
-                Icon(
-                    Icons.Outlined.Edit,
-                    contentDescription = stringResource(R.string.edit_account),
-                )
+            if (isEditing) {
+                IconButton(enabled = saveEnabled && !isSaving, onClick = onSave) {
+                    Icon(
+                        Icons.Outlined.Save,
+                        contentDescription = stringResource(R.string.save_account),
+                    )
+                }
+            } else {
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Outlined.Edit,
+                        contentDescription = stringResource(R.string.edit_account),
+                    )
+                }
             }
-            IconButton(onClick = onInfo) {
+            IconButton(enabled = !isSaving, onClick = onInfo) {
                 Icon(
                     Icons.Outlined.Info,
                     contentDescription = stringResource(R.string.info_account),
@@ -316,6 +440,16 @@ private fun AccountIdentity(account: Account) {
 @Composable
 private fun DetailsTab(
     account: Account,
+    isEditing: Boolean,
+    enabled: Boolean,
+    username: String,
+    emailAddress: String,
+    password: String,
+    websiteUrl: String,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onWebsiteChange: (String) -> Unit,
     onCopy: (String) -> Unit,
     onOpenWebsite: (String) -> Unit,
 ) {
@@ -331,45 +465,176 @@ private fun DetailsTab(
     ) {
         item { SectionLabel(R.string.sign_in) }
         item {
-            CopyableDetailRow(
-                label = stringResource(R.string.account_username),
-                value = account.username,
-                onCopy = onCopy,
-            )
+            if (isEditing) {
+                EditableCredentialRow(
+                    label = stringResource(R.string.account_username),
+                    value = username,
+                    onValueChange = onUsernameChange,
+                    enabled = enabled,
+                    keyboardType = KeyboardType.Text,
+                    testTag = "edit_username",
+                )
+            } else {
+                CopyableDetailRow(
+                    label = stringResource(R.string.account_username),
+                    value = account.username,
+                    onCopy = onCopy,
+                )
+            }
         }
         item {
-            CopyableDetailRow(
-                label = stringResource(R.string.account_email),
-                value = account.emailAddress,
-                onCopy = onCopy,
-            )
+            if (isEditing) {
+                EditableCredentialRow(
+                    label = stringResource(R.string.account_email),
+                    value = emailAddress,
+                    onValueChange = onEmailChange,
+                    enabled = enabled,
+                    keyboardType = KeyboardType.Email,
+                    testTag = "edit_email",
+                )
+            } else {
+                CopyableDetailRow(
+                    label = stringResource(R.string.account_email),
+                    value = account.emailAddress,
+                    onCopy = onCopy,
+                )
+            }
         }
         item {
-            PasswordDetailRow(
-                label = stringResource(R.string.account_password),
-                password = account.password,
-                onCopy = onCopy,
-            )
+            if (isEditing) {
+                EditableCredentialRow(
+                    label = stringResource(R.string.account_password),
+                    value = password,
+                    onValueChange = onPasswordChange,
+                    enabled = enabled,
+                    keyboardType = KeyboardType.Password,
+                    isPassword = true,
+                    testTag = "edit_password",
+                )
+            } else {
+                PasswordDetailRow(
+                    label = stringResource(R.string.account_password),
+                    password = account.password,
+                    onCopy = onCopy,
+                )
+            }
         }
         item { Spacer(Modifier.height(20.dp)) }
         item { SectionLabel(R.string.website) }
         item {
-            DetailRow(
-                label = stringResource(R.string.website),
-                value = account.websiteUrl,
-                actions = {
-                    if (website != null) {
-                        IconButton(onClick = { onOpenWebsite(website) }) {
-                            Icon(
-                                Icons.AutoMirrored.Outlined.OpenInNew,
-                                contentDescription = stringResource(R.string.open_website),
-                            )
+            if (isEditing) {
+                EditableCredentialRow(
+                    label = stringResource(R.string.website),
+                    value = websiteUrl,
+                    onValueChange = onWebsiteChange,
+                    enabled = enabled,
+                    keyboardType = KeyboardType.Uri,
+                    testTag = "edit_website",
+                )
+            } else {
+                DetailRow(
+                    label = stringResource(R.string.website),
+                    value = account.websiteUrl,
+                    actions = {
+                        if (website != null) {
+                            IconButton(onClick = { onOpenWebsite(website) }) {
+                                Icon(
+                                    Icons.AutoMirrored.Outlined.OpenInNew,
+                                    contentDescription = stringResource(R.string.open_website),
+                                )
+                            }
                         }
-                    }
-                },
-            )
+                    },
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun EditableCredentialRow(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    enabled: Boolean,
+    keyboardType: KeyboardType,
+    testTag: String,
+    isPassword: Boolean = false,
+) {
+    var focused by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    val shape = RoundedCornerShape(10.dp)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+    ) {
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodySmall,
+        )
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp, bottom = 10.dp)
+                .heightIn(min = 44.dp)
+                .clip(shape)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(
+                    width = 1.dp,
+                    color = if (focused) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        Color.Transparent
+                    },
+                    shape = shape,
+                )
+                .onFocusChanged { focused = it.isFocused }
+                .testTag(testTag),
+            enabled = enabled,
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onSurface,
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            visualTransformation = if (isPassword && !passwordVisible) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            },
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(modifier = Modifier.weight(1f)) { innerTextField() }
+                    if (isPassword) {
+                        IconButton(
+                            enabled = enabled,
+                            onClick = { passwordVisible = !passwordVisible },
+                        ) {
+                            Icon(
+                                if (passwordVisible) Icons.Outlined.Visibility
+                                else Icons.Outlined.VisibilityOff,
+                                contentDescription = stringResource(
+                                    if (passwordVisible) R.string.hide_password
+                                    else R.string.show_password,
+                                ),
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.width(8.dp))
+                    }
+                }
+            },
+        )
+    }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
 @Composable
@@ -752,7 +1017,6 @@ private fun AccountDetailsScreenPreview() {
             onBack = {},
             onOpenWebsite = {},
             onCopy = {},
-            onEdit = {},
         )
     }
 }

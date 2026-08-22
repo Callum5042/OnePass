@@ -74,10 +74,9 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues = innerPadding),
                     ) {
                         LoginView(
-                            onLoginSuccess = { data ->
-                                // Store
+                            onLoginSuccess = { data, documentUri, password ->
                                 val repository = (application as OnePassApplication).vaultRepository
-                                repository.unlock(data)
+                                repository.unlock(data, documentUri.toString(), password)
 
                                 // Change activity
                                 val activity = Intent(
@@ -98,7 +97,7 @@ class LoginActivity : ComponentActivity() {
 
 @Composable
 fun LoginView(
-    onLoginSuccess: (data: OnePassData) -> Unit = {}
+    onLoginSuccess: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> }
 ) {
     val scrollState = rememberScrollState()
 
@@ -160,20 +159,31 @@ fun LoginView(
                 onClick = {
                     isLoading = true
                     activity.lifecycleScope.launch {
+                        val passwordChars = password.toCharArray()
                         val result = runCatching {
                             withContext(Dispatchers.IO) {
-                                fileUri?.let {
+                                val selectedUri = fileUri ?: error("Select a vault file")
+                                val data = selectedUri.let {
                                     context.contentResolver.openInputStream(it) }?.use { input ->
-                                    FileEncoder().load(password, input)
+                                    FileEncoder().load(passwordChars, input)
                                 } ?: error("Unable to open the selected file")
+                                LoginResult(data, selectedUri, passwordChars)
                             }
                         }
                         isLoading = false
                         result.fold(
-                            onSuccess = { data ->
-                                onLoginSuccess(data)
+                            onSuccess = { login ->
+                                try {
+                                    onLoginSuccess(login.data, login.documentUri, login.password)
+                                    password = ""
+                                } finally {
+                                    login.password.fill('\u0000')
+                                }
                             },
-                            onFailure = { error -> error.message ?: "Unable to decode the selected file" },
+                            onFailure = { error ->
+                                passwordChars.fill('\u0000')
+                                error.message ?: "Unable to decode the selected file"
+                            },
                         )
                     }
                 },
@@ -222,6 +232,13 @@ fun FileInput(
 
         fileUri = uri
         onFileSelected(uri)
+
+        runCatching {
+            context.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+            )
+        }
 
         context.contentResolver.query(
             uri,
@@ -289,6 +306,12 @@ fun FileInput(
         }
     }
 }
+
+private data class LoginResult(
+    val data: OnePassData,
+    val documentUri: Uri,
+    val password: CharArray,
+)
 
 @Composable
 fun PasswordInput(

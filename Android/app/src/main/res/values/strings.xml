@@ -16,6 +16,10 @@
     <string name="title_activity_account_details">Account details</string>
     <string name="account_details">Account details</string>
     <string name="edit_account">Edit account details</string>
+    <string name="save_account">Save account details</string>
+    <string name="account_saved">Account saved</string>
+    <string name="account_save_failed">Couldn’t save the account. The original vault was restored.</string>
+    <string name="account_save_rollback_failed">The save failed and the original vault could not be restored. The vault file may be damaged.</string>
     <string name="info_account">Account information</string>
     <string name="back">Back</string>
     <string name="details">Details</string>
