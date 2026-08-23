@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -36,9 +37,74 @@ namespace OnePass.WPF.Models
 
         public RegisterValidationModel Register { get; set; } = new RegisterValidationModel();
 
-        public async Task CreateAccountAsync(string username, string password)
+        public async Task<string> CreateAccountAsync(string username, string password)
         {
-            await _fileEncoder.SaveAsync(username, password, new OnePassData());
+            var filePath = Path.GetFullPath($"{username}.bin");
+            await _fileEncoder.SaveAsync(username, password, new OnePassData(), filePath);
+            return filePath;
+        }
+
+        public async Task<OnePassData> TryDecryptAsync()
+        {
+            Login.FilePathValidation = null;
+            Login.PasswordValidation = null;
+
+            var username = Path.GetFileNameWithoutExtension(Login.FilePath);
+
+            try
+            {
+                if (!_fileEncoder.Verify(username, Login.Password, Login.FilePath))
+                {
+                    Login.PasswordValidation = "Password is incorrect.";
+                    return null;
+                }
+
+                var data = await _fileEncoder.LoadAsync(username, Login.Password, Login.FilePath);
+                if (data is null)
+                {
+                    Login.FilePathValidation = "Not a valid OnePass file.";
+                }
+
+                return data;
+            }
+            catch (FileNotFoundException)
+            {
+                Login.FilePathValidation = $"File {Login.FileName} could not be found.";
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Login.FilePathValidation = $"File {Login.FileName} could not be found.";
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Login.FilePathValidation = "Unable to open the selected file.";
+            }
+            catch (EndOfStreamException)
+            {
+                Login.FilePathValidation = "Not a valid OnePass file.";
+            }
+            catch (InvalidOperationException)
+            {
+                Login.FilePathValidation = "Not a valid OnePass file.";
+            }
+            catch (CryptographicException)
+            {
+                Login.FilePathValidation = "Not a valid OnePass file.";
+            }
+            catch (JsonException)
+            {
+                Login.FilePathValidation = "Not a valid OnePass file.";
+            }
+            catch (ArgumentException)
+            {
+                Login.FilePathValidation = "Not a valid OnePass file.";
+            }
+            catch (IOException)
+            {
+                Login.FilePathValidation = "Unable to open the selected file.";
+            }
+
+            return null;
         }
 
         public async Task LoadOptions()
@@ -50,16 +116,47 @@ namespace OnePass.WPF.Models
             if (File.Exists(path))
             {
                 using var file = File.OpenRead(path);
-                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
+                var options = await JsonSerializer.DeserializeAsync<AppOptions>(file) ?? new AppOptions();
 
-                if (!string.IsNullOrEmpty(options.RememberUsername))
-                {
-                    Login.Username = options.RememberUsername;
-                    Login.RememberMe = true;
-                }
+                ApplyOptions(options);
 
                 App.Current.AppOptions = options;
             }
+        }
+
+        public void ApplyOptions(AppOptions options, string currentDirectory = null)
+        {
+            var rememberedFilePath = options.RememberFilePath;
+
+            if (string.IsNullOrWhiteSpace(rememberedFilePath) && !string.IsNullOrWhiteSpace(options.RememberUsername))
+            {
+                var baseDirectory = currentDirectory ?? Directory.GetCurrentDirectory();
+                rememberedFilePath = Path.Combine(baseDirectory, $"{options.RememberUsername}.bin");
+            }
+
+            if (string.IsNullOrWhiteSpace(rememberedFilePath))
+            {
+                return;
+            }
+
+            try
+            {
+                rememberedFilePath = Path.GetFullPath(rememberedFilePath);
+            }
+            catch (Exception exception) when (exception is ArgumentException || exception is NotSupportedException)
+            {
+                return;
+            }
+
+            if (!File.Exists(rememberedFilePath))
+            {
+                return;
+            }
+
+            Login.FilePath = rememberedFilePath;
+            Login.RememberMe = true;
+            options.RememberFilePath = rememberedFilePath;
+            options.RememberUsername = string.Empty;
         }
 
         public async Task SaveOptions()
@@ -69,28 +166,18 @@ namespace OnePass.WPF.Models
             Directory.CreateDirectory(Path.Combine(appdata, "OnePass"));
             var path = Path.Combine(appdata, @"OnePass", "options.json");
 
-            if (File.Exists(path))
-            {
-                AppOptions options = null;
-                using (var file = File.OpenRead(path))
-                {
-                    options = await JsonSerializer.DeserializeAsync<AppOptions>(file);
-                }
+            var options = App.Current.AppOptions ?? new AppOptions();
+            UpdateRememberedFileOption(options);
+            App.Current.AppOptions = options;
 
-                using (var file = File.Open(path, FileMode.Truncate))
-                {
-                    options.RememberUsername = Login.RememberMe ? Login.Username : string.Empty;
-                    await JsonSerializer.SerializeAsync(file, options);
-                }
-            }
-            else
-            {
-                using var file = File.Create(path);
-                await JsonSerializer.SerializeAsync(file, new AppOptions
-                {
-                    RememberUsername = Login.RememberMe ? Login.Username : string.Empty
-                });
-            }
+            using var file = File.Create(path);
+            await JsonSerializer.SerializeAsync(file, options);
+        }
+
+        public void UpdateRememberedFileOption(AppOptions options)
+        {
+            options.RememberFilePath = Login.RememberMe ? Path.GetFullPath(Login.FilePath) : string.Empty;
+            options.RememberUsername = string.Empty;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace OnePass.WPF.Models
 
         public async Task LoadAsync()
         {
-            OnePassData = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            OnePassData = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password, _onePassData.FilePath);
         }
 
         private void OnErrorsChanged(object sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -109,7 +109,7 @@ namespace OnePass.WPF.Models
 
             OnePassData.Accounts.Add(model);
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData, _onePassData.FilePath);
             return guid;
         }
 
@@ -137,7 +137,7 @@ namespace OnePass.WPF.Models
                 });
             }
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData, _onePassData.FilePath);
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }

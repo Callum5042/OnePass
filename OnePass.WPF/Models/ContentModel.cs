@@ -27,7 +27,13 @@ namespace OnePass.WPF.Models
 
         public async Task LoadAsync()
         {
-            var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            var root = _onePassData.InitialVaultData;
+            _onePassData.InitialVaultData = null;
+
+            if (root is null)
+            {
+                root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password, _onePassData.FilePath);
+            }
 
             var accountListModel = root.Accounts
                 .OrderByDescending(x => x.Favourite)
@@ -56,14 +62,14 @@ namespace OnePass.WPF.Models
 
         public async Task RemoveAsync(AccountListModel model)
         {
-            var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password);
+            var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password, _onePassData.FilePath);
 
             root.DeletedAccounts.Add(model.Guid);
 
             var account = root.Accounts.First(x => x.Guid == model.Guid);
             root.Accounts.Remove(account);
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, root);
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, root, _onePassData.FilePath);
 
             // Remove from view
             Accounts.Remove(model);

@@ -1,7 +1,4 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using OnePass.Services;
-using OnePass.WPF.Services;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -23,19 +20,30 @@ namespace OnePass.WPF.Models
             validationLabel?.SetValue(this, error);
         }
 
-        [Required]
+        [Required(ErrorMessage = "The Filename field is required.")]
         [FileExists]
-        public string Username { get => username; set => SetProperty(ref username, value); }
-        private string username;
+        public string FilePath
+        {
+            get => filePath;
+            set
+            {
+                if (SetProperty(ref filePath, value))
+                {
+                    OnPropertyChanged(nameof(FileName));
+                }
+            }
+        }
+        private string filePath;
+
+        public string FileName => Path.GetFileName(FilePath);
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
-        [CheckPassword]
         public string Password { get => password; set => SetProperty(ref password, value); }
         private string password;
 
-        public string UsernameValidation { get => usernameValidation; set => SetProperty(ref usernameValidation, value); }
-        private string usernameValidation;
+        public string FilePathValidation { get => filePathValidation; set => SetProperty(ref filePathValidation, value); }
+        private string filePathValidation;
 
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
@@ -60,41 +68,15 @@ namespace OnePass.WPF.Models
         {
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
-                if (!File.Exists($"{value}.bin"))
+                var filePath = value as string;
+                if (string.IsNullOrWhiteSpace(filePath))
                 {
-                    return new ValidationResult($"File {value}.bin could not be found.");
+                    return ValidationResult.Success;
                 }
 
-                return ValidationResult.Success;
-            }
-        }
-
-        private sealed class CheckPasswordAttribute : ValidationAttribute
-        {
-            private readonly IFileEncoder _fileEncoder;
-
-            public CheckPasswordAttribute()
-            {
-                _fileEncoder = new FileEncoder();
-            }
-
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-            {
-                try
+                if (!File.Exists(filePath))
                 {
-                    var model = validationContext.ObjectInstance as LoginValidationModel;
-                    if (File.Exists($"{model.Username}.bin"))
-                    {
-                        if (!_fileEncoder.Verify(model.Username, model.Password))
-                        {
-                            return new ValidationResult("Password is incorrect.");
-                        }
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    // This might be worth checking elsewhere
-                    return new ValidationResult("Not a valid OnePass file.");
+                    return new ValidationResult($"File {Path.GetFileName(filePath)} could not be found.");
                 }
 
                 return ValidationResult.Success;
