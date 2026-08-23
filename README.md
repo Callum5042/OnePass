@@ -19,9 +19,9 @@ The same vault can be transferred between Windows and Android, with no online ac
 
 ## Screenshots
 
-| Android |
-| :---: |
-| ![OnePass login screen on Android](Images/android_login.png) |
+| Windows | Android |
+| :---: | :---: |
+|  ![OnePass login screen on Android](Images/windows_login.png) | ![OnePass login screen on Android](Images/android_login.png) |
 
 ## Requirements
 

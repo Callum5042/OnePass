@@ -2,6 +2,9 @@
 {
     public class AppOptions
     {
+        public string RememberFilePath { get; set; }
+
+        // Kept so existing options files can be migrated to RememberFilePath.
         public string RememberUsername { get; set; }
 
         public int? WindowWidth { get; set; }

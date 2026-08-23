@@ -86,7 +86,7 @@ namespace OnePass.WPF.Models
                 // Save
                 var fileEncoder = App.Current.GetService<IFileEncoder>();
                 var userData = App.Current.GetService<UserData>();
-                await fileEncoder.SaveAsync(userData.Username, userData.Password, data);
+                await fileEncoder.SaveAsync(userData.Username, userData.Password, data, userData.FilePath);
 
                 // Append
                 AccountListModels = sortedAccounts.Accounts

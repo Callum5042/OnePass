@@ -1,5 +1,7 @@
 ﻿using OnePass.WPF.Models;
 using OnePass.WPF.Services;
+using Microsoft.Win32;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -61,8 +63,50 @@ namespace OnePass.WPF.Windows
                 }
                 else
                 {
-                    LoginUsernameTextbox.Focus();
+                    LoginFileBrowseButton.Focus();
                 }
+            }
+        }
+
+        private void OnFilenameMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            SelectVaultFile();
+        }
+
+        private void OnClickSelectFile(object sender, RoutedEventArgs e)
+        {
+            SelectVaultFile();
+        }
+
+        private void SelectVaultFile()
+        {
+            if (DataContext is not LoginModel model)
+            {
+                return;
+            }
+
+            var dialog = new OpenFileDialog
+            {
+                Title = "Choose OnePass vault",
+                Filter = "OnePass vault (*.bin)|*.bin|All files (*.*)|*.*",
+                FilterIndex = 1,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Multiselect = false
+            };
+
+            if (!string.IsNullOrWhiteSpace(model.Login.FilePath))
+            {
+                dialog.InitialDirectory = Path.GetDirectoryName(model.Login.FilePath);
+                dialog.FileName = Path.GetFileName(model.Login.FilePath);
+            }
+
+            if (dialog.ShowDialog(this) == true)
+            {
+                model.Login.FilePath = Path.GetFullPath(dialog.FileName);
+                model.Login.FilePathValidation = null;
+                LoginPasswordTextbox.Focus();
             }
         }
 
@@ -96,22 +140,51 @@ namespace OnePass.WPF.Windows
         {
             if (DataContext is LoginModel model)
             {
-                if (model.Login.IsValid())
+                if (!model.Login.IsValid())
                 {
-                    // Save options
-                    await model.SaveOptions();
+                    return;
+                }
+
+                SetLoginBusy(true);
+
+                try
+                {
+                    var vault = await model.TryDecryptAsync();
+                    if (vault is null)
+                    {
+                        return;
+                    }
 
                     // Set login details
                     var data = App.Current.GetService<UserData>();
-                    data.Username = model.Login.Username;
+                    data.Username = Path.GetFileNameWithoutExtension(model.Login.FilePath);
+                    data.FilePath = Path.GetFullPath(model.Login.FilePath);
                     data.Password = model.Login.Password;
+                    data.InitialVaultData = vault;
+
+                    // Save options only after the vault has been successfully decrypted
+                    await model.SaveOptions();
 
                     // Change window
                     var contentWindow = new ContentWindow();
                     contentWindow.Show();
                     Close();
                 }
+                finally
+                {
+                    SetLoginBusy(false);
+                }
             }
+        }
+
+        private void SetLoginBusy(bool isBusy)
+        {
+            LoginButton.IsEnabled = !isBusy;
+            LoginButton.Content = isBusy ? "Decrypting..." : "Login";
+            LoginFileBrowseButton.IsEnabled = !isBusy;
+            LoginFilenameTextbox.IsEnabled = !isBusy;
+            LoginPasswordTextbox.IsEnabled = !isBusy;
+            RegisterButton.IsEnabled = !isBusy;
         }
 
         private void OnClickRegisterButton(object sender, RoutedEventArgs e)
@@ -135,12 +208,14 @@ namespace OnePass.WPF.Windows
                 if (model.Register.IsValid())
                 {
                     // Create account
-                    await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
+                    var filePath = await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
 
                     // Set login details
                     var data = App.Current.GetService<UserData>();
                     data.Username = model.Register.Username;
+                    data.FilePath = filePath;
                     data.Password = model.Register.Password;
+                    data.InitialVaultData = null;
 
                     // Change window
                     var contentWindow = new ContentWindow();
