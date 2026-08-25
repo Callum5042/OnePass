@@ -34,7 +34,7 @@ namespace OnePass.WPF.Models
         private string filePath;
 
         [Required]
-        public string FileName => Path.GetFileName(FilePath);
+        public string FileName => Path.GetFileName(FilePath) ?? "Create file ...";
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
