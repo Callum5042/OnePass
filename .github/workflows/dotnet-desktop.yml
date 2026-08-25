@@ -17,7 +17,7 @@ concurrency:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  SOLUTION: OnePass.sln
+  SOLUTION: OnePass.slnx
   WPF_PROJECT: OnePass.WPF/OnePass.WPF.csproj
   BUILD_CONFIGURATION: Release
 
