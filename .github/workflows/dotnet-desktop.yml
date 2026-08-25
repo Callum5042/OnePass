@@ -17,8 +17,8 @@ concurrency:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  SOLUTION: OnePass.slnx
-  WPF_PROJECT: OnePass.WPF/OnePass.WPF.csproj
+  SOLUTION: Windows/OnePass.slnx
+  WPF_PROJECT: Windows/OnePass.WPF/OnePass.WPF.csproj
   BUILD_CONFIGURATION: Release
 
 jobs:
@@ -49,10 +49,10 @@ jobs:
         run: dotnet build $env:SOLUTION --configuration $env:BUILD_CONFIGURATION --no-restore
 
       - name: Test OnePass
-        run: dotnet test OnePass.Tests/OnePass.Tests.csproj --configuration $env:BUILD_CONFIGURATION --no-build --no-restore
+        run: dotnet test Windows/OnePass.Tests/OnePass.Tests.csproj --configuration $env:BUILD_CONFIGURATION --no-build --no-restore
 
       - name: Test OnePass WPF
-        run: dotnet test OnePass.WPF.Tests/OnePass.WPF.Tests.csproj --configuration $env:BUILD_CONFIGURATION --no-build --no-restore
+        run: dotnet test Windows/OnePass.WPF.Tests/OnePass.WPF.Tests.csproj --configuration $env:BUILD_CONFIGURATION --no-build --no-restore
 
       - name: Publish Windows application
         run: dotnet publish $env:WPF_PROJECT --configuration $env:BUILD_CONFIGURATION --no-build --no-restore --output artifacts/OnePass-Windows
