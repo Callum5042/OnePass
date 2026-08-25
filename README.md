@@ -41,12 +41,12 @@ The same vault can be transferred between Windows and Android, with no online ac
 
 ### Windows
 
-Open `OnePass.sln` in Visual Studio, select `OnePass.WPF` as the startup project, and build or run the solution.
+Open `OnePass.slnx` in Visual Studio, select `OnePass.WPF` as the startup project, and build or run the solution.
 
 Alternatively, build from the command line:
 
 ```powershell
-dotnet build OnePass.sln
+dotnet build OnePass.slnx
 ```
 
 ### Android
