@@ -112,7 +112,7 @@
                                 Background="White"
                                 BorderBrush="#FFABADB3"
                                 BorderThickness="0,1,1,1"
-                                Content="..."
+                                Content="&#xe930;"
                                 Foreground="Gray"
                                 ToolTip="Choose vault file"
                                 Click="OnClickSelectFile">
@@ -121,6 +121,9 @@
                                     <Setter Property="CornerRadius" Value="0,3,3,0" />
                                 </Style>
                             </Button.Resources>
+                            <Button.FontFamily>
+                                <StaticResource ResourceKey="IconFonts"/>
+                            </Button.FontFamily>
                         </Button>
                     </Grid>
                     <Label Style="{StaticResource ValidationLabel}" Content="{Binding Login.FilePathValidation}" />
