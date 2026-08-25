@@ -33,12 +33,8 @@ namespace OnePass.WPF.Models
         }
         private string filePath;
 
-        public string FileName => Path.GetFileName(FilePath);
-
         [Required]
-        [FileExists]
-        public string Filename { get => filename; set => SetProperty(ref filename, value); }
-        private string filename;
+        public string FileName => Path.GetFileName(FilePath);
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
@@ -70,19 +66,6 @@ namespace OnePass.WPF.Models
             }
 
             return true;
-        }
-
-        private sealed class FileExistsAttribute : ValidationAttribute
-        {
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-            {
-                if (File.Exists($"{value}.bin"))
-                {
-                    return new ValidationResult($"File {value}.bin already exists");
-                }
-
-                return ValidationResult.Success;
-            }
         }
 
         private sealed class RepeatPasswordAttribute : ValidationAttribute

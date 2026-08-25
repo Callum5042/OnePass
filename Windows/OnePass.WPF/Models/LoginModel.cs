@@ -37,11 +37,9 @@ namespace OnePass.WPF.Models
 
         public RegisterValidationModel Register { get; set; } = new RegisterValidationModel();
 
-        public async Task<string> CreateAccountAsync(string username, string password)
+        public async Task CreateAccountAsync(string filepath, string password)
         {
-            var filePath = Path.GetFullPath($"{username}.bin");
-            await _fileEncoder.SaveAsync(username, password, new OnePassData(), filePath);
-            return filePath;
+            await _fileEncoder.SaveAsync("", password, new OnePassData(), filepath);
         }
 
         public async Task<OnePassData> TryDecryptAsync()

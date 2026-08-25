@@ -233,8 +233,6 @@ namespace OnePass.WPF.Windows
         {
             LoginStackPanel.Visibility = Visibility.Collapsed;
             RegisterStackPanel.Visibility = Visibility.Visible;
-
-            // RegisterUsernameTextbox.Focus();
         }
 
         private void OnClickBackButton(object sender, RoutedEventArgs e)
@@ -247,15 +245,16 @@ namespace OnePass.WPF.Windows
         {
             if (DataContext is LoginModel model)
             {
+                // Register
                 if (model.Register.IsValid())
                 {
                     // Create account
-                    var filePath = await model.CreateAccountAsync(model.Register.Filename, model.Register.Password);
+                    await model.CreateAccountAsync(model.Register.FilePath, model.Register.Password);
 
                     // Set login details
                     var data = App.Current.GetService<UserData>();
-                    data.Username = model.Register.Filename;
-                    data.FilePath = filePath;
+                    data.Username = model.Register.FileName;
+                    data.FilePath = model.Register.FilePath;
                     data.Password = model.Register.Password;
                     data.InitialVaultData = null;
 
