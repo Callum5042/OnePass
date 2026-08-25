@@ -35,7 +35,7 @@ namespace OnePass.WPF.Models
         }
         private string filePath;
 
-        public string FileName => Path.GetFileName(FilePath);
+        public string FileName => Path.GetFileName(FilePath) ?? "Select file ...";
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]

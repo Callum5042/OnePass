@@ -19,10 +19,22 @@ namespace OnePass.WPF.Models
             validationLabel?.SetValue(this, error);
         }
 
+        [Required(ErrorMessage = "The Filename field is required.")]
+        public string FilePath
+        {
+            get => filePath;
+            set
+            {
+                if (SetProperty(ref filePath, value))
+                {
+                    OnPropertyChanged(nameof(FileName));
+                }
+            }
+        }
+        private string filePath;
+
         [Required]
-        [FileExists]
-        public string Username { get => username; set => SetProperty(ref username, value); }
-        private string username;
+        public string FileName => Path.GetFileName(FilePath) ?? "Create file ...";
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
@@ -34,8 +46,8 @@ namespace OnePass.WPF.Models
         public string RepeatPassword { get => repeatPassword; set => SetProperty(ref repeatPassword, value); }
         private string repeatPassword;
 
-        public string UsernameValidation { get => usernameValidation; set => SetProperty(ref usernameValidation, value); }
-        private string usernameValidation;
+        public string FilePathValidation { get => filePathValidation; set => SetProperty(ref filePathValidation, value); }
+        private string filePathValidation;
 
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;
@@ -54,19 +66,6 @@ namespace OnePass.WPF.Models
             }
 
             return true;
-        }
-
-        private sealed class FileExistsAttribute : ValidationAttribute
-        {
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-            {
-                if (File.Exists($"{value}.bin"))
-                {
-                    return new ValidationResult($"File {value}.bin already exists");
-                }
-
-                return ValidationResult.Success;
-            }
         }
 
         private sealed class RepeatPasswordAttribute : ValidationAttribute
