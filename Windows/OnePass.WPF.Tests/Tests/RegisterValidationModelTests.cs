@@ -25,7 +25,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Username = "Callum"
+                Filename = "Callum"
             };
 
             var result = model.IsValid();
@@ -43,7 +43,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Username = "Callum",
+                Filename = "Callum",
                 Password = "Password123456"
             };
 
@@ -62,7 +62,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Username = "Callum",
+                Filename = "Callum",
                 Password = "Password12345689",
                 RepeatPassword = "PasswordPassword"
             };
@@ -82,7 +82,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Username = "Callum",
+                Filename = "Callum",
                 Password = "password",
                 RepeatPassword = "password"
             };

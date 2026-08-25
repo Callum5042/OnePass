@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System;
 
 namespace OnePass.WPF.Windows
 {
@@ -79,6 +80,47 @@ namespace OnePass.WPF.Windows
             SelectVaultFile();
         }
 
+        private void OnRegisterFilenameMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            CreateVaultFile();
+        }
+
+        private void OnRegisterClickSelectFile(object sender, RoutedEventArgs e)
+        {
+            CreateVaultFile();
+        }
+
+        private void CreateVaultFile()
+        {
+            if (DataContext is not LoginModel model)
+            {
+                return;
+            }
+
+            var dialog = new OpenFileDialog
+            {
+                Title = "Create OnePass vault",
+                Filter = "OnePass vault (*.bin)|*.bin|OnePass vault (*.onepass)|*.onepass|All files (*.*)|*.*",
+                FilterIndex = 1,
+                CheckFileExists = false,
+                CheckPathExists = false,
+                Multiselect = false,
+            };
+
+            if (!string.IsNullOrWhiteSpace(model.Login.FilePath))
+            {
+                dialog.InitialDirectory = Path.GetDirectoryName(model.Login.FilePath);
+                dialog.FileName = Path.GetFileName(model.Login.FilePath);
+            }
+
+            if (dialog.ShowDialog(this) == true)
+            {
+                model.Register.FilePath = Path.GetFullPath(dialog.FileName);
+                RegisterPasswordTextbox.Focus();
+            }
+        }
+
         private void SelectVaultFile()
         {
             if (DataContext is not LoginModel model)
@@ -89,11 +131,11 @@ namespace OnePass.WPF.Windows
             var dialog = new OpenFileDialog
             {
                 Title = "Choose OnePass vault",
-                Filter = "OnePass vault (*.bin)|*.bin|All files (*.*)|*.*",
+                Filter = "OnePass vault (*.bin)|*.bin|OnePass vault (*.onepass)|*.onepass|All files (*.*)|*.*",
                 FilterIndex = 1,
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Multiselect = false
+                Multiselect = false,
             };
 
             if (!string.IsNullOrWhiteSpace(model.Login.FilePath))
@@ -192,7 +234,7 @@ namespace OnePass.WPF.Windows
             LoginStackPanel.Visibility = Visibility.Collapsed;
             RegisterStackPanel.Visibility = Visibility.Visible;
 
-            RegisterUsernameTextbox.Focus();
+            // RegisterUsernameTextbox.Focus();
         }
 
         private void OnClickBackButton(object sender, RoutedEventArgs e)
@@ -208,11 +250,11 @@ namespace OnePass.WPF.Windows
                 if (model.Register.IsValid())
                 {
                     // Create account
-                    var filePath = await model.CreateAccountAsync(model.Register.Username, model.Register.Password);
+                    var filePath = await model.CreateAccountAsync(model.Register.Filename, model.Register.Password);
 
                     // Set login details
                     var data = App.Current.GetService<UserData>();
-                    data.Username = model.Register.Username;
+                    data.Username = model.Register.Filename;
                     data.FilePath = filePath;
                     data.Password = model.Register.Password;
                     data.InitialVaultData = null;

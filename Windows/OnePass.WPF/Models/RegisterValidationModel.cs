@@ -19,10 +19,26 @@ namespace OnePass.WPF.Models
             validationLabel?.SetValue(this, error);
         }
 
+        [Required(ErrorMessage = "The Filename field is required.")]
+        public string FilePath
+        {
+            get => filePath;
+            set
+            {
+                if (SetProperty(ref filePath, value))
+                {
+                    OnPropertyChanged(nameof(FileName));
+                }
+            }
+        }
+        private string filePath;
+
+        public string FileName => Path.GetFileName(FilePath);
+
         [Required]
         [FileExists]
-        public string Username { get => username; set => SetProperty(ref username, value); }
-        private string username;
+        public string Filename { get => filename; set => SetProperty(ref filename, value); }
+        private string filename;
 
         [Required]
         [MinLength(10, ErrorMessage = "Password must be at least 10 characters.")]
