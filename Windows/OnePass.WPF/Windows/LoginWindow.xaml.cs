@@ -104,7 +104,7 @@ namespace OnePass.WPF.Windows
                 Filter = "OnePass vault (*.bin)|*.bin|OnePass vault (*.onepass)|*.onepass|All files (*.*)|*.*",
                 FilterIndex = 1,
                 CheckFileExists = false,
-                CheckPathExists = false,
+                CheckPathExists = true,
                 OverwritePrompt = true,
             };
 
