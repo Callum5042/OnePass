@@ -98,14 +98,14 @@ namespace OnePass.WPF.Windows
                 return;
             }
 
-            var dialog = new OpenFileDialog
+            var dialog = new SaveFileDialog
             {
                 Title = "Create OnePass vault",
                 Filter = "OnePass vault (*.bin)|*.bin|OnePass vault (*.onepass)|*.onepass|All files (*.*)|*.*",
                 FilterIndex = 1,
                 CheckFileExists = false,
                 CheckPathExists = false,
-                Multiselect = false,
+                OverwritePrompt = true,
             };
 
             if (!string.IsNullOrWhiteSpace(model.Login.FilePath))
