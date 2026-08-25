@@ -1,10 +1,8 @@
 <Solution>
-  <Folder Name="/Source/">
-    <Project Path="OnePass.WPF/OnePass.WPF.csproj" />
-    <Project Path="OnePass/OnePass.csproj" />
-  </Folder>
   <Folder Name="/Tests/">
     <Project Path="OnePass.Tests/OnePass.Tests.csproj" />
     <Project Path="OnePass.WPF.Tests/OnePass.WPF.Tests.csproj" />
   </Folder>
+  <Project Path="OnePass.WPF/OnePass.WPF.csproj" />
+  <Project Path="OnePass/OnePass.csproj" />
 </Solution>
