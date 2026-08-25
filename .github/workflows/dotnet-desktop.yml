@@ -30,13 +30,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Set up .NET 8
+      - name: Set up .NET 10
         id: setup-dotnet
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
-      - name: Select the installed .NET 8 SDK
+      - name: Select the installed .NET 10 SDK
         shell: pwsh
         run: |
           $sdkVersion = '${{ steps.setup-dotnet.outputs.dotnet-version }}'
