@@ -117,6 +117,7 @@ namespace OnePass.WPF.Windows
             if (dialog.ShowDialog(this) == true)
             {
                 model.Register.FilePath = Path.GetFullPath(dialog.FileName);
+                model.Register.FilePathValidation = null;
                 RegisterPasswordTextbox.Focus();
             }
         }

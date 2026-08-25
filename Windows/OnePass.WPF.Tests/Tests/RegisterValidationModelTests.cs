@@ -14,7 +14,7 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Equal("The Username field is required.", model.UsernameValidation);
+            Assert.Equal("The Filename field is required.", model.FilePathValidation);
             Assert.Equal("The Password field is required.", model.PasswordValidation);
             Assert.Equal("The Repeat Password field is required.", model.RepeatPasswordValidation);
         }
@@ -25,14 +25,14 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Filename = "Callum"
+                FilePath = "Callum"
             };
 
             var result = model.IsValid();
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
+            Assert.Null(model.FilePathValidation);
             Assert.Equal("The Password field is required.", model.PasswordValidation);
             Assert.Equal("The Repeat Password field is required.", model.RepeatPasswordValidation);
         }
@@ -43,7 +43,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Filename = "Callum",
+                FilePath = "Callum",
                 Password = "Password123456"
             };
 
@@ -51,7 +51,7 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
+            Assert.Null(model.FilePathValidation);
             Assert.Null(model.PasswordValidation);
             Assert.Equal("The Repeat Password field is required.", model.RepeatPasswordValidation);
         }
@@ -62,7 +62,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Filename = "Callum",
+                FilePath = "Callum",
                 Password = "Password12345689",
                 RepeatPassword = "PasswordPassword"
             };
@@ -71,7 +71,7 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
+            Assert.Null(model.FilePathValidation);
             Assert.Null(model.PasswordValidation);
             Assert.Equal("Passwords do not match.", model.RepeatPasswordValidation);
         }
@@ -82,7 +82,7 @@ namespace OnePass.WPF.Tests.Tests
             // Act
             var model = new RegisterValidationModel()
             {
-                Filename = "Callum",
+                FilePath = "Callum",
                 Password = "password",
                 RepeatPassword = "password"
             };
@@ -91,7 +91,7 @@ namespace OnePass.WPF.Tests.Tests
 
             // Assert
             Assert.False(result);
-            Assert.Null(model.UsernameValidation);
+            Assert.Null(model.FilePathValidation);
             Assert.Equal("Password must be at least 10 characters.", model.PasswordValidation);
             Assert.Null(model.RepeatPasswordValidation);
         }

@@ -46,8 +46,8 @@ namespace OnePass.WPF.Models
         public string RepeatPassword { get => repeatPassword; set => SetProperty(ref repeatPassword, value); }
         private string repeatPassword;
 
-        public string UsernameValidation { get => usernameValidation; set => SetProperty(ref usernameValidation, value); }
-        private string usernameValidation;
+        public string FilePathValidation { get => filePathValidation; set => SetProperty(ref filePathValidation, value); }
+        private string filePathValidation;
 
         public string PasswordValidation { get => passwordValidation; set => SetProperty(ref passwordValidation, value); }
         private string passwordValidation;

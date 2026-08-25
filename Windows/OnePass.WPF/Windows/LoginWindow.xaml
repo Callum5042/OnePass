@@ -230,7 +230,7 @@
                             </Button.FontFamily>
                         </Button>
                     </Grid>
-                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding Login.FilePathValidation}" />
+                    <Label Style="{StaticResource ValidationLabel}" Content="{Binding Register.FilePathValidation}" />
 
                     <!-- Password -->
                     <Label Style="{StaticResource LoginLabel}" Content="Password" Margin="0,10,0,0" />
