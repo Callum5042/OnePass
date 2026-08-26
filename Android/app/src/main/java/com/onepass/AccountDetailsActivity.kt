@@ -199,20 +199,26 @@ fun AccountDetailsScreen(
     var emailAddress by rememberSaveable(account.guid) { mutableStateOf(account.emailAddress.orEmpty()) }
     var password by rememberSaveable(account.guid) { mutableStateOf(account.password.orEmpty()) }
     var websiteUrl by rememberSaveable(account.guid) { mutableStateOf(account.websiteUrl.orEmpty()) }
+    var notes by rememberSaveable(account.guid) { mutableStateOf(account.notes.orEmpty()) }
+
     var usernameTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
     var emailTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
     var passwordTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
     var websiteTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
+    var notesTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
 
     fun beginEditing() {
         username = account.username.orEmpty()
         emailAddress = account.emailAddress.orEmpty()
         password = account.password.orEmpty()
         websiteUrl = account.websiteUrl.orEmpty()
+        notes = account.notes.orEmpty()
+
         usernameTouched = false
         emailTouched = false
         passwordTouched = false
         websiteTouched = false
+        notesTouched = false
         isEditing = true
     }
 
@@ -223,6 +229,7 @@ fun AccountDetailsScreen(
         emailTouched = false
         passwordTouched = false
         websiteTouched = false
+        notesTouched = false
     }
 
     val edits = CredentialEdits(
@@ -319,7 +326,13 @@ fun AccountDetailsScreen(
                     onCopy = copyValue,
                     onOpenWebsite = onOpenWebsite,
                 )
-                AccountTab.Notes -> NotesTab(account.notes)
+                AccountTab.Notes -> NotesTab(
+                    account = account,
+                    notes,
+                    isEditing = isEditing,
+                    enabled = !isSaving,
+                    onNotesChange = { notesTouched = true; notes = it }
+                )
                 AccountTab.History -> HistoryTab(
                     history = sortPasswordHistory(account.passwordHistory),
                     onCopy = copyValue,
@@ -638,14 +651,17 @@ internal fun EditableCredentialRow(
 }
 
 @Composable
-private fun NotesTab(notes: String?) {
-    val normalizedNotes = notes.normalizedDetailValue()
-    if (normalizedNotes == null) {
-        EmptyTabState(
-            icon = Icons.AutoMirrored.Outlined.StickyNote2,
-            message = stringResource(R.string.no_notes),
-        )
-    } else {
+private fun NotesTab(
+    account: Account,
+    notes: String?,
+    isEditing: Boolean,
+    enabled: Boolean,
+    onNotesChange: (String) -> Unit,
+) {
+    if (isEditing) {
+        var focused by remember { mutableStateOf(false) }
+        val shape = RoundedCornerShape(10.dp)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -653,11 +669,63 @@ private fun NotesTab(notes: String?) {
                 .padding(horizontal = 20.dp, vertical = 16.dp),
         ) {
             SectionLabel(R.string.notes)
-            Text(
-                text = normalizedNotes,
-                modifier = Modifier.padding(top = 8.dp, bottom = 28.dp),
-                style = MaterialTheme.typography.bodyLarge,
+            BasicTextField(
+                value = notes.orEmpty(),
+                onValueChange = onNotesChange,
+                enabled = enabled,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp)
+                    .heightIn(min = 160.dp)
+                    .clip(shape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(
+                        width = 1.dp,
+                        color = if (focused) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        shape = shape,
+                    )
+                    .onFocusChanged { focused = it.isFocused }
+                    .padding(12.dp)
+                    .testTag("add_notes"),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                decorationBox = { innerTextField ->
+                    Box {
+                        if (notes.orEmpty().isEmpty()) {
+                            Text(
+                                stringResource(R.string.account_notes_hint),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        innerTextField()
+                    }
+                },
             )
+        }
+    } else {
+        val normalizedNotes = account.notes.normalizedDetailValue()
+        if (normalizedNotes == null) {
+            EmptyTabState(
+                icon = Icons.AutoMirrored.Outlined.StickyNote2,
+                message = stringResource(R.string.no_notes),
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
+            ) {
+                SectionLabel(R.string.notes)
+                Text(
+                    text = normalizedNotes,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 28.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         }
     }
 }
