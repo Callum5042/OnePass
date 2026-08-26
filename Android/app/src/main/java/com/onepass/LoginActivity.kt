@@ -230,6 +230,9 @@ fun LoginView(
                                     is InvalidOnePassFileException -> {
                                         fileError = error.message
                                     }
+                                    else -> {
+                                        fileError = error.message
+                                    }
                                 }
                             },
                         )
