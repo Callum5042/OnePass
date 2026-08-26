@@ -17,6 +17,7 @@ data class CredentialEdits(
     val emailAddress: String?,
     val password: String?,
     val websiteUrl: String?,
+    val notes: String?,
 )
 
 data class NewAccountDetails(

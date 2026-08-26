@@ -39,6 +39,7 @@ class AccountVaultTest {
                 emailAddress = "",
                 password = "new-secret",
                 websiteUrl = " site with spaces ",
+                notes = "",
             ),
         )
 
@@ -67,7 +68,7 @@ class AccountVaultTest {
 
         repository.updateCredentials(
             accountGuid,
-            CredentialEdits("user-2", "mail", "old-secret", "website"),
+            CredentialEdits("user-2", "mail", "old-secret", "website", ""),
         )
 
         val updated = (repository.state.value as VaultState.Unlocked).data.accounts.single()
@@ -136,7 +137,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null),
+            CredentialEdits("changed", null, "old-secret", null, ""),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = true), result)
@@ -153,7 +154,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null),
+            CredentialEdits("changed", null, "old-secret", null, ""),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = false), result)

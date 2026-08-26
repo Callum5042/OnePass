@@ -237,12 +237,14 @@ fun AccountDetailsScreen(
         emailAddress = if (emailTouched) emailAddress else account.emailAddress,
         password = if (passwordTouched) password else account.password,
         websiteUrl = if (websiteTouched) websiteUrl else account.websiteUrl,
+        notes = if (notesTouched) notes else account.notes,
     )
     val isDirty = edits != CredentialEdits(
         username = account.username,
         emailAddress = account.emailAddress,
         password = account.password,
         websiteUrl = account.websiteUrl,
+        notes = account.notes,
     )
 
     BackHandler(enabled = isEditing) { cancelEditing() }
