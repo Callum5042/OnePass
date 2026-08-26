@@ -222,7 +222,6 @@ fun LoginView(
                                 )
                             },
                             onFailure = { error ->
-                                error.message ?: "Unable to decode the selected file"
                                 when (error) {
                                     is InvalidPasswordException -> {
                                         passwordError = error.message
@@ -231,7 +230,7 @@ fun LoginView(
                                         fileError = error.message
                                     }
                                     else -> {
-                                        fileError = error.message
+                                        fileError = error.message ?: "Unable to decode the selected file"
                                     }
                                 }
                             },
