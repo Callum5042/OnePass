@@ -39,7 +39,7 @@ class AccountVaultTest {
                 emailAddress = "",
                 password = "new-secret",
                 websiteUrl = " site with spaces ",
-                notes = "",
+                notes = "new-note",
             ),
         )
 
@@ -52,6 +52,7 @@ class AccountVaultTest {
         assertEquals("", updated.emailAddress)
         assertEquals("new-secret", updated.password)
         assertEquals(" site with spaces ", updated.websiteUrl)
+        assertEquals("new-note", updated.notes)
         assertEquals(timestamp.toString(), updated.dateModified)
         assertEquals(
             PasswordHistory(historyGuid, "new-secret", timestamp.toString()),
