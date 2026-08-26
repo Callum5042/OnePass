@@ -69,34 +69,45 @@ class LoginActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OnePassTheme {
+                var showCreateAccount by remember { mutableStateOf(false) }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Surface(
                         modifier = Modifier.padding(paddingValues = innerPadding),
                     ) {
-                        LoginView(
-                            onLoginSuccess = { data, documentUri, password ->
-                                val repository = (application as OnePassApplication).vaultRepository
-                                repository.unlock(data, documentUri.toString(), password)
-
-                                // Change activity
-                                val activity = Intent(
-                                    this@LoginActivity,
-                                    MainActivity::class.java
-                                )
-
-                                startActivity(activity)
-                                finish()
-                            }
-                        )
+                        if (showCreateAccount) {
+                            CreateAccountView(
+                                onBackToLogin = { showCreateAccount = false },
+                                onAccountCreated = { data, documentUri, password ->
+                                    loginAndOpenMain(data, documentUri, password)
+                                },
+                            )
+                        } else {
+                            LoginView(
+                                onCreateAccount = { showCreateAccount = true },
+                                onLoginSuccess = { data, documentUri, password ->
+                                    loginAndOpenMain(data, documentUri, password)
+                                },
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
+    private fun loginAndOpenMain(data: OnePassData, documentUri: Uri, password: CharArray) {
+        val repository = (application as OnePassApplication).vaultRepository
+        repository.unlock(data, documentUri.toString(), password)
+
+        val activity = Intent(this@LoginActivity, MainActivity::class.java)
+        startActivity(activity)
+        finish()
+    }
 }
 
 @Composable
 fun LoginView(
+    onCreateAccount: () -> Unit = {},
     onLoginSuccess: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> }
 ) {
     val scrollState = rememberScrollState()
@@ -202,7 +213,9 @@ fun LoginView(
             }
 
             Text(
-                modifier = Modifier.padding(top = 6.dp, bottom = 24.dp),
+                modifier = Modifier
+                    .padding(top = 6.dp, bottom = 24.dp)
+                    .clickable(onClick = onCreateAccount),
                 text = "Create Account",
                 color = Color.White.copy(alpha = 0.8f),
             )
@@ -212,6 +225,140 @@ fun LoginView(
                 color = Color.White.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.bodySmall
             )
+        }
+    }
+}
+
+@Composable
+fun CreateAccountView(
+    onBackToLogin: () -> Unit = {},
+    onAccountCreated: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> },
+) {
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
+    val repository = (context.applicationContext as OnePassApplication).vaultRepository
+    val scrollState = rememberScrollState()
+    var fileUri by remember { mutableStateOf<Uri?>(null) }
+    var fileName by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var repeatPassword by remember { mutableStateOf("") }
+    var fileError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var repeatPasswordError by remember { mutableStateOf<String?>(null) }
+    var generalError by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/octet-stream"),
+    ) { uri ->
+        if (uri != null) {
+            fileUri = uri
+            fileName = uri.lastPathSegment?.substringAfterLast('/') ?: "Vault file"
+            context.contentResolver.query(
+                uri,
+                arrayOf(OpenableColumns.DISPLAY_NAME),
+                null,
+                null,
+                null,
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val column = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (column >= 0) fileName = cursor.getString(column)
+                }
+            }
+            fileError = null
+        }
+    }
+
+    Surface(color = colorResource(R.color.deep_blue)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp)
+                .imePadding()
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.onepass_logo),
+                contentDescription = "Logo",
+                modifier = Modifier.fillMaxWidth(0.45f),
+                contentScale = ContentScale.FillWidth,
+            )
+
+            Spacer(Modifier.height(18.dp))
+
+            Column(horizontalAlignment = Alignment.Start) {
+                Text("Filename", color = Color(0xFFF5F5F5), modifier = Modifier.padding(bottom = 6.dp))
+                Box {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("choose_vault_button"),
+                        value = fileName,
+                        onValueChange = {},
+                        placeholder = { Text("Create file ...", color = Color.Gray) },
+                        trailingIcon = {
+                            Icon(Icons.Default.FolderOpen, contentDescription = "Choose file", tint = Color.Gray)
+                        },
+                        readOnly = true,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedBorderColor = Color(0xFF0080FF),
+                            unfocusedBorderColor = Color(0xFFABADB3),
+                            cursorColor = Color.Black,
+                        ),
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable { launcher.launch("OnePass Vault.onepass") },
+                    )
+                }
+                fileError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("file_error")) }
+            }
+
+            Spacer(Modifier.height(12.dp))
+            PasswordInput(value = password, onPasswordEntered = { password = it }, label = "Password", testTag = "create_password_input")
+            passwordError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("password_error")) }
+            Spacer(Modifier.height(12.dp))
+            PasswordInput(value = repeatPassword, onPasswordEntered = { repeatPassword = it }, label = "Repeat password", testTag = "repeat_password_input")
+            repeatPasswordError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("repeat_password_error")) }
+            generalError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("create_error")) }
+            Spacer(Modifier.height(16.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth().testTag("create_account_button"),
+                enabled = !isLoading,
+                onClick = {
+                    fileError = if (fileUri == null) "Choose a file for your vault" else null
+                    passwordError = if (password.length <= 10) "Password must be longer than 10 characters" else null
+                    repeatPasswordError = if (password != repeatPassword) "Passwords do not match" else null
+                    generalError = null
+                    if (fileUri != null && password.length > 10 && password == repeatPassword) {
+                        isLoading = true
+                        val passwordChars = password.toCharArray()
+                        activity.lifecycleScope.launch {
+                            val uri = fileUri!!
+                            val created = withContext(Dispatchers.IO) { repository.create(uri.toString(), passwordChars) }
+                            passwordChars.fill('\u0000')
+                            isLoading = false
+                            if (created) onAccountCreated(OnePassData(), uri, password.toCharArray())
+                            else generalError = "Unable to create the vault file"
+                        }
+                    }
+                },
+                shape = RoundedCornerShape(3.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0080FF)),
+            ) { if (isLoading) CircularProgressIndicator(color = Color.White) else Text("Create Account") }
+
+            Text("Back to Login", color = Color.White.copy(alpha = 0.8f), modifier = Modifier.padding(top = 14.dp).clickable(onClick = onBackToLogin).testTag("back_to_login"))
+            Text("v${BuildConfig.VERSION_NAME}", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
         }
     }
 }
@@ -315,14 +462,18 @@ private data class LoginResult(
 
 @Composable
 fun PasswordInput(
-    onPasswordEntered: (password: String) -> Unit
+    value: String? = null,
+    onPasswordEntered: (password: String) -> Unit,
+    label: String = "Password",
+    testTag: String = "password_input",
 ) {
-    var password by remember { mutableStateOf("") }
+    var internalPassword by remember { mutableStateOf("") }
+    val password = value ?: internalPassword
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column {
         Text(
-            text = "Password",
+            text = label,
             color = Color(0xFFF5F5F5),
             modifier = Modifier.padding(bottom = 6.dp),
         )
@@ -330,10 +481,10 @@ fun PasswordInput(
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .testTag("password_input"),
+                .testTag(testTag),
             value = password,
             onValueChange = {
-                password = it
+                internalPassword = it
                 onPasswordEntered(it)
             },
             singleLine = true,

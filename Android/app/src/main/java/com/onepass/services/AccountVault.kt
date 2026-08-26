@@ -62,6 +62,25 @@ class VaultRepository(
     private val updateMutex = Mutex()
     private var session: VaultSession? = null
 
+    suspend fun create(documentUri: String, password: CharArray): Boolean = updateMutex.withLock {
+        val encrypted = try {
+            encoder.save(password, OnePassData())
+        } catch (_: Exception) {
+            return@withLock false
+        }
+
+        try {
+            documentStore.write(documentUri, encrypted)
+        } catch (_: Exception) {
+            return@withLock false
+        }
+
+        clearSession()
+        session = VaultSession(documentUri, password.copyOf())
+        _state.value = VaultState.Unlocked(OnePassData())
+        true
+    }
+
     fun unlock(data: OnePassData, documentUri: String, password: CharArray) {
         clearSession()
         session = VaultSession(documentUri, password.copyOf())
