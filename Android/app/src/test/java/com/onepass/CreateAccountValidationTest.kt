@@ -25,9 +25,9 @@ class CreateAccountValidationTest {
 
     @Test
     fun passwordMustBeLongerThanTenCharacters() {
-        val result = validateCreateAccount(true, "1234567890", "1234567890")
+        val result = validateCreateAccount(true, "123456789", "123456789")
 
-        assertEquals("Password must be longer than 10 characters", result.passwordError)
+        assertEquals("Password must be at least 10 characters", result.passwordError)
         assertEquals(false, result.isValid)
     }
 

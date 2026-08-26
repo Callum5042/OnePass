@@ -44,19 +44,19 @@ class CreateAccountViewTest {
         composeRule.onNodeWithTag("create_account_button").performClick()
 
         composeRule.onNodeWithText("Choose a file for your vault").assertIsDisplayed()
-        composeRule.onNodeWithText("Password must be longer than 10 characters").assertIsDisplayed()
+        composeRule.onNodeWithText("Password must be at least 10 characters").assertIsDisplayed()
     }
 
     @Test
     fun shortPasswordShowsPasswordValidationError() {
         setCreateAccountContent()
 
-        composeRule.onNodeWithTag("create_password_input").performTextReplacement("1234567890")
-        composeRule.onNodeWithTag("repeat_password_input").performTextReplacement("1234567890")
+        composeRule.onNodeWithTag("create_password_input").performTextReplacement("123456789")
+        composeRule.onNodeWithTag("repeat_password_input").performTextReplacement("123456789")
         composeRule.onNodeWithTag("create_account_button").performClick()
 
         composeRule.onNodeWithTag("password_error").assertTextEquals(
-            "Password must be longer than 10 characters",
+            "Password must be at least 10 characters",
         )
         composeRule.onNodeWithTag("repeat_password_error").assertDoesNotExist()
     }

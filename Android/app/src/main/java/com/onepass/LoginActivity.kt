@@ -316,7 +316,10 @@ fun CreateAccountView(
                     Box(
                         modifier = Modifier
                             .matchParentSize()
-                            .clickable { launcher.launch("OnePass Vault.onepass") }
+                            .clickable {
+                                if (isLoading) return@clickable
+                                launcher.launch("OnePass Vault.onepass")
+                            }
                             .testTag("choose_vault_button"),
                     )
                 }
@@ -324,10 +327,25 @@ fun CreateAccountView(
             }
 
             Spacer(Modifier.height(12.dp))
-            PasswordInput(value = password, onPasswordEntered = { password = it }, label = "Password", testTag = "create_password_input")
+            PasswordInput(
+                value = password,
+                onPasswordEntered = { password = it },
+                label = "Password",
+                testTag = "create_password_input",
+                enabled = !isLoading
+            )
+
             passwordError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("password_error")) }
             Spacer(Modifier.height(12.dp))
-            PasswordInput(value = repeatPassword, onPasswordEntered = { repeatPassword = it }, label = "Repeat password", testTag = "repeat_password_input")
+
+            PasswordInput(
+                value = repeatPassword,
+                onPasswordEntered = { repeatPassword = it },
+                label = "Repeat password",
+                testTag = "repeat_password_input",
+                enabled = !isLoading
+            )
+
             repeatPasswordError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("repeat_password_error")) }
             generalError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.fillMaxWidth().testTag("create_error")) }
             Spacer(Modifier.height(16.dp))
@@ -347,9 +365,8 @@ fun CreateAccountView(
                         activity.lifecycleScope.launch {
                             val uri = fileUri!!
                             val created = withContext(Dispatchers.IO) { repository.create(uri.toString(), passwordChars) }
-                            passwordChars.fill('\u0000')
                             isLoading = false
-                            if (created) onAccountCreated(OnePassData(), uri, password.toCharArray())
+                            if (created) onAccountCreated(OnePassData(), uri, passwordChars)
                             else generalError = "Unable to create the vault file"
                         }
                     }
@@ -358,8 +375,23 @@ fun CreateAccountView(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0080FF)),
             ) { if (isLoading) CircularProgressIndicator(color = Color.White) else Text("Create Account") }
 
-            Text("Back to Login", color = Color.White.copy(alpha = 0.8f), modifier = Modifier.padding(top = 14.dp).clickable(onClick = onBackToLogin).testTag("back_to_login"))
-            Text("v${BuildConfig.VERSION_NAME}", color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
+            if (!isLoading) {
+                Text(
+                    "Back to Login",
+                    color = Color.White.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .padding(top = 14.dp)
+                        .clickable(onClick = onBackToLogin)
+                        .testTag("back_to_login")
+                )
+            }
+
+            Text(
+                "v${BuildConfig.VERSION_NAME}",
+                color = Color.White.copy(alpha = 0.6f),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+            )
         }
     }
 }
@@ -486,6 +518,7 @@ fun PasswordInput(
     onPasswordEntered: (password: String) -> Unit,
     label: String = "Password",
     testTag: String = "password_input",
+    enabled: Boolean = true
 ) {
     var internalPassword by remember { mutableStateOf("") }
     val password = value ?: internalPassword
@@ -504,6 +537,8 @@ fun PasswordInput(
                 .testTag(testTag),
             value = password,
             onValueChange = {
+                if (!enabled) return@OutlinedTextField
+
                 internalPassword = it
                 onPasswordEntered(it)
             },
