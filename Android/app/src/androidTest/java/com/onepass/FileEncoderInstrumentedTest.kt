@@ -3,6 +3,7 @@ package com.onepass
 import com.onepass.services.Account
 import com.onepass.services.FileEncoder
 import com.onepass.services.InvalidPasswordException
+import com.onepass.services.InvalidOnePassFileException
 import com.onepass.services.OnePassData
 import com.onepass.services.PasswordHistory
 import org.junit.Assert.assertArrayEquals
@@ -11,6 +12,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.ByteArrayInputStream
+import java.io.EOFException
 import java.util.UUID
 
 class FileEncoderInstrumentedTest {
@@ -70,6 +72,16 @@ class FileEncoderInstrumentedTest {
     fun wrongPasswordIsRejected() {
         val bytes = FileEncoder().save(password, OnePassData())
         FileEncoder().load("wrong password", ByteArrayInputStream(bytes))
+    }
+
+    @Test(expected = EOFException::class)
+    fun emptyFileIsRejected() {
+        FileEncoder().load(password, ByteArrayInputStream(ByteArray(0)))
+    }
+
+    @Test(expected = InvalidOnePassFileException::class)
+    fun nonOnePassFileIsRejected() {
+        FileEncoder().load(password, ByteArrayInputStream("not a OnePass file".encodeToByteArray()))
     }
 
     private fun littleEndianInt(bytes: ByteArray, offset: Int): Int =
