@@ -162,6 +162,29 @@ class AccountVaultTest {
         assertEquals(2, store.writeAttempts)
     }
 
+    @Test
+    fun createWritesEmptyVaultAndUnlocksIt() = runBlocking {
+        val store = FakeDocumentStore("old".encodeToByteArray())
+        val encoder = CapturingEncoder("new-vault".encodeToByteArray())
+        val repository = repository(store, encoder)
+
+        assertEquals(true, repository.create("content://new-vault", "long-password".toCharArray()))
+        assertArrayEquals("new-vault".encodeToByteArray(), store.bytes)
+        assertEquals(emptyList<Account>(), (repository.state.value as VaultState.Unlocked).data.accounts)
+        assertEquals(emptyList<Account>(), encoder.savedData?.accounts)
+    }
+
+    @Test
+    fun failedCreateDoesNotUnlockOrReplaceFile() = runBlocking {
+        val originalBytes = "old".encodeToByteArray()
+        val store = FakeDocumentStore(originalBytes, failuresRemaining = 1)
+        val repository = repository(store, CapturingEncoder("new-vault".encodeToByteArray()))
+
+        assertEquals(false, repository.create("content://new-vault", "long-password".toCharArray()))
+        assertArrayEquals(originalBytes, store.bytes)
+        assertSame(VaultState.Locked, repository.state.value)
+    }
+
     private fun repository(store: FakeDocumentStore, encoder: CapturingEncoder) = VaultRepository(
         documentStore = store,
         encoder = encoder,
