@@ -294,8 +294,7 @@ fun CreateAccountView(
                 Box {
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag("choose_vault_button"),
+                            .fillMaxWidth(),
                         value = fileName,
                         onValueChange = {},
                         placeholder = { Text("Create file ...", color = Color.Gray) },
@@ -317,7 +316,8 @@ fun CreateAccountView(
                     Box(
                         modifier = Modifier
                             .matchParentSize()
-                            .clickable { launcher.launch("OnePass Vault.onepass") },
+                            .clickable { launcher.launch("OnePass Vault.onepass") }
+                            .testTag("choose_vault_button"),
                     )
                 }
                 fileError?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("file_error")) }
@@ -336,11 +336,12 @@ fun CreateAccountView(
                 modifier = Modifier.fillMaxWidth().testTag("create_account_button"),
                 enabled = !isLoading,
                 onClick = {
-                    fileError = if (fileUri == null) "Choose a file for your vault" else null
-                    passwordError = if (password.length <= 10) "Password must be longer than 10 characters" else null
-                    repeatPasswordError = if (password != repeatPassword) "Passwords do not match" else null
+                    val validation = validateCreateAccount(fileUri != null, password, repeatPassword)
+                    fileError = validation.fileError
+                    passwordError = validation.passwordError
+                    repeatPasswordError = validation.repeatPasswordError
                     generalError = null
-                    if (fileUri != null && password.length > 10 && password == repeatPassword) {
+                    if (validation.isValid) {
                         isLoading = true
                         val passwordChars = password.toCharArray()
                         activity.lifecycleScope.launch {
@@ -362,6 +363,25 @@ fun CreateAccountView(
         }
     }
 }
+
+internal data class CreateAccountValidation(
+    val fileError: String? = null,
+    val passwordError: String? = null,
+    val repeatPasswordError: String? = null,
+) {
+    val isValid: Boolean
+        get() = fileError == null && passwordError == null && repeatPasswordError == null
+}
+
+internal fun validateCreateAccount(
+    fileSelected: Boolean,
+    password: String,
+    repeatPassword: String,
+): CreateAccountValidation = CreateAccountValidation(
+    fileError = if (fileSelected) null else "Choose a file for your vault",
+    passwordError = if (password.length > 10) null else "Password must be longer than 10 characters",
+    repeatPasswordError = if (password == repeatPassword) null else "Passwords do not match",
+)
 
 @Composable
 fun FileInput(
