@@ -193,19 +193,10 @@ fun LoginView(
                     containerColor = Color(0xFF0080FF),
                 ),
                 onClick = {
-                    fileError = null
-                    passwordError = null
-
-                    if (fileUri == null) {
-                        fileError = "Select file to open"
-                    }
-
-                    if (password.isEmpty()) {
-                        passwordError = "Password is required"
-                    }
-
-                    val isValid = passwordError == null && fileError == null
-                    if (!isValid) return@Button
+                    val validation = validateLoginAccount(fileUri, password)
+                    fileError = validation.fileError
+                    passwordError = validation.passwordError
+                    if (!validation.isValid) return@Button
 
                     isLoading = true
                     activity.lifecycleScope.launch {
@@ -470,10 +461,10 @@ internal fun validateCreateAccount(
 )
 
 internal fun validateLoginAccount(
-    fileSelected: Boolean,
+    fileUri: Uri?,
     password: String?,
 ): LoginAccountValidation = LoginAccountValidation(
-    fileError = if (fileSelected) null else "Choose a file",
+    fileError = if (fileUri != null) null else "Choose a file",
     passwordError = if (!password.isNullOrEmpty()) null else "Password is required"
 )
 
