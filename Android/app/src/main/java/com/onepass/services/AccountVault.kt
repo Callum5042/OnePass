@@ -100,6 +100,7 @@ class VaultRepository(
             emailAddress = edits.emailAddress,
             password = edits.password,
             websiteUrl = edits.websiteUrl,
+            notes = edits.notes,
             passwordHistory = passwordHistory,
         )
         val updatedData = unlocked.data.copy(
