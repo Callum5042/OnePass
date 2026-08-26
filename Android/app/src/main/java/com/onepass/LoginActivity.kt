@@ -215,7 +215,6 @@ fun LoginView(
                                 LoginResult(data, selectedUri, passwordChars)
                             }
                         }
-                        delay(50000)
                         isLoading = false
                         result.fold(
                             onSuccess = { login ->
