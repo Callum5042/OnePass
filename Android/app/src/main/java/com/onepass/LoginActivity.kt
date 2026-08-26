@@ -57,6 +57,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.onepass.services.FileEncoder
+import com.onepass.services.InvalidOnePassFileException
+import com.onepass.services.InvalidPasswordException
 import com.onepass.services.OnePassData
 import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.Dispatchers
@@ -115,6 +117,9 @@ fun LoginView(
     var fileUri by remember { mutableStateOf<Uri?>(null) }
     var password by remember { mutableStateOf("") }
 
+    var fileError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
     val context = LocalContext.current
     val activity = context as ComponentActivity
     var isLoading by remember { mutableStateOf(false) }
@@ -139,21 +144,41 @@ fun LoginView(
                 contentScale = ContentScale.FillWidth,
             )
 
-            FileInput(
-                onFileSelected = { uri ->
-                    fileUri = uri
+            Column(horizontalAlignment = Alignment.Start) {
+                FileInput(
+                    onFileSelected = { uri ->
+                        fileUri = uri
+                    }
+                )
+
+                fileError?.let {
+                    Text(
+                        it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.testTag("login_file_error")
+                    )
                 }
-            )
+            }
 
             Spacer(
                 modifier = Modifier.height(16.dp)
             )
 
-            PasswordInput(
-                onPasswordEntered = {
-                    password = it
+            Column(horizontalAlignment = Alignment.Start) {
+                PasswordInput(
+                    onPasswordEntered = {
+                        password = it
+                    }
+                )
+
+                passwordError?.let {
+                    Text(
+                        it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.testTag("login_password_error")
+                    )
                 }
-            )
+            }
 
             Spacer(
                 modifier = Modifier.height(16.dp)
@@ -168,6 +193,11 @@ fun LoginView(
                     containerColor = Color(0xFF0080FF),
                 ),
                 onClick = {
+                    val validation = validateLoginAccount(fileUri != null, password)
+                    fileError = validation.fileError
+                    passwordError = validation.passwordError
+                    if (!validation.isValid) return@Button
+
                     isLoading = true
                     activity.lifecycleScope.launch {
                         val passwordChars = password.toCharArray()
@@ -176,24 +206,33 @@ fun LoginView(
                                 val selectedUri = fileUri ?: error("Select a vault file")
                                 val data = selectedUri.let {
                                     context.contentResolver.openInputStream(it) }?.use { input ->
-                                    FileEncoder().load(passwordChars, input)
+                                        FileEncoder().load(passwordChars, input)
                                 } ?: error("Unable to open the selected file")
+
                                 LoginResult(data, selectedUri, passwordChars)
                             }
                         }
                         isLoading = false
                         result.fold(
                             onSuccess = { login ->
-                                try {
-                                    onLoginSuccess(login.data, login.documentUri, login.password)
-                                    password = ""
-                                } finally {
-                                    login.password.fill('\u0000')
-                                }
+                                onLoginSuccess(
+                                    login.data,
+                                    login.documentUri,
+                                    login.password
+                                )
                             },
                             onFailure = { error ->
-                                passwordChars.fill('\u0000')
-                                error.message ?: "Unable to decode the selected file"
+                                when (error) {
+                                    is InvalidPasswordException -> {
+                                        passwordError = error.message
+                                    }
+                                    is InvalidOnePassFileException -> {
+                                        fileError = error.message
+                                    }
+                                    else -> {
+                                        fileError = error.message ?: "Unable to decode the selected file"
+                                    }
+                                }
                             },
                         )
                     }
@@ -405,6 +444,14 @@ internal data class CreateAccountValidation(
         get() = fileError == null && passwordError == null && repeatPasswordError == null
 }
 
+internal data class LoginAccountValidation(
+    val fileError: String? = null,
+    val passwordError: String? = null
+) {
+    val isValid: Boolean
+        get() = fileError == null && passwordError == null
+}
+
 internal fun validateCreateAccount(
     fileSelected: Boolean,
     password: String,
@@ -413,6 +460,14 @@ internal fun validateCreateAccount(
     fileError = if (fileSelected) null else "Choose a file for your vault",
     passwordError = if (password.length >= 10) null else "Password must be at least 10 characters",
     repeatPasswordError = if (password == repeatPassword) null else "Passwords do not match",
+)
+
+internal fun validateLoginAccount(
+    fileSelected: Boolean,
+    password: String?,
+): LoginAccountValidation = LoginAccountValidation(
+    fileError = if (fileSelected) null else "Choose a file",
+    passwordError = if (!password.isNullOrEmpty()) null else "Password is required"
 )
 
 @Composable
@@ -470,6 +525,7 @@ fun FileInput(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("username_input"),
+                placeholder = { Text("Select file ...", color = Color.Gray) },
                 value = fileName,
                 onValueChange = {},
                 trailingIcon = {
