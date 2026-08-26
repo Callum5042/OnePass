@@ -470,6 +470,7 @@ fun FileInput(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("username_input"),
+                placeholder = { Text("Select file ...", color = Color.Gray) },
                 value = fileName,
                 onValueChange = {},
                 trailingIcon = {
