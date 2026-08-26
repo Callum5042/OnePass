@@ -147,6 +147,34 @@ class AccountDetailsScreenTest {
     }
 
     @Test
+    fun notesCanBeEditedAndSavedWithExactValue() {
+        var saved: CredentialEdits? = null
+        setAccountContent(
+            account = account(),
+            onSaveCredentials = {
+                saved = it
+                VaultUpdateResult.Success
+            },
+        )
+
+        composeRule.onNodeWithContentDescription("Edit account details").performClick()
+        composeRule.onNodeWithText("Notes").performClick()
+        composeRule.onNodeWithTag("add_notes")
+            .performTextReplacement("  updated recovery notes  ")
+
+        composeRule.onNodeWithText("Details").performClick()
+        composeRule.onNodeWithText("Notes").performClick()
+        composeRule.onNodeWithTag("add_notes")
+            .assertTextEquals("  updated recovery notes  ")
+
+        composeRule.onNodeWithContentDescription("Save account details").performClick()
+        composeRule.waitForIdle()
+
+        assertEquals("  updated recovery notes  ", saved?.notes)
+        composeRule.onNodeWithText("Account saved").assertIsDisplayed()
+    }
+
+    @Test
     fun backDiscardsDraftWithoutSaving() {
         var saved = false
         setAccountContent(

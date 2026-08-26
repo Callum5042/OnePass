@@ -39,6 +39,7 @@ class AccountVaultTest {
                 emailAddress = "",
                 password = "new-secret",
                 websiteUrl = " site with spaces ",
+                notes = "new-note",
             ),
         )
 
@@ -51,6 +52,7 @@ class AccountVaultTest {
         assertEquals("", updated.emailAddress)
         assertEquals("new-secret", updated.password)
         assertEquals(" site with spaces ", updated.websiteUrl)
+        assertEquals("new-note", updated.notes)
         assertEquals(timestamp.toString(), updated.dateModified)
         assertEquals(
             PasswordHistory(historyGuid, "new-secret", timestamp.toString()),
@@ -67,7 +69,7 @@ class AccountVaultTest {
 
         repository.updateCredentials(
             accountGuid,
-            CredentialEdits("user-2", "mail", "old-secret", "website"),
+            CredentialEdits("user-2", "mail", "old-secret", "website", ""),
         )
 
         val updated = (repository.state.value as VaultState.Unlocked).data.accounts.single()
@@ -136,7 +138,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null),
+            CredentialEdits("changed", null, "old-secret", null, ""),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = true), result)
@@ -153,7 +155,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null),
+            CredentialEdits("changed", null, "old-secret", null, ""),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = false), result)
