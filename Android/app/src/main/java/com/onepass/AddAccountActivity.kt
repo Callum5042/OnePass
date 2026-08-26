@@ -9,8 +9,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,6 +52,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.onepass.services.NewAccountDetails
@@ -247,6 +250,8 @@ private fun AddDetailsTab(
                 testTag = "add_name",
             )
         }
+        item { Spacer(Modifier.height(20.dp)) }
+        item { SectionLabel(R.string.sign_in) }
         item {
             EditableCredentialRow(
                 label = stringResource(R.string.account_username),
@@ -278,6 +283,8 @@ private fun AddDetailsTab(
                 isPassword = true,
             )
         }
+        item { Spacer(Modifier.height(20.dp)) }
+        item { SectionLabel(R.string.website) }
         item {
             EditableCredentialRow(
                 label = stringResource(R.string.website),
@@ -289,6 +296,16 @@ private fun AddDetailsTab(
             )
         }
     }
+}
+
+@Composable
+private fun SectionLabel(resource: Int) {
+    Text(
+        text = stringResource(resource).uppercase(),
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Medium,
+    )
 }
 
 @Composable
@@ -304,11 +321,7 @@ private fun AddNotesTab(
             .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 16.dp),
     ) {
-        Text(
-            text = stringResource(R.string.notes),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodySmall,
-        )
+        SectionLabel(R.string.notes)
         BasicTextField(
             value = notes,
             onValueChange = onNotesChange,
