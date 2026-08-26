@@ -379,7 +379,7 @@ internal fun validateCreateAccount(
     repeatPassword: String,
 ): CreateAccountValidation = CreateAccountValidation(
     fileError = if (fileSelected) null else "Choose a file for your vault",
-    passwordError = if (password.length > 10) null else "Password must be longer than 10 characters",
+    passwordError = if (password.length >= 10) null else "Password must be at least 10 characters",
     repeatPasswordError = if (password == repeatPassword) null else "Passwords do not match",
 )
 
