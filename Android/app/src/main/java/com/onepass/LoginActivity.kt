@@ -62,6 +62,7 @@ import com.onepass.services.InvalidPasswordException
 import com.onepass.services.OnePassData
 import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -146,6 +147,7 @@ fun LoginView(
 
             Column(horizontalAlignment = Alignment.Start) {
                 FileInput(
+                    isLoading = isLoading,
                     onFileSelected = { uri ->
                         fileUri = uri
                     }
@@ -166,6 +168,7 @@ fun LoginView(
 
             Column(horizontalAlignment = Alignment.Start) {
                 PasswordInput(
+                    enabled = !isLoading,
                     onPasswordEntered = {
                         password = it
                     }
@@ -212,6 +215,7 @@ fun LoginView(
                                 LoginResult(data, selectedUri, passwordChars)
                             }
                         }
+                        delay(50000)
                         isLoading = false
                         result.fold(
                             onSuccess = { login ->
@@ -254,7 +258,10 @@ fun LoginView(
             Text(
                 modifier = Modifier
                     .padding(top = 6.dp, bottom = 24.dp)
-                    .clickable(onClick = onCreateAccount),
+                    .clickable(onClick = {
+                        if (isLoading) return@clickable
+                        onCreateAccount()
+                    }),
                 text = "Create Account",
                 color = Color.White.copy(alpha = 0.8f),
             )
@@ -472,9 +479,9 @@ internal fun validateLoginAccount(
 
 @Composable
 fun FileInput(
+    isLoading: Boolean,
     onFileSelected: (Uri) -> Unit
 ) {
-
     var fileName by remember { mutableStateOf("") }
     var fileUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -555,6 +562,7 @@ fun FileInput(
                 modifier = Modifier
                     .matchParentSize()
                     .clickable {
+                        if (isLoading) return@clickable
                         launcher.launch(arrayOf("application/octet-stream", "*/*"))
                     }
             )
