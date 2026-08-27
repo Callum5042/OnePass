@@ -42,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +56,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import com.onepass.services.FileEncoder
 import com.onepass.services.InvalidOnePassFileException
 import com.onepass.services.InvalidPasswordException
@@ -77,10 +77,16 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues = innerPadding),
                     ) {
                         if (showCreateAccount) {
+                            val repository = (application as OnePassApplication).vaultRepository
                             CreateAccountView(
                                 onBackToLogin = { showCreateAccount = false },
                                 onAccountCreated = { data, documentUri, password ->
                                     loginAndOpenMain(data, documentUri, password)
+                                },
+                                onSaveAccount = { uri, password ->
+                                    withContext(Dispatchers.IO) {
+                                        repository.create(uri.toString(), password)
+                                    }
                                 },
                             )
                         } else {
@@ -121,7 +127,7 @@ fun LoginView(
     var passwordError by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
-    val activity = context as ComponentActivity
+    val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
 
     Surface(
@@ -201,7 +207,7 @@ fun LoginView(
                     if (!validation.isValid) return@Button
 
                     isLoading = true
-                    activity.lifecycleScope.launch {
+                    coroutineScope.launch {
                         val passwordChars = password.toCharArray()
                         val result = runCatching {
                             withContext(Dispatchers.IO) {
@@ -277,10 +283,10 @@ fun LoginView(
 fun CreateAccountView(
     onBackToLogin: () -> Unit = {},
     onAccountCreated: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> },
+    onSaveAccount: suspend (uri: Uri, password: CharArray) -> Boolean = { _, _ -> false },
 ) {
     val context = LocalContext.current
-    val activity = context as ComponentActivity
-    val repository = (context.applicationContext as OnePassApplication).vaultRepository
+    val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     var fileUri by remember { mutableStateOf<Uri?>(null) }
     var fileName by remember { mutableStateOf("") }
@@ -406,9 +412,9 @@ fun CreateAccountView(
                     if (validation.isValid) {
                         isLoading = true
                         val passwordChars = password.toCharArray()
-                        activity.lifecycleScope.launch {
+                        coroutineScope.launch {
                             val uri = fileUri!!
-                            val created = withContext(Dispatchers.IO) { repository.create(uri.toString(), passwordChars) }
+                            val created = onSaveAccount(uri, passwordChars)
                             isLoading = false
                             if (created) onAccountCreated(OnePassData(), uri, passwordChars)
                             else generalError = "Unable to create the vault file"
