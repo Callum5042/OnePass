@@ -32,7 +32,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,14 +42,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +75,9 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val loginPreferences = LoginPreferences(this)
+        val loginSettings = loginPreferences.load()
+
         setContent {
             OnePassTheme {
                 var showCreateAccount by remember { mutableStateOf(false) }
@@ -97,9 +100,14 @@ class LoginActivity : ComponentActivity() {
                             )
                         } else {
                             LoginView(
+                                initialFileUri = loginSettings.vaultUri,
+                                initialRememberMe = loginSettings.rememberMe,
                                 onCreateAccount = { showCreateAccount = true },
                                 onLoginSuccess = { data, documentUri, password ->
                                     loginAndOpenMain(data, documentUri, password)
+                                },
+                                onLoginPreferencesChanged = { rememberMe, vaultUri ->
+                                    loginPreferences.save(rememberMe, vaultUri)
                                 },
                             )
                         }
@@ -122,13 +130,16 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginView(
     onCreateAccount: () -> Unit = {},
-    onLoginSuccess: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> }
+    onLoginSuccess: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> },
+    initialFileUri: Uri? = null,
+    initialRememberMe: Boolean = false,
+    onLoginPreferencesChanged: (rememberMe: Boolean, vaultUri: Uri?) -> Unit = { _, _ -> },
 ) {
     val scrollState = rememberScrollState()
 
-    var fileUri by remember { mutableStateOf<Uri?>(null) }
+    var fileUri by rememberSaveable { mutableStateOf(initialFileUri) }
     var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(false)}
+    var rememberMe by rememberSaveable { mutableStateOf(initialRememberMe) }
 
     var fileError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
@@ -160,8 +171,10 @@ fun LoginView(
             Column(horizontalAlignment = Alignment.Start) {
                 FileInput(
                     isLoading = isLoading,
+                    initialFileUri = fileUri,
                     onFileSelected = { uri ->
                         fileUri = uri
+                        onLoginPreferencesChanged(rememberMe, uri)
                     }
                 )
 
@@ -200,7 +213,9 @@ fun LoginView(
                     label = "Remember me",
                     value = rememberMe)
                 {
-                    rememberMe = !rememberMe
+                    val newValue = !rememberMe
+                    rememberMe = newValue
+                    onLoginPreferencesChanged(newValue, if (newValue) fileUri else null)
                 }
             }
 
@@ -496,18 +511,26 @@ internal fun validateLoginAccount(
 @Composable
 fun FileInput(
     isLoading: Boolean,
-    onFileSelected: (Uri) -> Unit
+    onFileSelected: (Uri) -> Unit,
+    initialFileUri: Uri? = null,
 ) {
     var fileName by remember { mutableStateOf("") }
-    var fileUri by remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
+
+    LaunchedEffect(initialFileUri) {
+        fileName = initialFileUri?.let { uri ->
+            withContext(Dispatchers.IO) {
+                queryDisplayName(context, uri)
+            }
+        } ?: ""
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
     ) { uri ->
         uri ?: return@rememberLauncherForActivityResult
 
-        fileUri = uri
         onFileSelected(uri)
 
         runCatching {
@@ -585,6 +608,22 @@ fun FileInput(
         }
     }
 }
+
+private fun queryDisplayName(context: android.content.Context, uri: Uri): String? =
+    context.contentResolver.query(
+        uri,
+        arrayOf(OpenableColumns.DISPLAY_NAME),
+        null,
+        null,
+        null,
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val column = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (column >= 0) cursor.getString(column) else null
+        } else {
+            null
+        }
+    }
 
 private data class LoginResult(
     val data: OnePassData,
