@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,12 +49,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -122,6 +127,7 @@ fun LoginView(
 
     var fileUri by remember { mutableStateOf<Uri?>(null) }
     var password by remember { mutableStateOf("") }
+    var rememberMe by remember { mutableStateOf(false)}
 
     var fileError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
@@ -188,9 +194,14 @@ fun LoginView(
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
+            Column(horizontalAlignment = Alignment.Start) {
+                CheckboxWithLabel(
+                    label = "Remember me",
+                    value = rememberMe)
+                {
+                    rememberMe = !rememberMe
+                }
+            }
 
             Button(
                 modifier = Modifier
@@ -658,5 +669,66 @@ fun PasswordInput(
 fun LoginViewPreview() {
     OnePassTheme {
         LoginView()
+    }
+}
+
+@Composable
+private fun CheckboxWithLabel(
+    label: String,
+    value: Boolean,
+    onChecked: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+            .clickable(
+                role = Role.Checkbox,
+                onClick = onChecked,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(
+            checked = value,
+            onCheckedChange = null,
+        )
+
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = label,
+            color = Color(0xFFF5F5F5),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewCheckboxWithLabelChecked() {
+    OnePassTheme {
+        Surface(
+            color = colorResource(R.color.deep_blue)
+        ) {
+            CheckboxWithLabel(
+                "Checkbox Label",
+                true,
+                onChecked = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewCheckboxWithLabelUnchecked() {
+    OnePassTheme {
+        Surface(
+            color = colorResource(R.color.deep_blue)
+        ) {
+            CheckboxWithLabel(
+                "Checkbox Label",
+                false,
+                onChecked = {}
+            )
+        }
     }
 }
