@@ -146,6 +146,7 @@ fun LoginView(
 
             Column(horizontalAlignment = Alignment.Start) {
                 FileInput(
+                    isLoading = isLoading,
                     onFileSelected = { uri ->
                         fileUri = uri
                     }
@@ -166,6 +167,7 @@ fun LoginView(
 
             Column(horizontalAlignment = Alignment.Start) {
                 PasswordInput(
+                    enabled = !isLoading,
                     onPasswordEntered = {
                         password = it
                     }
@@ -254,7 +256,10 @@ fun LoginView(
             Text(
                 modifier = Modifier
                     .padding(top = 6.dp, bottom = 24.dp)
-                    .clickable(onClick = onCreateAccount),
+                    .clickable(onClick = {
+                        if (isLoading) return@clickable
+                        onCreateAccount()
+                    }),
                 text = "Create Account",
                 color = Color.White.copy(alpha = 0.8f),
             )
@@ -472,9 +477,9 @@ internal fun validateLoginAccount(
 
 @Composable
 fun FileInput(
+    isLoading: Boolean,
     onFileSelected: (Uri) -> Unit
 ) {
-
     var fileName by remember { mutableStateOf("") }
     var fileUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -555,6 +560,7 @@ fun FileInput(
                 modifier = Modifier
                     .matchParentSize()
                     .clickable {
+                        if (isLoading) return@clickable
                         launcher.launch(arrayOf("application/octet-stream", "*/*"))
                     }
             )
