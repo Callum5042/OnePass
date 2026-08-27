@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -682,10 +683,12 @@ private fun CheckboxWithLabel(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
-            .clickable(
+            .toggleable(
+                value = value,
                 role = Role.Checkbox,
-                onClick = onChecked,
-            ),
+                onValueChange = { onChecked() },
+            )
+            .testTag("remember_me"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
