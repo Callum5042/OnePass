@@ -520,9 +520,11 @@ fun FileInput(
 
     LaunchedEffect(initialFileUri) {
         fileName = initialFileUri?.let { uri ->
-            withContext(Dispatchers.IO) {
-                queryDisplayName(context, uri)
-            }
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    queryDisplayName(context, uri)
+                }
+            }.getOrNull()
         } ?: ""
     }
 

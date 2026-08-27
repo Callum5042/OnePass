@@ -2,6 +2,7 @@ package com.onepass
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.edit
 
 internal data class LoginSettings(
     val rememberMe: Boolean,
@@ -24,7 +25,7 @@ internal class LoginPreferences(context: Context) {
     }
 
     fun save(rememberMe: Boolean, vaultUri: Uri?) {
-        preferences.edit().apply {
+        preferences.edit {
             putBoolean(KEY_REMEMBER_ME, rememberMe)
 
             if (rememberMe && vaultUri != null) {
@@ -32,7 +33,7 @@ internal class LoginPreferences(context: Context) {
             } else {
                 remove(KEY_VAULT_URI)
             }
-        }.apply()
+        }
     }
 
     private companion object {
