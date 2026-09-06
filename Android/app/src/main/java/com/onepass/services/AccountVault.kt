@@ -12,6 +12,15 @@ sealed interface VaultState {
     data class Unlocked(val data: OnePassData) : VaultState
 }
 
+internal data class ActiveVaultSession(
+    val documentUri: String,
+    val password: CharArray,
+) {
+    fun clearPassword() {
+        password.fill('\u0000')
+    }
+}
+
 data class CredentialEdits(
     val username: String?,
     val emailAddress: String?,
@@ -93,6 +102,16 @@ class VaultRepository(
         clearSession()
         _state.value = VaultState.Locked
     }
+
+    internal fun copyActiveSession(): ActiveVaultSession? =
+        session?.let { activeSession ->
+            ActiveVaultSession(
+                documentUri = activeSession.documentUri,
+                password = activeSession.password.copyOf(),
+            )
+        }
+
+    internal fun activeDocumentUri(): String? = session?.documentUri
 
     suspend fun updateCredentials(
         accountGuid: UUID,
