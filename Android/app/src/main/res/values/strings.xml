@@ -6,6 +6,9 @@
     <string name="clear_search">Clear search</string>
     <string name="no_search_results">No accounts match your search</string>
     <string name="settings">Settings</string>
+    <string name="biometric_unlock">Biometric unlock</string>
+    <string name="biometric_unlock_placeholder">Biometric unlock will be available here.</string>
+    <string name="biometric_unlock_coming_soon">Coming soon</string>
     <string name="add_account">Add account</string>
     <string name="title_activity_add_account">Add account</string>
     <string name="add_account_details">Add account details</string>

@@ -94,6 +94,9 @@ class MainActivity : ComponentActivity() {
                             },
                         )
                     },
+                    onSettings = {
+                        startActivity(Intent(this, SettingsActivity::class.java))
+                    },
                 )
             }
         }
@@ -106,6 +109,7 @@ fun MainScreen(
     data: StateFlow<VaultState>,
     onAddAccount: () -> Unit = {},
     onAccountSelected: (Account) -> Unit = {},
+    onSettings: () -> Unit = {},
 ) {
     val vaultState by data.collectAsState()
     var isSearch by rememberSaveable { mutableStateOf(false) }
@@ -195,7 +199,7 @@ fun MainScreen(
                             )
                         }
 
-                        IconButton(onClick = { /* Settings will be implemented later. */ }) {
+                        IconButton(onClick = onSettings) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = stringResource(R.string.settings),
