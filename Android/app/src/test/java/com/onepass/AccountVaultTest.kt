@@ -40,6 +40,7 @@ class AccountVaultTest {
                 password = "new-secret",
                 websiteUrl = " site with spaces ",
                 notes = "new-note",
+                favourite = true,
             ),
         )
 
@@ -69,7 +70,7 @@ class AccountVaultTest {
 
         repository.updateCredentials(
             accountGuid,
-            CredentialEdits("user-2", "mail", "old-secret", "website", ""),
+            CredentialEdits("user-2", "mail", "old-secret", "website", "", favourite = true),
         )
 
         val updated = (repository.state.value as VaultState.Unlocked).data.accounts.single()
@@ -120,7 +121,7 @@ class AccountVaultTest {
         repository.unlock(OnePassData(accounts = listOf(original)), "content://vault", charArrayOf('k'))
 
         val result = repository.addAccount(
-            NewAccountDetails("New", "user", null, "password", null, null),
+            NewAccountDetails("New", "user", null, "password", null, null, favourite = true),
         )
 
         assertEquals(VaultAddResult.SaveFailed(rollbackSucceeded = true), result)
@@ -138,7 +139,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null, ""),
+            CredentialEdits("changed", null, "old-secret", null, "", favourite = false),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = true), result)
@@ -155,7 +156,7 @@ class AccountVaultTest {
 
         val result = repository.updateCredentials(
             accountGuid,
-            CredentialEdits("changed", null, "old-secret", null, ""),
+            CredentialEdits("changed", null, "old-secret", null, "", favourite = false),
         )
 
         assertEquals(VaultUpdateResult.SaveFailed(rollbackSucceeded = false), result)
@@ -183,6 +184,40 @@ class AccountVaultTest {
         assertEquals(false, repository.create("content://new-vault", "long-password".toCharArray()))
         assertArrayEquals(originalBytes, store.bytes)
         assertSame(VaultState.Locked, repository.state.value)
+    }
+
+    @Test
+    fun favouriteOnlyUpdatesPersistBothDirectionsWithoutChangingOtherFields() = runBlocking {
+        val store = FakeDocumentStore("original".encodeToByteArray())
+        val encoder = CapturingEncoder("encrypted".encodeToByteArray())
+        val repository = repository(store, encoder)
+        val original = account()
+        repository.unlock(OnePassData(accounts = listOf(original)), "content://vault", charArrayOf('k'))
+
+        for (favourite in listOf(false, true)) {
+            val result = repository.updateCredentials(
+                accountGuid,
+                CredentialEdits(original.username, original.emailAddress, original.password,
+                    original.websiteUrl, original.notes, favourite),
+            )
+            assertSame(VaultUpdateResult.Success, result)
+            val expected = original.copy(favourite = favourite, dateModified = timestamp.toString())
+            assertEquals(expected, (repository.state.value as VaultState.Unlocked).data.accounts.single())
+            assertEquals(expected, encoder.savedData?.accounts?.single())
+        }
+    }
+
+    @Test
+    fun newAccountCanBeSavedAsFavourite() = runBlocking {
+        val encoder = CapturingEncoder("encrypted".encodeToByteArray())
+        val repository = repository(FakeDocumentStore("original".encodeToByteArray()), encoder)
+        repository.unlock(OnePassData(), "content://vault", charArrayOf('k'))
+
+        assertSame(VaultAddResult.Success, repository.addAccount(
+            NewAccountDetails("New", null, null, null, null, null, favourite = true),
+        ))
+        assertEquals(true, (repository.state.value as VaultState.Unlocked).data.accounts.single().favourite)
+        assertEquals(true, encoder.savedData?.accounts?.single()?.favourite)
     }
 
     private fun repository(store: FakeDocumentStore, encoder: CapturingEncoder) = VaultRepository(
