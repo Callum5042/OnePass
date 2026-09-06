@@ -176,6 +176,25 @@ class AccountVaultTest {
     }
 
     @Test
+    fun activeSessionCopyCanBeWipedWithoutChangingTheSession() {
+        val repository = repository(
+            FakeDocumentStore("original".encodeToByteArray()),
+            CapturingEncoder("encrypted".encodeToByteArray()),
+        )
+        repository.unlock(OnePassData(), "content://vault", "session-password".toCharArray())
+
+        val copy = repository.copyActiveSession()!!
+        assertEquals("content://vault", copy.documentUri)
+        assertArrayEquals("session-password".toCharArray(), copy.password)
+
+        copy.clearPassword()
+
+        val secondCopy = repository.copyActiveSession()!!
+        assertArrayEquals("session-password".toCharArray(), secondCopy.password)
+        secondCopy.clearPassword()
+    }
+
+    @Test
     fun failedCreateDoesNotUnlockOrReplaceFile() = runBlocking {
         val originalBytes = "old".encodeToByteArray()
         val store = FakeDocumentStore(originalBytes, failuresRemaining = 1)

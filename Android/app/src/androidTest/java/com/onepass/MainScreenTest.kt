@@ -169,6 +169,23 @@ class MainScreenTest {
         assertEquals(true, addRequested)
     }
 
+    @Test
+    fun tappingSettingsRequestsSettingsScreen() {
+        var settingsRequested = false
+        composeRule.setContent {
+            OnePassTheme {
+                MainScreen(
+                    data = MutableStateFlow(VaultState.Unlocked(OnePassData())),
+                    onSettings = { settingsRequested = true },
+                )
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Settings").performClick()
+
+        assertEquals(true, settingsRequested)
+    }
+
     private fun setMainContent(state: VaultState) {
         setMainContent(MutableStateFlow(state))
     }

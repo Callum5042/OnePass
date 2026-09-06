@@ -51,4 +51,5 @@ class LoginPersistenceUiTest {
         assertEquals(false, savedRememberMe)
         assertNull(savedVaultUri)
     }
+
 }
