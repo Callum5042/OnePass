@@ -57,6 +57,28 @@ class SettingsScreenTest {
     }
 
     @Test
+    fun staleEnabledBiometricSettingCanBeDisabledWithoutAvailability() {
+        var requestedValue: Boolean? = null
+        composeRule.setContent {
+            OnePassTheme {
+                SettingsScreen(
+                    state = BiometricSettingsState(
+                        enabled = true,
+                        availability = BiometricAvailability.NoEnrollment,
+                    ),
+                    onBiometricToggle = { requestedValue = it },
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("biometric_toggle")
+            .assertIsEnabled()
+            .performClick()
+
+        assertTrue(requestedValue == false)
+    }
+
+    @Test
     fun togglingBiometricSettingInvokesCallback() {
         var requestedValue: Boolean? = null
         composeRule.setContent {

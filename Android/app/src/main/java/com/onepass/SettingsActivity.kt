@@ -50,7 +50,6 @@ class SettingsActivity : FragmentActivity() {
     private var settingsState by mutableStateOf(BiometricSettingsState())
     private var biometricPrompt: BiometricPrompt? = null
     private var pendingEnrollment: PendingEnrollment? = null
-    private var pendingDisable: PendingDisable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +73,6 @@ class SettingsActivity : FragmentActivity() {
     override fun onDestroy() {
         pendingEnrollment?.session?.clearPassword()
         pendingEnrollment = null
-        pendingDisable?.credential?.clear()
-        pendingDisable = null
 
         biometricPrompt?.cancelAuthentication()
         biometricPrompt = null
@@ -86,16 +83,6 @@ class SettingsActivity : FragmentActivity() {
         val session: ActiveVaultSession,
         val cipher: Cipher,
     )
-
-    private data class PendingDisable(
-        val credential: BiometricCredentialStore.StoredCredential,
-        val cipher: Cipher,
-    )
-
-    private enum class BiometricOperation {
-        Enroll,
-        Disable,
-    }
 
     private fun onBiometricToggle(enabled: Boolean) {
         if (settingsState.isBusy) return
@@ -127,7 +114,6 @@ class SettingsActivity : FragmentActivity() {
         settingsState = settingsState.copy(isBusy = true, message = null)
         try {
             showBiometricPrompt(
-                operation = BiometricOperation.Enroll,
                 title = R.string.biometric_unlock_enable_title,
                 subtitle = R.string.biometric_unlock_enable_subtitle,
                 cipher = cipher,
@@ -140,49 +126,15 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun beginDisable() {
-        if (settingsState.availability != BiometricAvailability.Available) {
-            refreshState(getString(R.string.biometric_unlock_unavailable))
-            return
-        }
-
-        val credential = try {
-            credentialStore.readCredential()
-        } catch (_: Throwable) {
-            clearCredentialQuietly()
-            refreshState(getString(R.string.biometric_unlock_reenroll))
-            return
-        }
-        if (credential == null) {
-            refreshState()
-            return
-        }
-
-        val cipher = try {
-            credentialStore.createDecryptionCipher(credential)
-        } catch (error: Throwable) {
-            credential.clear()
-            handleCredentialError(error)
-            return
-        }
-
-        pendingDisable = PendingDisable(credential, cipher)
-        settingsState = settingsState.copy(isBusy = true, message = null)
         try {
-            showBiometricPrompt(
-                operation = BiometricOperation.Disable,
-                title = R.string.biometric_unlock_disable_title,
-                subtitle = R.string.biometric_unlock_disable_subtitle,
-                cipher = cipher,
-            )
+            credentialStore.clear()
+            refreshState(getString(R.string.biometric_unlock_disabled_message))
         } catch (error: Throwable) {
-            pendingDisable?.credential?.clear()
-            pendingDisable = null
             handleCredentialError(error)
         }
     }
 
     private fun showBiometricPrompt(
-        operation: BiometricOperation,
         title: Int,
         subtitle: Int,
         cipher: Cipher,
@@ -192,10 +144,7 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getMainExecutor(this),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    when (operation) {
-                        BiometricOperation.Enroll -> finishEnrollment(result)
-                        BiometricOperation.Disable -> finishDisable(result)
-                    }
+                    finishEnrollment(result)
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -234,32 +183,9 @@ class SettingsActivity : FragmentActivity() {
         }
     }
 
-    private fun finishDisable(result: BiometricPrompt.AuthenticationResult) {
-        val pending = pendingDisable ?: return
-        pendingDisable = null
-        biometricPrompt = null
-
-        var decryptedPassword: CharArray? = null
-        try {
-            decryptedPassword = credentialStore.decryptCredential(
-                pending.credential,
-                checkNotNull(result.cryptoObject?.cipher),
-            )
-            credentialStore.clear()
-            refreshState(getString(R.string.biometric_unlock_disabled_message))
-        } catch (error: Throwable) {
-            handleCredentialError(error)
-        } finally {
-            decryptedPassword?.fill('\u0000')
-            pending.credential.clear()
-        }
-    }
-
     private fun finishAuthentication(message: String) {
         pendingEnrollment?.session?.clearPassword()
         pendingEnrollment = null
-        pendingDisable?.credential?.clear()
-        pendingDisable = null
         biometricPrompt = null
         refreshState(message)
     }
@@ -332,7 +258,8 @@ internal fun SettingsScreen(
         state.availability == BiometricAvailability.NoEnrollment -> R.string.biometric_unlock_no_enrollment
         else -> R.string.biometric_unlock_unavailable
     }
-    val toggleEnabled = state.availability == BiometricAvailability.Available && !state.isBusy
+    val toggleEnabled = !state.isBusy &&
+        (state.availability == BiometricAvailability.Available || state.enabled)
 
     Scaffold(
         topBar = {

@@ -15,8 +15,6 @@
     <string name="biometric_unlock_session_unavailable">Unlock the vault before enabling biometric unlock.</string>
     <string name="biometric_unlock_enable_title">Enable biometric unlock</string>
     <string name="biometric_unlock_enable_subtitle">Confirm your biometric to protect this vault session.</string>
-    <string name="biometric_unlock_disable_title">Disable biometric unlock</string>
-    <string name="biometric_unlock_disable_subtitle">Confirm your biometric to disable biometric unlock.</string>
     <string name="biometric_unlock_enabled_message">Biometric unlock enabled.</string>
     <string name="biometric_unlock_disabled_message">Biometric unlock disabled.</string>
     <string name="biometric_unlock_authentication_cancelled">Biometric authentication was cancelled.</string>
