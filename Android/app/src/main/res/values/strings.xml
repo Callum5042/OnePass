@@ -23,6 +23,9 @@
     <string name="biometric_unlock_authentication_failed">Biometric authentication was not completed.</string>
     <string name="biometric_unlock_storage_failed">Could not save the biometric setting. Please try again.</string>
     <string name="biometric_unlock_reenroll">Biometric data changed. Enable biometric unlock again.</string>
+    <string name="biometric_unlock_login_title">Unlock vault</string>
+    <string name="biometric_unlock_login_subtitle">Confirm your biometric to unlock this vault.</string>
+    <string name="biometric_unlock_use_password">Use password</string>
     <string name="cancel">Cancel</string>
     <string name="add_account">Add account</string>
     <string name="title_activity_add_account">Add account</string>

@@ -4,11 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import androidx.activity.ComponentActivity
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +64,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.onepass.services.FileEncoder
+import com.onepass.services.BiometricCredentialStore
 import com.onepass.services.InvalidOnePassFileException
 import com.onepass.services.InvalidPasswordException
 import com.onepass.services.OnePassData
@@ -70,11 +76,17 @@ import com.onepass.ui.theme.OnePassTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.crypto.Cipher
 
-class LoginActivity : ComponentActivity() {
+class LoginActivity : FragmentActivity() {
+    private lateinit var biometricCredentialStore: BiometricCredentialStore
+    private var biometricPrompt: BiometricPrompt? = null
+    private var pendingBiometricLogin: PendingBiometricLogin? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        biometricCredentialStore = BiometricCredentialStore(this)
         val loginPreferences = LoginPreferences(this)
         val loginSettings = loginPreferences.load()
 
@@ -106,6 +118,7 @@ class LoginActivity : ComponentActivity() {
                                 onLoginSuccess = { data, documentUri, password ->
                                     loginAndOpenMain(data, documentUri, password)
                                 },
+                                onBiometricLoginRequested = ::requestBiometricLogin,
                                 onLoginPreferencesChanged = { rememberMe, vaultUri ->
                                     loginPreferences.save(rememberMe, vaultUri)
                                 },
@@ -115,17 +128,151 @@ class LoginActivity : ComponentActivity() {
                 }
             }
         }
+
+        if (loginSettings.rememberMe) {
+            loginSettings.vaultUri?.let { rememberedVaultUri ->
+                // Wait until the first frame has been queued so the biometric prompt is
+                // launched from a resumed activity. A missing credential simply leaves the
+                // password form available through requestBiometricLogin's fallback path.
+                window.decorView.post {
+                    if (!isFinishing && !isDestroyed) {
+                        requestBiometricLogin(rememberedVaultUri)
+                    }
+                }
+            }
+        }
     }
+
+    override fun onDestroy() {
+        val prompt = biometricPrompt
+        clearPendingBiometricLogin()
+        prompt?.cancelAuthentication()
+        super.onDestroy()
+    }
+
+    private fun requestBiometricLogin(documentUri: Uri) {
+        if (biometricPrompt != null) return
+        if (runCatching {
+                BiometricManager.from(this).canAuthenticate(
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG,
+                )
+            }.getOrDefault(BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE) !=
+            BiometricManager.BIOMETRIC_SUCCESS
+        ) return
+
+        val credential = runCatching { biometricCredentialStore.readCredential() }
+            .getOrNull() ?: return
+        if (credential.vaultUri != documentUri.toString()) {
+            credential.clear()
+            return
+        }
+
+        val cipher = try {
+            biometricCredentialStore.createDecryptionCipher(credential)
+        } catch (error: Throwable) {
+            credential.clear()
+            if (error.hasBiometricCause<KeyPermanentlyInvalidatedException>()) {
+                runCatching { biometricCredentialStore.clear() }
+            }
+            return
+        }
+
+        val pending = PendingBiometricLogin(documentUri, credential, cipher)
+        pendingBiometricLogin = pending
+        val prompt = BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    finishBiometricLogin(result)
+                }
+
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    clearPendingBiometricLogin()
+                }
+            },
+        )
+        biometricPrompt = prompt
+
+        try {
+            prompt.authenticate(
+                BiometricPrompt.PromptInfo.Builder()
+                    .setTitle(getString(R.string.biometric_unlock_login_title))
+                    .setSubtitle(getString(R.string.biometric_unlock_login_subtitle))
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                    .setNegativeButtonText(getString(R.string.biometric_unlock_use_password))
+                    .build(),
+                BiometricPrompt.CryptoObject(cipher),
+            )
+        } catch (_: Throwable) {
+            clearPendingBiometricLogin()
+        }
+    }
+
+    private fun finishBiometricLogin(result: BiometricPrompt.AuthenticationResult) {
+        val pending = pendingBiometricLogin ?: return
+        pendingBiometricLogin = null
+        biometricPrompt = null
+
+        lifecycleScope.launch {
+            var password: CharArray? = null
+            try {
+                val authenticatedCipher = checkNotNull(result.cryptoObject?.cipher)
+                val decryptedPassword = biometricCredentialStore.decryptCredential(
+                    pending.credential,
+                    authenticatedCipher,
+                )
+                password = decryptedPassword
+                val data = withContext(Dispatchers.IO) {
+                    contentResolver.openInputStream(pending.documentUri)?.use { input ->
+                        FileEncoder().load(decryptedPassword, input)
+                    } ?: error("Unable to open the selected file")
+                }
+                loginAndOpenMain(data, pending.documentUri, decryptedPassword)
+                password = null
+            } catch (error: Throwable) {
+                if (error is InvalidPasswordException ||
+                    error is BiometricCredentialStore.InvalidBiometricCredentialException ||
+                    error.hasBiometricCause<KeyPermanentlyInvalidatedException>()
+                ) {
+                    runCatching { biometricCredentialStore.clear() }
+                }
+                // Keep the password form available for a normal fallback login.
+            } finally {
+                password?.fill('\u0000')
+                pending.credential.clear()
+            }
+        }
+    }
+
+    private fun clearPendingBiometricLogin() {
+        pendingBiometricLogin?.credential?.clear()
+        pendingBiometricLogin = null
+        biometricPrompt = null
+    }
+
+    private data class PendingBiometricLogin(
+        val documentUri: Uri,
+        val credential: BiometricCredentialStore.StoredCredential,
+        val cipher: Cipher,
+    )
 
     private fun loginAndOpenMain(data: OnePassData, documentUri: Uri, password: CharArray) {
-        val repository = (application as OnePassApplication).vaultRepository
-        repository.unlock(data, documentUri.toString(), password)
+        try {
+            val repository = (application as OnePassApplication).vaultRepository
+            repository.unlock(data, documentUri.toString(), password)
 
-        val activity = Intent(this@LoginActivity, MainActivity::class.java)
-        startActivity(activity)
-        finish()
+            val activity = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(activity)
+            finish()
+        } finally {
+            password.fill('\u0000')
+        }
     }
 }
+
+private inline fun <reified T : Throwable> Throwable.hasBiometricCause(): Boolean =
+    generateSequence(this) { it.cause }.any { T::class.java.isInstance(it) }
 
 @Composable
 fun LoginView(
@@ -133,6 +280,7 @@ fun LoginView(
     onLoginSuccess: (data: OnePassData, documentUri: Uri, password: CharArray) -> Unit = { _, _, _ -> },
     initialFileUri: Uri? = null,
     initialRememberMe: Boolean = false,
+    onBiometricLoginRequested: (Uri) -> Unit = {},
     onLoginPreferencesChanged: (rememberMe: Boolean, vaultUri: Uri?) -> Unit = { _, _ -> },
 ) {
     val scrollState = rememberScrollState()
@@ -175,6 +323,10 @@ fun LoginView(
                     onFileSelected = { uri ->
                         fileUri = uri
                         onLoginPreferencesChanged(rememberMe, uri)
+                        // This callback only runs after an explicit picker selection. The
+                        // remembered URI is attempted separately after the initial frame, while
+                        // a deliberate selection can retry the matching biometric credential.
+                        onBiometricLoginRequested(uri)
                     }
                 )
 
