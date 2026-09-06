@@ -106,6 +106,7 @@ fun AddAccountScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var websiteUrl by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
+    var favourite by rememberSaveable { mutableStateOf(false) }
     var isSaving by rememberSaveable { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -119,6 +120,7 @@ fun AddAccountScreen(
         password = password,
         websiteUrl = websiteUrl,
         notes = notes,
+        favourite = favourite,
     )
 
     Scaffold(
@@ -211,6 +213,8 @@ fun AddAccountScreen(
                     emailAddress = emailAddress,
                     password = password,
                     websiteUrl = websiteUrl,
+                    favourite = favourite,
+                    onFavouriteChange = { favourite = it },
                     enabled = !isSaving,
                     onNameChange = { name = it },
                     onUsernameChange = { username = it },
@@ -235,6 +239,8 @@ private fun AddDetailsTab(
     emailAddress: String,
     password: String,
     websiteUrl: String,
+    favourite: Boolean,
+    onFavouriteChange: (Boolean) -> Unit,
     enabled: Boolean,
     onNameChange: (String) -> Unit,
     onUsernameChange: (String) -> Unit,
@@ -288,6 +294,9 @@ private fun AddDetailsTab(
                 testTag = "add_password",
                 isPassword = true,
             )
+        }
+        item {
+            FavouriteSwitchRow(favourite, enabled, onFavouriteChange)
         }
         item { Spacer(Modifier.height(20.dp)) }
         item { SectionLabel(R.string.website) }

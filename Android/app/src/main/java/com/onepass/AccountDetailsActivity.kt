@@ -202,6 +202,7 @@ fun AccountDetailsScreen(
     var password by rememberSaveable(account.guid) { mutableStateOf(account.password.orEmpty()) }
     var websiteUrl by rememberSaveable(account.guid) { mutableStateOf(account.websiteUrl.orEmpty()) }
     var notes by rememberSaveable(account.guid) { mutableStateOf(account.notes.orEmpty()) }
+    var favourite by rememberSaveable(account.guid) { mutableStateOf(account.favourite) }
 
     var usernameTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
     var emailTouched by rememberSaveable(account.guid) { mutableStateOf(false) }
@@ -215,6 +216,7 @@ fun AccountDetailsScreen(
         password = account.password.orEmpty()
         websiteUrl = account.websiteUrl.orEmpty()
         notes = account.notes.orEmpty()
+        favourite = account.favourite
 
         usernameTouched = false
         emailTouched = false
@@ -226,6 +228,7 @@ fun AccountDetailsScreen(
 
     fun cancelEditing() {
         if (isSaving) return
+        favourite = account.favourite
         isEditing = false
         usernameTouched = false
         emailTouched = false
@@ -240,6 +243,7 @@ fun AccountDetailsScreen(
         password = if (passwordTouched) password else account.password,
         websiteUrl = if (websiteTouched) websiteUrl else account.websiteUrl,
         notes = if (notesTouched) notes else account.notes,
+        favourite = favourite,
     )
     val isDirty = edits != CredentialEdits(
         username = account.username,
@@ -247,6 +251,7 @@ fun AccountDetailsScreen(
         password = account.password,
         websiteUrl = account.websiteUrl,
         notes = account.notes,
+        favourite = account.favourite,
     )
 
     BackHandler(enabled = isEditing) { cancelEditing() }
@@ -325,6 +330,8 @@ fun AccountDetailsScreen(
                     emailAddress = emailAddress,
                     password = password,
                     websiteUrl = websiteUrl,
+                    favourite = favourite,
+                    onFavouriteChange = { favourite = it },
                     onUsernameChange = { usernameTouched = true; username = it },
                     onEmailChange = { emailTouched = true; emailAddress = it },
                     onPasswordChange = { passwordTouched = true; password = it },
@@ -465,6 +472,8 @@ private fun DetailsTab(
     emailAddress: String,
     password: String,
     websiteUrl: String,
+    favourite: Boolean,
+    onFavouriteChange: (Boolean) -> Unit,
     onUsernameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -537,6 +546,9 @@ private fun DetailsTab(
                     onCopy = onCopy,
                 )
             }
+        }
+        if (isEditing) {
+            item { FavouriteSwitchRow(favourite, enabled, onFavouriteChange) }
         }
         item { Spacer(Modifier.height(20.dp)) }
         item { SectionLabel(R.string.website) }

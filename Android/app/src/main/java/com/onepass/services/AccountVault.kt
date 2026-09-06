@@ -18,6 +18,7 @@ data class CredentialEdits(
     val password: String?,
     val websiteUrl: String?,
     val notes: String?,
+    val favourite: Boolean,
 )
 
 data class NewAccountDetails(
@@ -27,6 +28,7 @@ data class NewAccountDetails(
     val password: String?,
     val websiteUrl: String?,
     val notes: String?,
+    val favourite: Boolean = false,
 )
 
 sealed interface VaultUpdateResult {
@@ -120,6 +122,7 @@ class VaultRepository(
             password = edits.password,
             websiteUrl = edits.websiteUrl,
             notes = edits.notes,
+            favourite = edits.favourite,
             passwordHistory = passwordHistory,
         )
         val updatedData = unlocked.data.copy(
@@ -168,7 +171,7 @@ class VaultRepository(
             username = details.username,
             emailAddress = details.emailAddress,
             password = details.password,
-            favourite = false,
+            favourite = details.favourite,
             websiteUrl = details.websiteUrl,
             mfaEnabled = false,
             notes = details.notes,
