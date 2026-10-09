@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace OnePass.WPF.Windows
 {
@@ -28,52 +29,127 @@ namespace OnePass.WPF.Windows
             Close();
         }
 
+        private ContentModel Model => DataContext as ContentModel;
+
         private void MenuItem_Click_AddAccount(object sender, RoutedEventArgs e)
         {
-            var window = new AccountWindow(this, edit: false, historyTabSelected: false);
-            window.Show();
+            if (Model is ContentModel model && !model.IsEditing)
+            {
+                model.BeginAdd();
+                FocusEditor();
+            }
         }
 
         private void MenuItem_Click_EditAccount(object sender, RoutedEventArgs e)
         {
-            if (AccountFromMenu(sender) is AccountListModel model)
+            if (AccountFromMenu(sender) is AccountListModel account)
             {
-                OpenEditAccountWindow(model);
+                BeginEdit(account);
             }
         }
 
         private void Button_Click_EditSelectedAccount(object sender, RoutedEventArgs e)
         {
-            if (SelectedAccount is AccountListModel model)
+            if (SelectedAccount is AccountListModel account)
             {
-                OpenEditAccountWindow(model);
+                BeginEdit(account);
             }
         }
 
-        private AccountListModel SelectedAccount => (DataContext as ContentModel)?.SelectedAccount;
+        private AccountListModel SelectedAccount => Model?.SelectedAccount;
 
         // A context menu inherits the data context of the row it was opened on
         private static AccountListModel AccountFromMenu(object sender) => (sender as MenuItem)?.DataContext as AccountListModel;
 
-        private void OpenEditAccountWindow(AccountListModel model)
+        private void BeginEdit(AccountListModel account)
         {
-            var accountModel = App.Current.GetService<AccountModel>();
-            accountModel.Guid = model.Guid;
-            accountModel.Name = model.Name;
-            accountModel.Username = model.Username;
-            accountModel.EmailAddress = model.EmailAddress;
-            accountModel.Password = model.Password;
-            accountModel.Favourite = model.Favourite;
-            accountModel.Website = model.WebsiteUrl;
-            accountModel.Notes = model.Notes;
-            accountModel.PasswordHistory = model.PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
-
-            var accountWindow = new AccountWindow(this, edit: true, historyTabSelected: false)
+            if (Model is ContentModel model && !model.IsEditing)
             {
-                DataContext = accountModel
-            };
+                model.BeginEdit(account);
+                FocusEditor();
+            }
+        }
 
-            accountWindow.Show();
+        private void FocusEditor()
+        {
+            EditorRevealPasswordToggle.IsChecked = false;
+
+            // The editor only becomes visible on the next layout pass
+            Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
+            {
+                EditorNameTextBox.Focus();
+                EditorNameTextBox.CaretIndex = EditorNameTextBox.Text.Length;
+            });
+        }
+
+        private async void Button_Click_SaveAccount(object sender, RoutedEventArgs e)
+        {
+            await SaveEditorAsync();
+        }
+
+        private async Task SaveEditorAsync()
+        {
+            if (Model is not ContentModel model || !model.IsEditing || !SaveAccountButton.IsEnabled)
+            {
+                return;
+            }
+
+            var adding = model.IsAdding;
+            SaveAccountButton.IsEnabled = false;
+
+            try
+            {
+                if (await model.SaveEditorAsync())
+                {
+                    ShowToast(adding ? "Account added" : "Account saved");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Couldn't save the account: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                SaveAccountButton.IsEnabled = true;
+            }
+        }
+
+        private void Button_Click_CancelEdit(object sender, RoutedEventArgs e)
+        {
+            Model?.CancelEdit();
+        }
+
+        /// <summary>Returns true if there is nothing unsaved, or the user agreed to throw it away.</summary>
+        private bool ConfirmDiscardEdits()
+        {
+            if (Model?.EditorHasChanges != true)
+            {
+                return true;
+            }
+
+            var result = MessageBox.Show(this, "Discard your unsaved changes?", "Unsaved changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            return result == MessageBoxResult.Yes;
+        }
+
+        private void Button_Click_GeneratePassword(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Model?.Editor?.GeneratePassword();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void EditorPasswordTextBox_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Don't let a hidden password be copied out of the field
+            if (EditorRevealPasswordToggle.IsChecked != true && (e.Command == ApplicationCommands.Copy || e.Command == ApplicationCommands.Cut))
+            {
+                e.Handled = true;
+            }
         }
 
         private async void MenuItem_Click_RemoveAccount(object sender, RoutedEventArgs e)
@@ -263,6 +339,12 @@ namespace OnePass.WPF.Windows
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (!ConfirmDiscardEdits())
+            {
+                e.Cancel = true;
+                return;
+            }
+
             // Read file
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var path = Path.Combine(appdata, @"OnePass", "options.json");
@@ -358,8 +440,27 @@ namespace OnePass.WPF.Windows
             syncWindow.ShowDialog();
         }
 
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (Model?.IsEditing == true)
+            {
+                if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+                {
+                    e.Handled = true;
+                    await SaveEditorAsync();
+                }
+                else if (e.Key == Key.Escape)
+                {
+                    e.Handled = true;
+                    if (ConfirmDiscardEdits())
+                    {
+                        Model.CancelEdit();
+                    }
+                }
+
+                return;
+            }
+
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.F)
             {
                 FocusSearch();

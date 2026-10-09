@@ -138,7 +138,7 @@
         <Menu DockPanel.Dock="Top" Style="{StaticResource MenuBar}">
 
             <MenuItem Header="_File">
-                <MenuItem Header="_Add account…" Click="MenuItem_Click_AddAccount" />
+                <MenuItem Header="_Add account…" Click="MenuItem_Click_AddAccount" IsEnabled="{Binding IsNotEditing}" />
                 <Separator />
                 <MenuItem Header="_Log out" IsEnabled="False" />
                 <MenuItem Header="E_xit" InputGestureText="Alt+F4" Click="MenuItem_Click_Exit" />
@@ -149,7 +149,7 @@
                 <Separator />
                 <MenuItem Header="_Clear clipboard" Click="MenuItem_Click_ClearClipboard" />
                 <MenuItem Header="_Export JSON…" Click="MenuItem_Click_ExportJson" />
-                <MenuItem Header="_Sync accounts…" Click="MenuItem_Click_SyncAccounts" />
+                <MenuItem Header="_Sync accounts…" Click="MenuItem_Click_SyncAccounts" IsEnabled="{Binding IsNotEditing}" />
             </MenuItem>
 
             <MenuItem Header="_Options">
@@ -174,7 +174,7 @@
                 <TextBlock Grid.Column="0" Text="OnePass" Foreground="White" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,20,0" />
 
                 <!-- Search -->
-                <Border Grid.Column="1" MaxWidth="520" Height="36" HorizontalAlignment="Stretch" CornerRadius="4" Background="#1FFFFFFF"
+                <Border Grid.Column="1" MaxWidth="520" Height="36" HorizontalAlignment="Stretch" CornerRadius="4" Background="#1FFFFFFF" IsEnabled="{Binding IsNotEditing}"
                         BorderBrush="#8CFFFFFF" BorderThickness="0,0,0,1" Padding="12,0,4,0" Cursor="IBeam">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -222,7 +222,7 @@
                 </Border>
 
                 <!-- Add account -->
-                <Button Grid.Column="2" Style="{StaticResource HeaderButton}" Height="36" Padding="12,0,14,0" Margin="20,0,0,0" Click="MenuItem_Click_AddAccount">
+                <Button Grid.Column="2" Style="{StaticResource HeaderButton}" Height="36" Padding="12,0,14,0" Margin="20,0,0,0" Click="MenuItem_Click_AddAccount" IsEnabled="{Binding IsNotEditing}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE710;" FontFamily="{StaticResource FluentIcons}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" />
                         <TextBlock Text="Add account" VerticalAlignment="Center" />
@@ -240,7 +240,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <!-- Account list; locked while the editor is open -->
             <Grid Grid.Column="0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Setter Property="Opacity" Value="0.55" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -356,19 +367,27 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedAccount}" Value="{x:Null}">
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SelectedAccount}" Value="{x:Null}" />
+                                        <Condition Binding="{Binding IsEditing}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
 
+                <!-- Viewing -->
                 <ScrollViewer DataContext="{Binding SelectedAccount}" VerticalScrollBarVisibility="Auto" Focusable="False">
                     <ScrollViewer.Style>
                         <Style TargetType="ScrollViewer">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DataContext.IsEditing, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -665,6 +684,143 @@
                             </TabItem>
 
                         </TabControl>
+
+                    </DockPanel>
+                </ScrollViewer>
+
+                <!-- Adding / editing -->
+                <ScrollViewer DataContext="{Binding Editor}" VerticalScrollBarVisibility="Auto" Focusable="False">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <DockPanel>
+
+                        <!-- Editor header -->
+                        <Grid DockPanel.Dock="Top" Margin="32,28,32,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding DataContext.EditorTitle, RelativeSource={RelativeSource AncestorType=Window}}"
+                                       FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center" />
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Style="{StaticResource StandardButton}" Content="Cancel" Click="Button_Click_CancelEdit" ToolTip="Cancel (Esc)" />
+                                <Button x:Name="SaveAccountButton" Style="{StaticResource AccentButton}" Margin="8,0,0,0" Click="Button_Click_SaveAccount" ToolTip="Save (Ctrl+S)">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74E;" FontFamily="{StaticResource FluentIcons}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                        <TextBlock Text="Save" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Margin="32,0,32,40">
+
+                            <!-- Name -->
+                            <StackPanel Margin="0,16,0,0">
+                                <TextBlock Text="Name" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox x:Name="EditorNameTextBox" Style="{StaticResource EditorTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                         AutomationProperties.Name="Name" />
+                                <TextBlock Style="{StaticResource EditorError}" Text="{Binding NameValidation, TargetNullValue=''}" />
+                            </StackPanel>
+
+                            <TextBlock Text="Sign in" Style="{StaticResource PaneSectionLabel}" Margin="0,28,0,0" />
+
+                            <!-- Username -->
+                            <StackPanel Margin="0,12,0,0">
+                                <TextBlock Text="Username" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Username" />
+                            </StackPanel>
+
+                            <!-- Email -->
+                            <StackPanel Margin="0,14,0,0">
+                                <TextBlock Text="Email" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Email" />
+                                <TextBlock Style="{StaticResource EditorError}" Text="{Binding EmailAddressValidation, TargetNullValue=''}" />
+                            </StackPanel>
+
+                            <!-- Password -->
+                            <StackPanel Margin="0,14,0,0">
+                                <TextBlock Text="Password" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox x:Name="EditorPasswordTextBox" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Padding="12,0,48,0"
+                                             AutomationProperties.Name="Password" CommandManager.PreviewExecuted="EditorPasswordTextBox_PreviewExecuted">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource EditorTextBox}">
+                                                <Setter Property="FontFamily" Value="{StaticResource PasswordFonts}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, ElementName=EditorRevealPasswordToggle}" Value="True">
+                                                        <Setter Property="FontFamily" Value="Cascadia Mono, Consolas" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+
+                                    <ToggleButton x:Name="EditorRevealPasswordToggle" Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,2,0" Width="40" Height="40">
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton" BasedOn="{StaticResource SubtleIconButton}">
+                                                <Setter Property="Content" Value="&#xE890;" />
+                                                <Setter Property="ToolTip" Value="Show password" />
+                                                <Setter Property="AutomationProperties.Name" Value="Show password" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Content" Value="&#xED1A;" />
+                                                        <Setter Property="ToolTip" Value="Hide password" />
+                                                        <Setter Property="AutomationProperties.Name" Value="Hide password" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+
+                                    <Button Grid.Column="1" Style="{StaticResource StandardButton}" Height="44" Margin="8,0,0,0" Click="Button_Click_GeneratePassword"
+                                            ToolTip="Generate a password using the rules in Options › Configuration">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE8B1;" FontFamily="{StaticResource FluentIcons}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                            <TextBlock Text="Generate" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Favourite -->
+                            <Border Style="{StaticResource FieldRow}" BorderThickness="0" Margin="0,8,0,0">
+                                <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Favourite}" VerticalAlignment="Center">
+                                    <TextBlock Text="Favourite" FontSize="15" />
+                                </CheckBox>
+                            </Border>
+
+                            <TextBlock Text="Website" Style="{StaticResource PaneSectionLabel}" Margin="0,20,0,0" />
+
+                            <!-- Website -->
+                            <StackPanel Margin="0,12,0,0">
+                                <TextBlock Text="Website" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Website" />
+                            </StackPanel>
+
+                            <TextBlock Text="Notes" Style="{StaticResource PaneSectionLabel}" Margin="0,28,0,0" />
+
+                            <!-- Notes -->
+                            <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Margin="0,12,0,0"
+                                     MinHeight="160" Padding="12,10" VerticalContentAlignment="Top" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" AutomationProperties.Name="Notes" />
+
+                        </StackPanel>
 
                     </DockPanel>
                 </ScrollViewer>
