@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -34,11 +35,24 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_EditAccount(object sender, RoutedEventArgs e)
         {
-            var menu = sender as MenuItem;
-            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
-            var model = item.DataContext as AccountListModel;
-            OpenEditAccountWindow(model, historyTab: false);
+            if (AccountFromMenu(sender) is AccountListModel model)
+            {
+                OpenEditAccountWindow(model, historyTab: false);
+            }
         }
+
+        private void Button_Click_EditSelectedAccount(object sender, RoutedEventArgs e)
+        {
+            if (SelectedAccount is AccountListModel model)
+            {
+                OpenEditAccountWindow(model, historyTab: false);
+            }
+        }
+
+        private AccountListModel SelectedAccount => (DataContext as ContentModel)?.SelectedAccount;
+
+        // A context menu inherits the data context of the row it was opened on
+        private static AccountListModel AccountFromMenu(object sender) => (sender as MenuItem)?.DataContext as AccountListModel;
 
         private void OpenEditAccountWindow(AccountListModel model, bool historyTab)
         {
@@ -63,20 +77,30 @@ namespace OnePass.WPF.Windows
 
         private async void MenuItem_Click_RemoveAccount(object sender, RoutedEventArgs e)
         {
-            var menu = sender as MenuItem;
-            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
+            if (AccountFromMenu(sender) is AccountListModel model)
+            {
+                await RemoveAccountAsync(model);
+            }
+        }
 
+        private async void Button_Click_DeleteSelectedAccount(object sender, RoutedEventArgs e)
+        {
+            if (SelectedAccount is AccountListModel model)
+            {
+                await RemoveAccountAsync(model);
+            }
+        }
+
+        private async Task RemoveAccountAsync(AccountListModel model)
+        {
             var confirm = MessageBox.Show("Delete account", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (confirm == MessageBoxResult.Yes)
             {
-                if (item.DataContext is AccountListModel model)
+                if (DataContext is ContentModel contentModel)
                 {
-                    if (DataContext is ContentModel contentModel)
-                    {
-                        contentModel.AccountListModel.Remove(model);
-                        contentModel.Accounts.Remove(model);
-                        await contentModel.RemoveAsync(model);
-                    }
+                    contentModel.AccountListModel.Remove(model);
+                    contentModel.Accounts.Remove(model);
+                    await contentModel.RemoveAsync(model);
                 }
             }
         }
@@ -89,41 +113,91 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_CopyUsername(object sender, RoutedEventArgs e)
         {
-            var menu = sender as MenuItem;
-            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
-            var model = item.DataContext as AccountListModel;
-
-            // Copy to clipboard
-            if (!string.IsNullOrEmpty(model.Username))
-            {
-                Clipboard.SetText(model.Username);
-            }
+            CopyToClipboard(AccountFromMenu(sender)?.Username);
         }
 
         private void MenuItem_Click_CopyEmailAddress(object sender, RoutedEventArgs e)
         {
-            var menu = sender as MenuItem;
-            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
-            var model = item.DataContext as AccountListModel;
-
-            // Copy to clipboard
-            if (!string.IsNullOrEmpty(model.EmailAddress))
-            {
-                Clipboard.SetText(model.EmailAddress);
-            }
+            CopyToClipboard(AccountFromMenu(sender)?.EmailAddress);
         }
 
         private void MenuItem_Click_CopyPassword(object sender, RoutedEventArgs e)
         {
-            var menu = sender as MenuItem;
-            var item = AccountsListView.ItemContainerGenerator.ContainerFromItem(menu.DataContext) as ListViewItem;
-            var model = item.DataContext as AccountListModel;
+            CopyToClipboard(AccountFromMenu(sender)?.Password);
+        }
 
-            // Copy to clipboard
-            if (!string.IsNullOrEmpty(model.Password))
+        private void Button_Click_CopySelectedUsername(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(SelectedAccount?.Username);
+        }
+
+        private void Button_Click_CopySelectedEmailAddress(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(SelectedAccount?.EmailAddress);
+        }
+
+        private void Button_Click_CopySelectedPassword(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(SelectedAccount?.Password);
+        }
+
+        private static void CopyToClipboard(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
             {
-                Clipboard.SetText(model.Password);
+                Clipboard.SetText(value);
             }
+        }
+
+        private void Hyperlink_Click_OpenSelectedWebsite(object sender, RoutedEventArgs e)
+        {
+            var uri = WebsiteUri(SelectedAccount?.WebsiteUrl);
+            if (uri == null)
+            {
+                MessageBox.Show("Invalid URL", "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open URL: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Only open http(s) links; a bare domain like "github.com" is treated as https
+        private static Uri WebsiteUri(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return null;
+            }
+
+            url = url.Trim();
+            if (!url.Contains("://"))
+            {
+                url = "https://" + url;
+            }
+
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            {
+                return uri;
+            }
+
+            return null;
+        }
+
+        private void AccountsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Never carry a revealed password over to another account
+            RevealPasswordToggle.IsChecked = false;
         }
 
         private void MenuItem_Click_ClearClipboard(object sender, RoutedEventArgs e)

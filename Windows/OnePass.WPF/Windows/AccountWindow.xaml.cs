@@ -47,6 +47,7 @@ namespace OnePass.WPF.Windows
                             Username = model.Username,
                             EmailAddress = model.EmailAddress,
                             Password = model.Password,
+                            DateCreated = DateTime.Now,
                             DateModified = DateTime.Now,
                             Favourite = model.Favourite,
                             Notes = model.Notes,

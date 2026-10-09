@@ -45,6 +45,7 @@ namespace OnePass.WPF.Models
                     Username = x.Username,
                     EmailAddress = x.EmailAddress,
                     Password = x.Password,
+                    DateCreated = x.DateCreated,
                     DateModified = x.DateModified,
                     WebsiteUrl = x.WebsiteUrl,
                     Favourite = x.Favourite,
@@ -57,8 +58,23 @@ namespace OnePass.WPF.Models
             CheckVisibility();
         }
 
-        public ObservableCollection<AccountListModel> Accounts { get => accounts; set => SetProperty(ref accounts, value); }
+        public ObservableCollection<AccountListModel> Accounts
+        {
+            get => accounts;
+            set
+            {
+                // Replacing the list clears the list view's selection, so carry it across
+                var previous = SelectedAccount;
+                if (SetProperty(ref accounts, value))
+                {
+                    SelectedAccount = previous != null && value.Contains(previous) ? previous : value.FirstOrDefault();
+                }
+            }
+        }
         private ObservableCollection<AccountListModel> accounts = new();
+
+        public AccountListModel SelectedAccount { get => selectedAccount; set => SetProperty(ref selectedAccount, value); }
+        private AccountListModel selectedAccount;
 
         public async Task RemoveAsync(AccountListModel model)
         {
@@ -153,6 +169,11 @@ namespace OnePass.WPF.Models
             {
                 ListViewVisibility = Visibility.Collapsed;
                 EmptyStackPanelVisibility = Visibility.Visible;
+            }
+
+            if (SelectedAccount == null || !Accounts.Contains(SelectedAccount))
+            {
+                SelectedAccount = Accounts.FirstOrDefault();
             }
 
             OnPropertyChanged(nameof(AccountCountText));

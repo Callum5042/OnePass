@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,8 @@ namespace OnePass.WPF.Models
 {
     public class AccountListModel : ObservableObject
     {
+        private const string NotSet = "Not set";
+
         public Guid Guid { get; set; }
 
         public string Name
@@ -31,6 +33,8 @@ namespace OnePass.WPF.Models
                 if (SetProperty(ref username, value))
                 {
                     OnPropertyChanged(nameof(DisplayLogin));
+                    OnPropertyChanged(nameof(HasUsername));
+                    OnPropertyChanged(nameof(UsernameText));
                 }
             }
         }
@@ -44,6 +48,8 @@ namespace OnePass.WPF.Models
                 if (SetProperty(ref emailAddress, value))
                 {
                     OnPropertyChanged(nameof(DisplayLogin));
+                    OnPropertyChanged(nameof(HasEmailAddress));
+                    OnPropertyChanged(nameof(EmailAddressText));
                 }
             }
         }
@@ -62,12 +68,39 @@ namespace OnePass.WPF.Models
             }
         }
 
+        public bool HasUsername => NormalizedOrNull(Username) != null;
+
+        public string UsernameText => NormalizedOrNull(Username) ?? NotSet;
+
+        public bool HasEmailAddress => NormalizedOrNull(EmailAddress) != null;
+
+        public string EmailAddressText => NormalizedOrNull(EmailAddress) ?? NotSet;
+
+        public bool HasPassword => !string.IsNullOrEmpty(Password);
+
+        public bool HasWebsite => NormalizedOrNull(WebsiteUrl) != null;
+
+        public string WebsiteText => NormalizedOrNull(WebsiteUrl) ?? NotSet;
+
         private static string NormalizedOrNull(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
-        public string Password { get => password; set => SetProperty(ref password, value); }
+        public string Password
+        {
+            get => password;
+            set
+            {
+                if (SetProperty(ref password, value))
+                {
+                    OnPropertyChanged(nameof(HasPassword));
+                }
+            }
+        }
         private string password;
 
         public bool MfaEnabled { get; set; }
+
+        public DateTime? DateCreated { get => dateCreated; set => SetProperty(ref dateCreated, value); }
+        private DateTime? dateCreated;
 
         public DateTime? DateModified { get => dateModified; set => SetProperty(ref dateModified, value); }
         private DateTime? dateModified;
@@ -80,7 +113,18 @@ namespace OnePass.WPF.Models
         public string Notes { get => notes; set => SetProperty(ref notes, value); }
         private string notes;
 
-        public string WebsiteUrl { get => websiteUrl; set => SetProperty(ref websiteUrl, value); }
+        public string WebsiteUrl
+        {
+            get => websiteUrl;
+            set
+            {
+                if (SetProperty(ref websiteUrl, value))
+                {
+                    OnPropertyChanged(nameof(HasWebsite));
+                    OnPropertyChanged(nameof(WebsiteText));
+                }
+            }
+        }
         private string websiteUrl;
     }
 }

@@ -151,6 +151,63 @@
             <Setter Property="Padding" Value="0,2,0,2"/>
         </Style>
 
+        <!-- Standard Windows-style button: white with a thin border -->
+        <Style x:Key="StandardButton" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="#FFD1D4DA" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="12,0,14,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF5F6F8" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#FFEDEFF2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Borderless icon button (copy, show password, delete...) -->
+        <Style x:Key="SubtleIconButton" TargetType="ButtonBase">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#FF44474F" />
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontFamily" Value="{StaticResource FluentIcons}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ButtonBase">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFEDF0F5" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#FFE3E7EE" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- Menu flyout (dropdown and context menu) -->
         <Style x:Key="MenuFlyoutBorder" TargetType="Border">
             <Setter Property="Background" Value="White" />
