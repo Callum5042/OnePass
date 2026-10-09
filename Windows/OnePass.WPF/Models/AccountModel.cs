@@ -171,8 +171,6 @@ namespace OnePass.WPF.Models
         public string WebsiteValidation { get => websiteValidation; set => SetProperty(ref websiteValidation, value); }
         private string websiteValidation;
 
-        public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
-
         public bool Favourite { get => favourite; set => SetProperty(ref favourite, value); }
         private bool favourite;
 

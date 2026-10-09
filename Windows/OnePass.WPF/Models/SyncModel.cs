@@ -99,8 +99,11 @@ namespace OnePass.WPF.Models
                         Username = x.Username,
                         EmailAddress = x.EmailAddress,
                         Password = x.Password,
+                        DateCreated = x.DateCreated,
                         DateModified = x.DateModified,
                         Favourite = x.Favourite,
+                        WebsiteUrl = x.WebsiteUrl,
+                        Notes = x.Notes,
                         PasswordHistory = x.PasswordHistory.Select(x => new PasswordHistoryModel() { Password = x.Password, DateSet = x.DateTime }).ToList()
                     })
                     .ToList();

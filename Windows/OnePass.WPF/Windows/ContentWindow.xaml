@@ -8,198 +8,832 @@
         mc:Ignorable="d" 
         ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing"
         PreviewKeyDown="Window_PreviewKeyDown"
-        Title="OnePass" Height="450" Width="800" MinWidth="400">
+        Title="OnePass" Height="600" Width="1000" MinWidth="560" MinHeight="400"
+        FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimaryBrush}">
 
     <Window.Resources>
-        
-        <!-- TextBox style -->
-        <Style TargetType="TextBox">
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="3" />
-                </Style>
-            </Style.Resources>
-            <Setter Property="Margin" Value="0,0,0,0" />
-            <Setter Property="Padding" Value="2" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+
+        <!-- Details pane tabs: text tabs with an underline on the selected one -->
+        <Style x:Key="PaneTabControl" TargetType="TabControl">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Top" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1" Padding="20,0">
+                                <TabPanel IsItemsHost="True" />
+                            </Border>
+                            <ContentPresenter ContentSource="SelectedContent" />
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        
+
+        <Style x:Key="PaneTabItem" TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="4,4,0,0" Padding="16,0" Height="48" Margin="0,0,4,0" Cursor="Hand">
+                            <Grid>
+                                <ContentPresenter x:Name="Header" ContentSource="Header" VerticalAlignment="Center"
+                                                  TextElement.FontWeight="SemiBold" TextElement.FontSize="14" TextElement.Foreground="#FF4A4F5A" />
+                                <Border x:Name="Indicator" Height="3" VerticalAlignment="Bottom" CornerRadius="1.5" Background="Transparent" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover on the header only: TabItem.IsMouseOver is also true over the tab's content -->
+                            <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FFF3F5F9" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Indicator" Property="Background" Value="{StaticResource BrandBrush}" />
+                                <Setter TargetName="Header" Property="TextElement.Foreground" Value="{StaticResource BrandBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Details pane text -->
+        <Style x:Key="PaneSectionLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource BrandBrush}" />
+            <Setter Property="Margin" Value="0,20,0,4" />
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="Margin" Value="0,0,0,3" />
+        </Style>
+
+        <Style x:Key="FieldRow" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{StaticResource ListDividerBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="MinHeight" Value="64" />
+            <Setter Property="Padding" Value="0,10" />
+        </Style>
+
+        <Style x:Key="WebsiteLink" TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="{StaticResource BrandBrush}" />
+            <Setter Property="TextDecorations" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Search box in the header: no chrome of its own, the surrounding border draws it -->
+        <Style x:Key="HeaderSearchTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False" VerticalAlignment="Center"
+                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Translucent button on the blue header -->
+        <Style x:Key="HeaderButton" TargetType="Button">
+            <Setter Property="Background" Value="#29FFFFFF" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#42FFFFFF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
-    
+
     <DockPanel>
 
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top" Background="White">
+        <Menu DockPanel.Dock="Top" Style="{StaticResource MenuBar}">
 
-            <MenuItem Header="File">
-                <MenuItem Header="Add Account" Click="MenuItem_Click_AddAccount" />
+            <MenuItem Header="_File">
+                <MenuItem Header="_Add account…" Click="MenuItem_Click_AddAccount" IsEnabled="{Binding IsNotEditing}" />
                 <Separator />
-                <MenuItem Header="Logout" IsEnabled="False" />
-                <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
+                <MenuItem Header="_Log out" IsEnabled="False" />
+                <MenuItem Header="E_xit" InputGestureText="Alt+F4" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
-            <MenuItem Header="Tools">
-                <MenuItem Header="Clear Clipboard" Click="MenuItem_Click_ClearClipboard" />
-                <MenuItem Header="Export JSON" Click="MenuItem_Click_ExportJson" />
-                <MenuItem Header="Sync Accounts" Click="MenuItem_Click_SyncAccounts" />
-            </MenuItem>
-
-            <MenuItem Header="Options">
-                <MenuItem Header="Configuration" Click="MenuItem_Click_Options" />
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Find account" InputGestureText="Ctrl+F" Click="MenuItem_Click_FindAccount" />
                 <Separator />
-                <MenuItem Header="Show Toolbar" IsChecked="{Binding ShowToolbar}" IsCheckable="True" Click="MenuItem_Click_ShowToolbar" />
-                <MenuItem Header="Show Status Bar" IsChecked="{Binding ShowStatusBar}" IsCheckable="True" Click="MenuItem_Click_ShowStatusBar" />
+                <MenuItem Header="_Clear clipboard" Click="MenuItem_Click_ClearClipboard" />
+                <MenuItem Header="_Export JSON…" Click="MenuItem_Click_ExportJson" />
+                <MenuItem Header="_Sync accounts…" Click="MenuItem_Click_SyncAccounts" IsEnabled="{Binding IsNotEditing}" />
             </MenuItem>
 
-            <MenuItem Header="Help">
-                <MenuItem Header="About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
+            <MenuItem Header="_Options">
+                <MenuItem Header="_Configuration…" Click="MenuItem_Click_Options" />
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
             </MenuItem>
 
         </Menu>
 
-        <!-- Status bar -->
-        <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" Visibility="{Binding StatusBarVisibility}">
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Background="{StaticResource BrandBrush}" Padding="20,10,12,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <StatusBarItem>
-                <TextBlock Text="" />
-            </StatusBarItem>
+                <TextBlock Grid.Column="0" Text="OnePass" Foreground="White" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,20,0" />
 
-        </StatusBar>
+                <!-- Search -->
+                <Border Grid.Column="1" MaxWidth="520" Height="36" HorizontalAlignment="Stretch" CornerRadius="4" Background="#1FFFFFFF" IsEnabled="{Binding IsNotEditing}"
+                        BorderBrush="#8CFFFFFF" BorderThickness="0,0,0,1" Padding="12,0,4,0" Cursor="IBeam">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-        <!-- Content -->
+                        <TextBlock Grid.Column="0" Text="&#xE721;" FontFamily="{StaticResource FluentIcons}" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0" />
+
+                        <TextBox x:Name="SearchBox" Grid.Column="1" Style="{StaticResource HeaderSearchTextBox}"
+                                 Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Keyboard.KeyDown="TextBox_KeyDown"
+                                 AutomationProperties.Name="Search accounts" />
+
+                        <!-- Placeholder -->
+                        <TextBlock Grid.Column="1" IsHitTestVisible="False" Text="Search accounts   Ctrl+F" Foreground="#BFFFFFFF" FontSize="15" VerticalAlignment="Center" Margin="2,0,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Clear search -->
+                        <Button Grid.Column="2" Width="28" Height="28" Padding="0" Background="Transparent" Click="Button_Click_ClearSearch"
+                                ToolTip="Clear search" AutomationProperties.Name="Clear search">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource HeaderButton}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="&#xE711;" FontFamily="{StaticResource FluentIcons}" FontSize="12" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Add account -->
+                <Button Grid.Column="2" Style="{StaticResource HeaderButton}" Height="36" Padding="12,0,14,0" Margin="20,0,0,0" Click="MenuItem_Click_AddAccount" IsEnabled="{Binding IsNotEditing}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" FontFamily="{StaticResource FluentIcons}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Text="Add account" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Content: account list on the left, details on the right -->
         <Grid Background="White">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380" MinWidth="280" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <!-- Toolbar -->
-            <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0" Visibility="{Binding ToolbarVisibility}">
-
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" Click="Toolbar_Click_EditButton" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Config" Margin="0,0,10,0" Click="MenuItem_Click_Options" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" Click="MenuItem_Click_SyncAccounts" />
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Grid Width="200">
-                            <!-- Search Bar -->
-                            <TextBox x:Name="SearchBox" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Keyboard.KeyDown="TextBox_KeyDown" Padding="2"/>
-
-                            <!-- Placeholder for textbox -->
-                            <TextBlock 
-                                IsHitTestVisible="False" 
-                                Text="Search.. (CTRL+F)" 
-                                VerticalAlignment="Center" 
-                                HorizontalAlignment="Left" 
-                                Margin="5,0,0,0" 
-                                Foreground="DarkGray">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding Text, ElementName=SearchBox}" Value=""/>
-                                                    <Condition Binding="{Binding IsFocused, ElementName=SearchBox}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-
-                </Grid>
-
-            </Border>
-            
-            <!-- Products empty -->
-            <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyStackPanelVisibility}">
-                <Label Content="{Binding EmptyStackPanelContent}" FontStyle="Italic" />
-            </StackPanel>
-
-            <!-- Products -->
-            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Accounts}" Visibility="{Binding ListViewVisibility}">
-
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Foreground" Value="Black" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListViewItem">
-
-                                    <Border x:Name="border" Padding="8">
-                                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
-                                    </Border>
-                                    
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#FF0080FF" />
-                                            <Setter Property="Foreground" Value="WhiteSmoke" />
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#FF1164B4" />
-                                            <Setter Property="Foreground" Value="WhiteSmoke" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                    
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+            <!-- Account list; locked while the editor is open -->
+            <Grid Grid.Column="0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Setter Property="Opacity" Value="0.55" />
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
-                </ListView.ItemContainerStyle>
-                
-                <ListView.ItemTemplate>
-                    <DataTemplate>
+                </Grid.Style>
 
-                        <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Copy Username" Click="MenuItem_Click_CopyUsername" />
-                                    <MenuItem Header="Copy Email Address" Click="MenuItem_Click_CopyEmailAddress" />
-                                    <MenuItem Header="Copy Password" Click="MenuItem_Click_CopyPassword" />
-                                    <Separator />
-                                    <MenuItem Header="Change Password" Click="MenuItem_Click_ChangePassword" />
-                                    <MenuItem Header="Password History" Click="MenuItem_Click_PasswordHistory" />
-                                    <Separator />
-                                    <MenuItem Header="Edit" Click="MenuItem_Click_EditAccount" />
-                                    <MenuItem Header="Remove" Click="MenuItem_Click_RemoveAccount" />
-                                </ContextMenu>
-                            </Grid.ContextMenu>
+                <!-- Accounts header -->
+                <Border Grid.Row="0" BorderBrush="{StaticResource ListDividerBrush}" BorderThickness="0,0,0,1" Padding="20,14,16,12">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Accounts" FontSize="13" FontWeight="SemiBold" Foreground="#FF4A4F5A" />
+                        <TextBlock Text="{Binding AccountCountText}" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,0,0" />
+                    </StackPanel>
+                </Border>
 
+                <!-- Accounts empty -->
+                <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="32" Visibility="{Binding EmptyStackPanelVisibility}">
+                    <TextBlock Text="{Binding EmptyStackPanelGlyph}" FontFamily="{StaticResource FluentIcons}" FontSize="40" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding EmptyStackPanelContent}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,12,0,0" />
+                    <TextBlock Text="{Binding EmptyStackPanelHint}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <!-- Accounts -->
+                <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Accounts}" Visibility="{Binding ListViewVisibility}"
+                          SelectedItem="{Binding SelectedAccount}" SelectionChanged="AccountsListView_SelectionChanged"
+                          BorderThickness="0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+
+                                        <Border x:Name="border" Background="Transparent" BorderBrush="{StaticResource ListDividerBrush}" BorderThickness="0,0,0,1"
+                                                Padding="20,8,16,8" MinHeight="56">
+                                            <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource ListHoverBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="{StaticResource ListSelectedBrush}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid Background="Transparent">
+
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Copy username" Click="MenuItem_Click_CopyUsername" />
+                                        <MenuItem Header="Copy email address" Click="MenuItem_Click_CopyEmailAddress" />
+                                        <MenuItem Header="Copy password" Click="MenuItem_Click_CopyPassword" />
+                                        <Separator />
+                                        <MenuItem Header="Change password" Click="MenuItem_Click_ChangePassword" />
+                                        <MenuItem Header="Password history" Click="MenuItem_Click_PasswordHistory" />
+                                        <Separator />
+                                        <MenuItem Header="Edit…" Click="MenuItem_Click_EditAccount" />
+                                        <MenuItem Header="Delete…" Foreground="#FFB3261E" Click="MenuItem_Click_RemoveAccount" />
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Initial tile -->
+                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="4" Background="{StaticResource AvatarBackgroundBrush}" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Initial}" Foreground="{StaticResource AvatarForegroundBrush}" FontSize="14" FontWeight="SemiBold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+
+                                <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding DisplayLogin}" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
+                                </StackPanel>
+
+                                <!-- Favourite -->
+                                <TextBlock Grid.Column="2" Text="&#xE735;" FontFamily="{StaticResource FluentIcons}" FontSize="14" Foreground="{StaticResource FavouriteBrush}"
+                                           VerticalAlignment="Center" ToolTip="Favourite" AutomationProperties.Name="Favourite"
+                                           Visibility="{Binding Favourite, Converter={StaticResource BooleanToVisibility}}" />
+
+                            </Grid>
+
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
+
+            </Grid>
+
+            <Border Grid.Column="1" Width="1" Background="{StaticResource DividerBrush}" />
+
+            <!-- Details pane -->
+            <Grid Grid.Column="2">
+
+                <!-- Nothing selected -->
+                <TextBlock Text="Select an account to see its details" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SelectedAccount}" Value="{x:Null}" />
+                                        <Condition Binding="{Binding IsEditing}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Viewing -->
+                <ScrollViewer DataContext="{Binding SelectedAccount}" VerticalScrollBarVisibility="Auto" Focusable="False">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DataContext.IsEditing, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <DockPanel>
+
+                        <!-- Account header -->
+                        <Grid DockPanel.Dock="Top" Margin="32,28,32,20">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="200"  />
-                                <ColumnDefinition MinWidth="200" />
-                                <ColumnDefinition MinWidth="200" />
-                                <ColumnDefinition MinWidth="200" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                            <TextBlock Grid.Column="1" Text="{Binding Username}" />
-                            <TextBlock Grid.Column="2" Text="{Binding EmailAddress}" />
-                            <TextBlock Grid.Column="3" Text="{Binding DateModified, StringFormat=g}" />
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="6" Background="{StaticResource AvatarBackgroundBrush}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Initial}" Foreground="{StaticResource AvatarForegroundBrush}" FontSize="18" FontWeight="SemiBold"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
 
+                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayName}" FontSize="24" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0" Visibility="{Binding Favourite, Converter={StaticResource BooleanToVisibility}}">
+                                    <TextBlock Text="&#xE735;" FontFamily="{StaticResource FluentIcons}" FontSize="12" Foreground="{StaticResource FavouriteBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Favourite" FontSize="13" FontWeight="SemiBold" Foreground="#FF7A5300" Margin="6,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Style="{StaticResource StandardButton}" Click="Button_Click_EditSelectedAccount">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;" FontFamily="{StaticResource FluentIcons}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                        <TextBlock Text="Edit" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource SubtleIconButton}" Content="&#xE74D;" Margin="8,0,0,0" Click="Button_Click_DeleteSelectedAccount"
+                                        ToolTip="Delete account" AutomationProperties.Name="Delete account" />
+                            </StackPanel>
                         </Grid>
 
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                        <TabControl Style="{StaticResource PaneTabControl}">
 
-            </ListView>
+                            <TabItem Header="Details" Style="{StaticResource PaneTabItem}">
+                                <StackPanel Margin="32,8,32,40">
+
+                                    <TextBlock Text="Sign in" Style="{StaticResource PaneSectionLabel}" />
+
+                                    <!-- Username -->
+                                    <Border Style="{StaticResource FieldRow}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Username" Style="{StaticResource FieldLabel}" />
+                                                <TextBlock Text="{Binding UsernameText}" FontSize="16" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasUsername}" Value="False">
+                                                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Style="{StaticResource SubtleIconButton}" Content="&#xE8C8;" Click="Button_Click_CopySelectedUsername"
+                                                    ToolTip="Copy username" AutomationProperties.Name="Copy username"
+                                                    Visibility="{Binding HasUsername, Converter={StaticResource BooleanToVisibility}}" />
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Email -->
+                                    <Border Style="{StaticResource FieldRow}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Email" Style="{StaticResource FieldLabel}" />
+                                                <TextBlock Text="{Binding EmailAddressText}" FontSize="16" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasEmailAddress}" Value="False">
+                                                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Style="{StaticResource SubtleIconButton}" Content="&#xE8C8;" Click="Button_Click_CopySelectedEmailAddress"
+                                                    ToolTip="Copy email" AutomationProperties.Name="Copy email"
+                                                    Visibility="{Binding HasEmailAddress, Converter={StaticResource BooleanToVisibility}}" />
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Password -->
+                                    <Border Style="{StaticResource FieldRow}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Password" Style="{StaticResource FieldLabel}" />
+                                                <TextBlock FontSize="16" FontFamily="Cascadia Mono, Consolas" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="••••••••••••" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsChecked, ElementName=RevealPasswordToggle}" Value="True">
+                                                                    <Setter Property="Text" Value="{Binding Password}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding HasPassword}" Value="False">
+                                                                    <Setter Property="Text" Value="Not set" />
+                                                                    <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+                                                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <ToggleButton x:Name="RevealPasswordToggle" Grid.Column="1"
+                                                          Visibility="{Binding HasPassword, Converter={StaticResource BooleanToVisibility}}">
+                                                <ToggleButton.Style>
+                                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource SubtleIconButton}">
+                                                        <Setter Property="Content" Value="&#xE890;" />
+                                                        <Setter Property="ToolTip" Value="Show password" />
+                                                        <Setter Property="AutomationProperties.Name" Value="Show password" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsChecked" Value="True">
+                                                                <Setter Property="Content" Value="&#xED1A;" />
+                                                                <Setter Property="ToolTip" Value="Hide password" />
+                                                                <Setter Property="AutomationProperties.Name" Value="Hide password" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ToggleButton.Style>
+                                            </ToggleButton>
+                                            <Button Grid.Column="2" Style="{StaticResource SubtleIconButton}" Content="&#xE8C8;" Click="Button_Click_CopySelectedPassword"
+                                                    ToolTip="Copy password" AutomationProperties.Name="Copy password"
+                                                    Visibility="{Binding HasPassword, Converter={StaticResource BooleanToVisibility}}" />
+                                        </Grid>
+                                    </Border>
+
+                                    <TextBlock Text="Website" Style="{StaticResource PaneSectionLabel}" Margin="0,28,0,4" />
+
+                                    <!-- Website -->
+                                    <Border Style="{StaticResource FieldRow}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Website" Style="{StaticResource FieldLabel}" />
+                                                <TextBlock FontSize="16" TextTrimming="CharacterEllipsis" Visibility="{Binding HasWebsite, Converter={StaticResource BooleanToVisibility}}">
+                                                    <Hyperlink Style="{StaticResource WebsiteLink}" Click="Hyperlink_Click_OpenSelectedWebsite">
+                                                        <Run Text="{Binding WebsiteUrl, Mode=OneWay}" />
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                                <TextBlock Text="Not set" FontSize="16" Foreground="{StaticResource TextSecondaryBrush}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasWebsite}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Style="{StaticResource SubtleIconButton}" Content="&#xE8A7;" Click="Hyperlink_Click_OpenSelectedWebsite"
+                                                    ToolTip="Open website" AutomationProperties.Name="Open website"
+                                                    Visibility="{Binding HasWebsite, Converter={StaticResource BooleanToVisibility}}" />
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Dates -->
+                                    <Grid Margin="0,28,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Created" Style="{StaticResource FieldLabel}" />
+                                            <TextBlock Text="{Binding DateCreated, StringFormat=g, TargetNullValue=Unknown}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="16,0,0,0">
+                                            <TextBlock Text="Last modified" Style="{StaticResource FieldLabel}" />
+                                            <TextBlock Text="{Binding DateModified, StringFormat=g, TargetNullValue=Unknown}" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                </StackPanel>
+                            </TabItem>
+
+                            <TabItem Header="Notes" Style="{StaticResource PaneTabItem}">
+                                <StackPanel Margin="32,8,32,40">
+                                    <TextBlock Text="Notes" Style="{StaticResource PaneSectionLabel}" Margin="0,20,0,8" />
+                                    <Border Background="#FFEEF1F6" CornerRadius="10" Padding="16,14" MinHeight="160">
+                                        <TextBox Text="{Binding NotesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontSize="15"
+                                                 Background="Transparent" BorderThickness="0" Padding="0" AutomationProperties.Name="Notes">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasNotes}" Value="False">
+                                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </Border>
+                                </StackPanel>
+                            </TabItem>
+
+                            <TabItem x:Name="HistoryTab" Header="History" Style="{StaticResource PaneTabItem}">
+                                <StackPanel Margin="32,8,32,40">
+                                    <TextBlock Text="Password history" Style="{StaticResource PaneSectionLabel}" />
+
+                                    <ItemsControl ItemsSource="{Binding PasswordHistoryNewestFirst}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource FieldRow}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding DateSetText}" Style="{StaticResource FieldLabel}" />
+                                                            <TextBlock FontSize="16" FontFamily="Cascadia Mono, Consolas" TextTrimming="CharacterEllipsis">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Text" Value="••••••••••••" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, ElementName=RevealHistoryToggle}" Value="True">
+                                                                                <Setter Property="Text" Value="{Binding Password}" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                        <ToggleButton x:Name="RevealHistoryToggle" Grid.Column="1">
+                                                            <ToggleButton.Style>
+                                                                <Style TargetType="ToggleButton" BasedOn="{StaticResource SubtleIconButton}">
+                                                                    <Setter Property="Content" Value="&#xE890;" />
+                                                                    <Setter Property="ToolTip" Value="Show password" />
+                                                                    <Setter Property="AutomationProperties.Name" Value="Show password" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="True">
+                                                                            <Setter Property="Content" Value="&#xED1A;" />
+                                                                            <Setter Property="ToolTip" Value="Hide password" />
+                                                                            <Setter Property="AutomationProperties.Name" Value="Hide password" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ToggleButton.Style>
+                                                        </ToggleButton>
+                                                        <Button Grid.Column="2" Style="{StaticResource SubtleIconButton}" Content="&#xE8C8;" Click="Button_Click_CopyHistoryPassword"
+                                                                ToolTip="Copy password" AutomationProperties.Name="Copy password" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock Text="No password history for this account." Foreground="{StaticResource TextSecondaryBrush}" FontSize="15" Margin="0,16,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasPasswordHistory}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </TabItem>
+
+                        </TabControl>
+
+                    </DockPanel>
+                </ScrollViewer>
+
+                <!-- Adding / editing -->
+                <ScrollViewer DataContext="{Binding Editor}" VerticalScrollBarVisibility="Auto" Focusable="False">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <DockPanel>
+
+                        <!-- Editor header -->
+                        <Grid DockPanel.Dock="Top" Margin="32,28,32,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding DataContext.EditorTitle, RelativeSource={RelativeSource AncestorType=Window}}"
+                                       FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center" />
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Style="{StaticResource StandardButton}" Content="Cancel" Click="Button_Click_CancelEdit" ToolTip="Cancel (Esc)" />
+                                <Button x:Name="SaveAccountButton" Style="{StaticResource AccentButton}" Margin="8,0,0,0" Click="Button_Click_SaveAccount" ToolTip="Save (Ctrl+S)">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74E;" FontFamily="{StaticResource FluentIcons}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                        <TextBlock Text="Save" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Margin="32,0,32,40">
+
+                            <!-- Name -->
+                            <StackPanel Margin="0,16,0,0">
+                                <TextBlock Text="Name" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox x:Name="EditorNameTextBox" Style="{StaticResource EditorTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                         AutomationProperties.Name="Name" />
+                                <TextBlock Style="{StaticResource EditorError}" Text="{Binding NameValidation, TargetNullValue=''}" />
+                            </StackPanel>
+
+                            <TextBlock Text="Sign in" Style="{StaticResource PaneSectionLabel}" Margin="0,28,0,0" />
+
+                            <!-- Username -->
+                            <StackPanel Margin="0,12,0,0">
+                                <TextBlock Text="Username" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Username" />
+                            </StackPanel>
+
+                            <!-- Email -->
+                            <StackPanel Margin="0,14,0,0">
+                                <TextBlock Text="Email" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Email" />
+                                <TextBlock Style="{StaticResource EditorError}" Text="{Binding EmailAddressValidation, TargetNullValue=''}" />
+                            </StackPanel>
+
+                            <!-- Password -->
+                            <StackPanel Margin="0,14,0,0">
+                                <TextBlock Text="Password" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox x:Name="EditorPasswordTextBox" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Padding="12,0,48,0"
+                                             AutomationProperties.Name="Password" CommandManager.PreviewExecuted="EditorPasswordTextBox_PreviewExecuted">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource EditorTextBox}">
+                                                <Setter Property="FontFamily" Value="{StaticResource PasswordFonts}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, ElementName=EditorRevealPasswordToggle}" Value="True">
+                                                        <Setter Property="FontFamily" Value="Cascadia Mono, Consolas" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+
+                                    <ToggleButton x:Name="EditorRevealPasswordToggle" Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,2,0" Width="40" Height="40">
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton" BasedOn="{StaticResource SubtleIconButton}">
+                                                <Setter Property="Content" Value="&#xE890;" />
+                                                <Setter Property="ToolTip" Value="Show password" />
+                                                <Setter Property="AutomationProperties.Name" Value="Show password" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Content" Value="&#xED1A;" />
+                                                        <Setter Property="ToolTip" Value="Hide password" />
+                                                        <Setter Property="AutomationProperties.Name" Value="Hide password" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+
+                                    <Button Grid.Column="1" Style="{StaticResource StandardButton}" Height="44" Margin="8,0,0,0" Click="Button_Click_GeneratePassword"
+                                            ToolTip="Generate a password using the rules in Options › Configuration">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE8B1;" FontFamily="{StaticResource FluentIcons}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                            <TextBlock Text="Generate" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Favourite -->
+                            <Border Style="{StaticResource FieldRow}" BorderThickness="0" Margin="0,8,0,0">
+                                <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Favourite}" VerticalAlignment="Center">
+                                    <TextBlock Text="Favourite" FontSize="15" />
+                                </CheckBox>
+                            </Border>
+
+                            <TextBlock Text="Website" Style="{StaticResource PaneSectionLabel}" Margin="0,20,0,0" />
+
+                            <!-- Website -->
+                            <StackPanel Margin="0,12,0,0">
+                                <TextBlock Text="Website" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Website" />
+                            </StackPanel>
+
+                            <TextBlock Text="Notes" Style="{StaticResource PaneSectionLabel}" Margin="0,28,0,0" />
+
+                            <!-- Notes -->
+                            <TextBox Style="{StaticResource EditorTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Margin="0,12,0,0"
+                                     MinHeight="160" Padding="12,10" VerticalContentAlignment="Top" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" AutomationProperties.Name="Notes" />
+
+                        </StackPanel>
+
+                    </DockPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- "Copied" toast, faded in and out from code -->
+            <Border x:Name="Toast" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,28"
+                    Background="#FF2B2E35" CornerRadius="8" Padding="20,14" Opacity="0" IsHitTestVisible="False">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="6" Direction="270" Opacity="0.25" />
+                </Border.Effect>
+                <TextBlock x:Name="ToastText" Foreground="White" AutomationProperties.LiveSetting="Polite" />
+            </Border>
 
         </Grid>
 
