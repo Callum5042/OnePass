@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace OnePass.WPF.Windows
 {
@@ -37,7 +38,7 @@ namespace OnePass.WPF.Windows
         {
             if (AccountFromMenu(sender) is AccountListModel model)
             {
-                OpenEditAccountWindow(model, historyTab: false);
+                OpenEditAccountWindow(model);
             }
         }
 
@@ -45,7 +46,7 @@ namespace OnePass.WPF.Windows
         {
             if (SelectedAccount is AccountListModel model)
             {
-                OpenEditAccountWindow(model, historyTab: false);
+                OpenEditAccountWindow(model);
             }
         }
 
@@ -54,7 +55,7 @@ namespace OnePass.WPF.Windows
         // A context menu inherits the data context of the row it was opened on
         private static AccountListModel AccountFromMenu(object sender) => (sender as MenuItem)?.DataContext as AccountListModel;
 
-        private void OpenEditAccountWindow(AccountListModel model, bool historyTab)
+        private void OpenEditAccountWindow(AccountListModel model)
         {
             var accountModel = App.Current.GetService<AccountModel>();
             accountModel.Guid = model.Guid;
@@ -67,7 +68,7 @@ namespace OnePass.WPF.Windows
             accountModel.Notes = model.Notes;
             accountModel.PasswordHistory = model.PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
 
-            var accountWindow = new AccountWindow(this, edit: true, historyTab)
+            var accountWindow = new AccountWindow(this, edit: true, historyTabSelected: false)
             {
                 DataContext = accountModel
             };
@@ -93,7 +94,7 @@ namespace OnePass.WPF.Windows
 
         private async Task RemoveAccountAsync(AccountListModel model)
         {
-            var confirm = MessageBox.Show("Delete account", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var confirm = MessageBox.Show(this, $"Delete {model.DisplayName}? This can't be undone.", "Delete account", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (confirm == MessageBoxResult.Yes)
             {
                 if (DataContext is ContentModel contentModel)
@@ -113,40 +114,53 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_CopyUsername(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(AccountFromMenu(sender)?.Username);
+            CopyToClipboard(AccountFromMenu(sender)?.Username, "Username");
         }
 
         private void MenuItem_Click_CopyEmailAddress(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(AccountFromMenu(sender)?.EmailAddress);
+            CopyToClipboard(AccountFromMenu(sender)?.EmailAddress, "Email address");
         }
 
         private void MenuItem_Click_CopyPassword(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(AccountFromMenu(sender)?.Password);
+            CopyToClipboard(AccountFromMenu(sender)?.Password, "Password");
         }
 
         private void Button_Click_CopySelectedUsername(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(SelectedAccount?.Username);
+            CopyToClipboard(SelectedAccount?.Username, "Username");
         }
 
         private void Button_Click_CopySelectedEmailAddress(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(SelectedAccount?.EmailAddress);
+            CopyToClipboard(SelectedAccount?.EmailAddress, "Email address");
         }
 
         private void Button_Click_CopySelectedPassword(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(SelectedAccount?.Password);
+            CopyToClipboard(SelectedAccount?.Password, "Password");
         }
 
-        private static void CopyToClipboard(string value)
+        private void CopyToClipboard(string value, string what)
         {
             if (!string.IsNullOrEmpty(value))
             {
                 Clipboard.SetText(value);
+                ShowToast($"{what} copied to clipboard");
             }
+        }
+
+        private void ShowToast(string message)
+        {
+            ToastText.Text = message;
+
+            // Fade in, hold, fade out; starting again restarts the timing
+            var fade = new DoubleAnimationUsingKeyFrames();
+            fade.KeyFrames.Add(new LinearDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(150))));
+            fade.KeyFrames.Add(new LinearDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(2200))));
+            fade.KeyFrames.Add(new LinearDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(2500))));
+            Toast.BeginAnimation(OpacityProperty, fade);
         }
 
         private void Hyperlink_Click_OpenSelectedWebsite(object sender, RoutedEventArgs e)
@@ -331,7 +345,7 @@ namespace OnePass.WPF.Windows
 
         private void Button_Click_CopyHistoryPassword(object sender, RoutedEventArgs e)
         {
-            CopyToClipboard(((sender as FrameworkElement)?.DataContext as PasswordHistoryModel)?.Password);
+            CopyToClipboard(((sender as FrameworkElement)?.DataContext as PasswordHistoryModel)?.Password, "Password");
         }
 
         private void MenuItem_Click_SyncAccounts(object sender, RoutedEventArgs e)
