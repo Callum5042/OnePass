@@ -363,7 +363,7 @@
                     </TextBlock.Style>
                 </TextBlock>
 
-                <ScrollViewer DataContext="{Binding SelectedAccount}" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer DataContext="{Binding SelectedAccount}" VerticalScrollBarVisibility="Auto" Focusable="False">
                     <ScrollViewer.Style>
                         <Style TargetType="ScrollViewer">
                             <Style.Triggers>
@@ -412,7 +412,7 @@
                         <TabControl Style="{StaticResource PaneTabControl}">
 
                             <TabItem Header="Details" Style="{StaticResource PaneTabItem}">
-                                <StackPanel Margin="32,8,32,40" MaxWidth="680" HorizontalAlignment="Left" MinWidth="320">
+                                <StackPanel Margin="32,8,32,40">
 
                                     <TextBlock Text="Sign in" Style="{StaticResource PaneSectionLabel}" />
 
@@ -576,7 +576,7 @@
                             </TabItem>
 
                             <TabItem Header="Notes" Style="{StaticResource PaneTabItem}">
-                                <StackPanel Margin="32,8,32,40" MaxWidth="680" HorizontalAlignment="Left" MinWidth="320">
+                                <StackPanel Margin="32,8,32,40">
                                     <TextBlock Text="Notes" Style="{StaticResource PaneSectionLabel}" Margin="0,20,0,8" />
                                     <Border Background="#FFEEF1F6" CornerRadius="10" Padding="16,14" MinHeight="160">
                                         <TextBox Text="{Binding NotesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontSize="15"
@@ -596,7 +596,7 @@
                             </TabItem>
 
                             <TabItem x:Name="HistoryTab" Header="History" Style="{StaticResource PaneTabItem}">
-                                <StackPanel Margin="32,8,32,40" MaxWidth="680" HorizontalAlignment="Left" MinWidth="320">
+                                <StackPanel Margin="32,8,32,40">
                                     <TextBlock Text="Password history" Style="{StaticResource PaneSectionLabel}" />
 
                                     <ItemsControl ItemsSource="{Binding PasswordHistoryNewestFirst}">
