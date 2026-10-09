@@ -45,7 +45,8 @@
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
+                            <!-- Hover on the header only: TabItem.IsMouseOver is also true over the tab's content -->
+                            <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="#FFF3F5F9" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
