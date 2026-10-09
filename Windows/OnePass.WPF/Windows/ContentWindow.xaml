@@ -13,6 +13,8 @@
 
     <Window.Resources>
 
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+
         <!-- Search box in the header: no chrome of its own, the surrounding border draws it -->
         <Style x:Key="HeaderSearchTextBox" TargetType="TextBox">
             <Setter Property="Background" Value="Transparent" />
@@ -162,36 +164,47 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <!-- Products empty -->
-            <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyStackPanelVisibility}">
-                <Label Content="{Binding EmptyStackPanelContent}" FontStyle="Italic" />
+            <!-- Accounts header -->
+            <Border Grid.Row="0" BorderBrush="{StaticResource ListDividerBrush}" BorderThickness="0,0,0,1" Padding="20,14,16,12">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Accounts" FontSize="13" FontWeight="SemiBold" Foreground="#FF4A4F5A" />
+                    <TextBlock Text="{Binding AccountCountText}" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Accounts empty -->
+            <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="32" Visibility="{Binding EmptyStackPanelVisibility}">
+                <TextBlock Text="{Binding EmptyStackPanelGlyph}" FontFamily="{StaticResource FluentIcons}" FontSize="40" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding EmptyStackPanelContent}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,12,0,0" />
+                <TextBlock Text="{Binding EmptyStackPanelHint}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,4,0,0" />
             </StackPanel>
 
-            <!-- Products -->
-            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Accounts}" Visibility="{Binding ListViewVisibility}">
+            <!-- Accounts -->
+            <ListView x:Name="AccountsListView" Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Accounts}" Visibility="{Binding ListViewVisibility}"
+                      BorderThickness="0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
 
-                                    <Border x:Name="border" Padding="8">
-                                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                    <Border x:Name="border" Background="Transparent" BorderBrush="{StaticResource ListDividerBrush}" BorderThickness="0,0,0,1"
+                                            Padding="20,8,16,8" MinHeight="56">
+                                        <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                                     </Border>
-                                    
+
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#FF0080FF" />
-                                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                                            <Setter TargetName="border" Property="Background" Value="{StaticResource ListHoverBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#FF1164B4" />
-                                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                                            <Setter TargetName="border" Property="Background" Value="{StaticResource ListSelectedBrush}" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
-                                    
+
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -201,7 +214,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
-                        <Grid>
+                        <Grid Background="Transparent">
 
                             <Grid.ContextMenu>
                                 <ContextMenu>
@@ -218,16 +231,26 @@
                             </Grid.ContextMenu>
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="200"  />
-                                <ColumnDefinition MinWidth="200" />
-                                <ColumnDefinition MinWidth="200" />
-                                <ColumnDefinition MinWidth="200" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                            <TextBlock Grid.Column="1" Text="{Binding Username}" />
-                            <TextBlock Grid.Column="2" Text="{Binding EmailAddress}" />
-                            <TextBlock Grid.Column="3" Text="{Binding DateModified, StringFormat=g}" />
+                            <!-- Initial tile -->
+                            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="4" Background="{StaticResource AvatarBackgroundBrush}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Initial}" Foreground="{StaticResource AvatarForegroundBrush}" FontSize="14" FontWeight="SemiBold"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+
+                            <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding DisplayLogin}" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
+                            </StackPanel>
+
+                            <!-- Favourite -->
+                            <TextBlock Grid.Column="2" Text="&#xE735;" FontFamily="{StaticResource FluentIcons}" FontSize="14" Foreground="{StaticResource FavouriteBrush}"
+                                       VerticalAlignment="Center" ToolTip="Favourite" AutomationProperties.Name="Favourite"
+                                       Visibility="{Binding Favourite, Converter={StaticResource BooleanToVisibility}}" />
 
                         </Grid>
 

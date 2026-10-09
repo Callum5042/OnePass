@@ -76,8 +76,23 @@ namespace OnePass.WPF.Models
             CheckVisibility();
         }
 
-        public string EmptyStackPanelContent { get => emptyStackPanelContent; set => SetProperty(ref emptyStackPanelContent, value); }
-        private string emptyStackPanelContent = "Accounts list is empty";
+        private bool IsSearching => !string.IsNullOrWhiteSpace(search);
+
+        public string EmptyStackPanelContent => IsSearching ? "No matching accounts" : "No accounts yet";
+
+        public string EmptyStackPanelHint => IsSearching ? "Try a name, username or email." : "Use Add account to create your first one.";
+
+        // Segoe Fluent Icons: Search / Contact
+        public string EmptyStackPanelGlyph => IsSearching ? "" : "";
+
+        public string AccountCountText
+        {
+            get
+            {
+                var total = AccountListModel?.Count ?? 0;
+                return IsSearching ? $"{Accounts.Count} of {total}" : $"{total} saved";
+            }
+        }
 
         public string Search
         {
@@ -90,7 +105,6 @@ namespace OnePass.WPF.Models
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     Accounts = new ObservableCollection<AccountListModel>(AccountListModel);
-                    EmptyStackPanelContent = "Accounts list is empty";
                 }
                 else
                 {
@@ -115,20 +129,9 @@ namespace OnePass.WPF.Models
                     });
 
                     Accounts = new ObservableCollection<AccountListModel>(filter);
-                    EmptyStackPanelContent = "No search results found";
                 }
 
-                // Show what panel to show
-                if (Accounts.Any())
-                {
-                    ListViewVisibility = Visibility.Visible;
-                    EmptyStackPanelVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    EmptyStackPanelVisibility = Visibility.Visible;
-                    ListViewVisibility = Visibility.Collapsed;
-                }
+                CheckVisibility();
             }
         }
         private string search;
@@ -151,6 +154,11 @@ namespace OnePass.WPF.Models
                 ListViewVisibility = Visibility.Collapsed;
                 EmptyStackPanelVisibility = Visibility.Visible;
             }
+
+            OnPropertyChanged(nameof(AccountCountText));
+            OnPropertyChanged(nameof(EmptyStackPanelContent));
+            OnPropertyChanged(nameof(EmptyStackPanelHint));
+            OnPropertyChanged(nameof(EmptyStackPanelGlyph));
         }
     }
 }

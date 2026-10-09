@@ -21,6 +21,12 @@
         <SolidColorBrush x:Key="MenuBarHoverBrush" Color="#FFEAEAEA" />
         <SolidColorBrush x:Key="MenuBarOpenBrush" Color="#FFE0E0E0" />
         <SolidColorBrush x:Key="FlyoutBorderBrush" Color="#FFD9DDE3" />
+        <SolidColorBrush x:Key="ListDividerBrush" Color="#FFECEEF2" />
+        <SolidColorBrush x:Key="ListHoverBrush" Color="#FFF5F7FA" />
+        <SolidColorBrush x:Key="ListSelectedBrush" Color="#FFE7EEF7" />
+        <SolidColorBrush x:Key="AvatarBackgroundBrush" Color="#FFD6E3FF" />
+        <SolidColorBrush x:Key="AvatarForegroundBrush" Color="#FF0A2A55" />
+        <SolidColorBrush x:Key="FavouriteBrush" Color="#FFE5A100" />
 
         <!-- Window style -->
         <Style x:Key="WindowStyle" TargetType="Window">
