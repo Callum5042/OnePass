@@ -107,11 +107,37 @@ namespace OnePass.WPF.Models
 
         public IList<PasswordHistoryModel> PasswordHistory { get; set; } = new List<PasswordHistoryModel>();
 
+        public IEnumerable<PasswordHistoryModel> PasswordHistoryNewestFirst => PasswordHistory.OrderByDescending(x => x.DateSet).ToList();
+
+        public bool HasPasswordHistory => PasswordHistory.Count > 0;
+
+        public void AddPasswordHistory(PasswordHistoryModel entry)
+        {
+            PasswordHistory.Add(entry);
+            OnPropertyChanged(nameof(PasswordHistoryNewestFirst));
+            OnPropertyChanged(nameof(HasPasswordHistory));
+        }
+
         public bool Favourite { get => favourite; set => SetProperty(ref favourite, value); }
         private bool favourite;
 
-        public string Notes { get => notes; set => SetProperty(ref notes, value); }
+        public string Notes
+        {
+            get => notes;
+            set
+            {
+                if (SetProperty(ref notes, value))
+                {
+                    OnPropertyChanged(nameof(HasNotes));
+                    OnPropertyChanged(nameof(NotesText));
+                }
+            }
+        }
         private string notes;
+
+        public bool HasNotes => !string.IsNullOrWhiteSpace(Notes);
+
+        public string NotesText => HasNotes ? Notes : "No notes for this account.";
 
         public string WebsiteUrl
         {

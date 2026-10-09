@@ -322,10 +322,16 @@ namespace OnePass.WPF.Windows
 
         private void MenuItem_Click_PasswordHistory(object sender, RoutedEventArgs e)
         {
-            if (AccountsListView.SelectedItem is AccountListModel accountModel)
+            if (AccountFromMenu(sender) is AccountListModel model && DataContext is ContentModel contentModel)
             {
-                OpenEditAccountWindow(accountModel, historyTab: true);
+                contentModel.SelectedAccount = model;
+                HistoryTab.IsSelected = true;
             }
+        }
+
+        private void Button_Click_CopyHistoryPassword(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(((sender as FrameworkElement)?.DataContext as PasswordHistoryModel)?.Password);
         }
 
         private void MenuItem_Click_SyncAccounts(object sender, RoutedEventArgs e)

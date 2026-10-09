@@ -96,7 +96,7 @@ namespace OnePass.WPF.Windows
 
                     if (passwordChanged)
                     {
-                        accountListModel.PasswordHistory.Add(new PasswordHistoryModel()
+                        accountListModel.AddPasswordHistory(new PasswordHistoryModel()
                         {
                             Password = accountModel.Password,
                             DateSet = DateTime.Now,

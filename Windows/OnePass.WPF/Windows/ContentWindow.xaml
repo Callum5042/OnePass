@@ -575,6 +575,94 @@
                                 </StackPanel>
                             </TabItem>
 
+                            <TabItem Header="Notes" Style="{StaticResource PaneTabItem}">
+                                <StackPanel Margin="32,8,32,40" MaxWidth="680" HorizontalAlignment="Left" MinWidth="320">
+                                    <TextBlock Text="Notes" Style="{StaticResource PaneSectionLabel}" Margin="0,20,0,8" />
+                                    <Border Background="#FFEEF1F6" CornerRadius="10" Padding="16,14" MinHeight="160">
+                                        <TextBox Text="{Binding NotesText, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontSize="15"
+                                                 Background="Transparent" BorderThickness="0" Padding="0" AutomationProperties.Name="Notes">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasNotes}" Value="False">
+                                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </Border>
+                                </StackPanel>
+                            </TabItem>
+
+                            <TabItem x:Name="HistoryTab" Header="History" Style="{StaticResource PaneTabItem}">
+                                <StackPanel Margin="32,8,32,40" MaxWidth="680" HorizontalAlignment="Left" MinWidth="320">
+                                    <TextBlock Text="Password history" Style="{StaticResource PaneSectionLabel}" />
+
+                                    <ItemsControl ItemsSource="{Binding PasswordHistoryNewestFirst}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource FieldRow}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding DateSetText}" Style="{StaticResource FieldLabel}" />
+                                                            <TextBlock FontSize="16" FontFamily="Cascadia Mono, Consolas" TextTrimming="CharacterEllipsis">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Text" Value="••••••••••••" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, ElementName=RevealHistoryToggle}" Value="True">
+                                                                                <Setter Property="Text" Value="{Binding Password}" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                        <ToggleButton x:Name="RevealHistoryToggle" Grid.Column="1">
+                                                            <ToggleButton.Style>
+                                                                <Style TargetType="ToggleButton" BasedOn="{StaticResource SubtleIconButton}">
+                                                                    <Setter Property="Content" Value="&#xE890;" />
+                                                                    <Setter Property="ToolTip" Value="Show password" />
+                                                                    <Setter Property="AutomationProperties.Name" Value="Show password" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="True">
+                                                                            <Setter Property="Content" Value="&#xED1A;" />
+                                                                            <Setter Property="ToolTip" Value="Hide password" />
+                                                                            <Setter Property="AutomationProperties.Name" Value="Hide password" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ToggleButton.Style>
+                                                        </ToggleButton>
+                                                        <Button Grid.Column="2" Style="{StaticResource SubtleIconButton}" Content="&#xE8C8;" Click="Button_Click_CopyHistoryPassword"
+                                                                ToolTip="Copy password" AutomationProperties.Name="Copy password" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock Text="No password history for this account." Foreground="{StaticResource TextSecondaryBrush}" FontSize="15" Margin="0,16,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasPasswordHistory}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </TabItem>
+
                         </TabControl>
 
                     </DockPanel>
