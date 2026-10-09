@@ -8,6 +8,19 @@
         <!-- Fonts -->
         <FontFamily x:Key="IconFonts">pack://application:,,,/Fonts/#icomoon</FontFamily>
         <FontFamily x:Key="PasswordFonts">pack://application:,,,/Fonts/#password</FontFamily>
+        <FontFamily x:Key="FluentIcons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+        <FontFamily x:Key="UIFont">Segoe UI Variable Text, Segoe UI</FontFamily>
+
+        <!-- Colours -->
+        <SolidColorBrush x:Key="BrandBrush" Color="#FF003264" />
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FF1B1D22" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#FF5A5F6B" />
+        <SolidColorBrush x:Key="TextDisabledBrush" Color="#FFA0A4AB" />
+        <SolidColorBrush x:Key="DividerBrush" Color="#FFE5E5E5" />
+        <SolidColorBrush x:Key="MenuHoverBrush" Color="#FFEEF2F7" />
+        <SolidColorBrush x:Key="MenuBarHoverBrush" Color="#FFEAEAEA" />
+        <SolidColorBrush x:Key="MenuBarOpenBrush" Color="#FFE0E0E0" />
+        <SolidColorBrush x:Key="FlyoutBorderBrush" Color="#FFD9DDE3" />
 
         <!-- Window style -->
         <Style x:Key="WindowStyle" TargetType="Window">
@@ -130,6 +143,117 @@
         </Style>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="0,2,0,2"/>
+        </Style>
+
+        <!-- Menu flyout (dropdown and context menu) -->
+        <Style x:Key="MenuFlyoutBorder" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource FlyoutBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="0,3" />
+            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="Margin" Value="8,2,8,12" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="4" Direction="270" Opacity="0.14" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Menu bar -->
+        <Style x:Key="MenuBar" TargetType="Menu">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Padding" Value="4,2" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+
+        <!-- Menu bar item (File, Tools...) -->
+        <ControlTemplate x:Key="MenuTopLevelHeaderTemplate" TargetType="MenuItem">
+            <Grid>
+                <Border x:Name="Bd" Background="Transparent" CornerRadius="4" Padding="10,4" Margin="1,0">
+                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                </Border>
+                <Popup x:Name="PART_Popup" Placement="Bottom" HorizontalOffset="-8" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade"
+                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                    <Border Style="{StaticResource MenuFlyoutBorder}">
+                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" KeyboardNavigation.TabNavigation="Cycle" Grid.IsSharedSizeScope="True" />
+                    </Border>
+                </Popup>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource MenuBarHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsSubmenuOpen" Value="True">
+                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource MenuBarOpenBrush}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Dropdown item (Add account, Exit...) -->
+        <ControlTemplate x:Key="MenuSubmenuItemTemplate" TargetType="MenuItem">
+            <Border x:Name="Bd" Background="Transparent" CornerRadius="4" Margin="4,1" Padding="12,0" MinHeight="32">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="MenuGesture" />
+                    </Grid.ColumnDefinitions>
+                    <ContentPresenter Grid.Column="0" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{TemplateBinding InputGestureText}" Margin="32,0,0,0" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource MenuHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Template" Value="{StaticResource MenuSubmenuItemTemplate}" />
+            <Style.Triggers>
+                <Trigger Property="Role" Value="TopLevelHeader">
+                    <Setter Property="Template" Value="{StaticResource MenuTopLevelHeaderTemplate}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1" Margin="12,4" Background="{StaticResource DividerBrush}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Right-click menu -->
+        <Style TargetType="ContextMenu">
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Style="{StaticResource MenuFlyoutBorder}">
+                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="True" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </Application.Resources>

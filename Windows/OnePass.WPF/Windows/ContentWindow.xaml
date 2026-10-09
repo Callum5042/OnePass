@@ -8,63 +8,151 @@
         mc:Ignorable="d" 
         ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing"
         PreviewKeyDown="Window_PreviewKeyDown"
-        Title="OnePass" Height="450" Width="800" MinWidth="400">
+        Title="OnePass" Height="600" Width="1000" MinWidth="560" MinHeight="400"
+        FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimaryBrush}">
 
     <Window.Resources>
-        
-        <!-- TextBox style -->
-        <Style TargetType="TextBox">
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="3" />
-                </Style>
-            </Style.Resources>
-            <Setter Property="Margin" Value="0,0,0,0" />
-            <Setter Property="Padding" Value="2" />
+
+        <!-- Search box in the header: no chrome of its own, the surrounding border draws it -->
+        <Style x:Key="HeaderSearchTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False" VerticalAlignment="Center"
+                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        
+
+        <!-- Translucent button on the blue header -->
+        <Style x:Key="HeaderButton" TargetType="Button">
+            <Setter Property="Background" Value="#29FFFFFF" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#42FFFFFF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
-    
+
     <DockPanel>
 
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top" Background="White">
+        <Menu DockPanel.Dock="Top" Style="{StaticResource MenuBar}">
 
-            <MenuItem Header="File">
-                <MenuItem Header="Add Account" Click="MenuItem_Click_AddAccount" />
+            <MenuItem Header="_File">
+                <MenuItem Header="_Add account…" Click="MenuItem_Click_AddAccount" />
                 <Separator />
-                <MenuItem Header="Logout" IsEnabled="False" />
-                <MenuItem Header="Exit" Click="MenuItem_Click_Exit" />
+                <MenuItem Header="_Log out" IsEnabled="False" />
+                <MenuItem Header="E_xit" InputGestureText="Alt+F4" Click="MenuItem_Click_Exit" />
             </MenuItem>
 
-            <MenuItem Header="Tools">
-                <MenuItem Header="Clear Clipboard" Click="MenuItem_Click_ClearClipboard" />
-                <MenuItem Header="Export JSON" Click="MenuItem_Click_ExportJson" />
-                <MenuItem Header="Sync Accounts" Click="MenuItem_Click_SyncAccounts" />
-            </MenuItem>
-
-            <MenuItem Header="Options">
-                <MenuItem Header="Configuration" Click="MenuItem_Click_Options" />
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Find account" InputGestureText="Ctrl+F" Click="MenuItem_Click_FindAccount" />
                 <Separator />
-                <MenuItem Header="Show Toolbar" IsChecked="{Binding ShowToolbar}" IsCheckable="True" Click="MenuItem_Click_ShowToolbar" />
-                <MenuItem Header="Show Status Bar" IsChecked="{Binding ShowStatusBar}" IsCheckable="True" Click="MenuItem_Click_ShowStatusBar" />
+                <MenuItem Header="_Clear clipboard" Click="MenuItem_Click_ClearClipboard" />
+                <MenuItem Header="_Export JSON…" Click="MenuItem_Click_ExportJson" />
+                <MenuItem Header="_Sync accounts…" Click="MenuItem_Click_SyncAccounts" />
             </MenuItem>
 
-            <MenuItem Header="Help">
-                <MenuItem Header="About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
+            <MenuItem Header="_Options">
+                <MenuItem Header="_Configuration…" Click="MenuItem_Click_Options" />
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About OnePass" Click="MenuItem_Click_ShowAboutWindow" />
             </MenuItem>
 
         </Menu>
 
-        <!-- Status bar -->
-        <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" Visibility="{Binding StatusBarVisibility}">
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Background="{StaticResource BrandBrush}" Padding="20,10,12,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <StatusBarItem>
-                <TextBlock Text="" />
-            </StatusBarItem>
+                <TextBlock Grid.Column="0" Text="OnePass" Foreground="White" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,20,0" />
 
-        </StatusBar>
+                <!-- Search -->
+                <Border Grid.Column="1" MaxWidth="520" Height="36" HorizontalAlignment="Stretch" CornerRadius="4" Background="#1FFFFFFF"
+                        BorderBrush="#8CFFFFFF" BorderThickness="0,0,0,1" Padding="12,0,4,0" Cursor="IBeam">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="&#xE721;" FontFamily="{StaticResource FluentIcons}" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0" />
+
+                        <TextBox x:Name="SearchBox" Grid.Column="1" Style="{StaticResource HeaderSearchTextBox}"
+                                 Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Keyboard.KeyDown="TextBox_KeyDown"
+                                 AutomationProperties.Name="Search accounts" />
+
+                        <!-- Placeholder -->
+                        <TextBlock Grid.Column="1" IsHitTestVisible="False" Text="Search accounts   Ctrl+F" Foreground="#BFFFFFFF" FontSize="15" VerticalAlignment="Center" Margin="2,0,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Clear search -->
+                        <Button Grid.Column="2" Width="28" Height="28" Padding="0" Background="Transparent" Click="Button_Click_ClearSearch"
+                                ToolTip="Clear search" AutomationProperties.Name="Clear search">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource HeaderButton}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <TextBlock Text="&#xE711;" FontFamily="{StaticResource FluentIcons}" FontSize="12" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Add account -->
+                <Button Grid.Column="2" Style="{StaticResource HeaderButton}" Height="36" Padding="12,0,14,0" Margin="20,0,0,0" Click="MenuItem_Click_AddAccount">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" FontFamily="{StaticResource FluentIcons}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Text="Add account" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
 
         <!-- Content -->
         <Grid Background="White">
@@ -72,61 +160,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition />
-                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <!-- Toolbar -->
-            <Border Grid.Row="0" Padding="10" BorderThickness="0,1,0,0" BorderBrush="gray" Background="#FFF0F0F0" Visibility="{Binding ToolbarVisibility}">
-
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <Button Style="{StaticResource SecondaryButton}" Content="Add" Margin="0,0,10,0" Click="MenuItem_Click_AddAccount" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Edit" Margin="0,0,10,0" Click="Toolbar_Click_EditButton" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Config" Margin="0,0,10,0" Click="MenuItem_Click_Options" />
-                        <Button Style="{StaticResource SecondaryButton}" Content="Sync" Margin="0,0,10,0" Click="MenuItem_Click_SyncAccounts" />
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Grid Width="200">
-                            <!-- Search Bar -->
-                            <TextBox x:Name="SearchBox" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Keyboard.KeyDown="TextBox_KeyDown" Padding="2"/>
-
-                            <!-- Placeholder for textbox -->
-                            <TextBlock 
-                                IsHitTestVisible="False" 
-                                Text="Search.. (CTRL+F)" 
-                                VerticalAlignment="Center" 
-                                HorizontalAlignment="Left" 
-                                Margin="5,0,0,0" 
-                                Foreground="DarkGray">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding Text, ElementName=SearchBox}" Value=""/>
-                                                    <Condition Binding="{Binding IsFocused, ElementName=SearchBox}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-
-                </Grid>
-
-            </Border>
-            
             <!-- Products empty -->
             <StackPanel x:Name="AccountsEmptyStackPanel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EmptyStackPanelVisibility}">
                 <Label Content="{Binding EmptyStackPanelContent}" FontStyle="Italic" />

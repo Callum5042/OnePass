@@ -198,14 +198,6 @@ namespace OnePass.WPF.Windows
             }
         }
 
-        private void Toolbar_Click_EditButton(object sender, RoutedEventArgs e)
-        {
-            if (AccountsListView.SelectedItem is AccountListModel accountModel)
-            {
-                OpenEditAccountWindow(accountModel, historyTab: false);
-            }
-        }
-
         private void MenuItem_Click_ExportJson(object sender, RoutedEventArgs e)
         {
             var window = new VerifyWindow(this, new VerifyModel()
@@ -224,22 +216,6 @@ namespace OnePass.WPF.Windows
             };
 
             configWindow.ShowDialog();
-        }
-
-        private void MenuItem_Click_ShowStatusBar(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ContentModel model)
-            {
-                model.StatusBarVisibility = model.ShowStatusBar ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        private void MenuItem_Click_ShowToolbar(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ContentModel model)
-            {
-                model.ToolbarVisibility = model.ShowToolbar ? Visibility.Visible : Visibility.Collapsed;
-            }
         }
 
         private void MenuItem_Click_ChangePassword(object sender, RoutedEventArgs e)
@@ -292,9 +268,29 @@ namespace OnePass.WPF.Windows
         {
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.F)
             {
-                SearchBox.Focus();
-                SearchBox.SelectAll();
+                FocusSearch();
             }
+        }
+
+        private void MenuItem_Click_FindAccount(object sender, RoutedEventArgs e)
+        {
+            FocusSearch();
+        }
+
+        private void Button_Click_ClearSearch(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ContentModel model)
+            {
+                model.Search = null;
+            }
+
+            SearchBox.Focus();
+        }
+
+        private void FocusSearch()
+        {
+            SearchBox.Focus();
+            SearchBox.SelectAll();
         }
     }
 }
