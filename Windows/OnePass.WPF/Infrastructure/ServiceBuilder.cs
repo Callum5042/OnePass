@@ -33,6 +33,7 @@ namespace OnePass.Infrastructure
 
             // services.AddTransient<IFileSystem, FileSystem>();
             services.AddSingleton<UserData>();
+            services.AddTransient<IVaultFileStore, VaultFileStore>();
             services.AddTransient<IFileEncoder, FileEncoder>();
         }
 

@@ -3,6 +3,7 @@ using OnePass.Services;
 using OnePass.WPF.Models;
 using OnePass.WPF.Services;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -73,6 +74,79 @@ namespace OnePass.WPF.Tests.Tests
             Assert.Equal(session.FilePath, encoder.LastLoadPath);
         }
 
+        [Fact]
+        public async Task ContentRemove_SaveFailure_KeepsAccountVisibleAndDataUnchanged()
+        {
+            var accountGuid = Guid.NewGuid();
+            var original = new OnePassData
+            {
+                Accounts = { new Account { Guid = accountGuid, Name = "Example" } }
+            };
+            var encoder = new RecordingFileEncoder { Data = original, FailSave = true };
+            var model = new ContentModel(encoder, CreateSession());
+            await model.LoadAsync();
+            var visible = Assert.Single(model.Accounts);
+
+            await Assert.ThrowsAsync<IOException>(() => model.RemoveAsync(visible));
+
+            Assert.Same(visible, Assert.Single(model.Accounts));
+            Assert.Same(visible, Assert.Single(model.AccountListModel));
+            Assert.Same(visible, model.SelectedAccount);
+            Assert.Single(original.Accounts);
+            Assert.Empty(original.DeletedAccounts);
+        }
+
+        [Fact]
+        public async Task ContentRemove_PublishesOnlyAfterSaveCompletes()
+        {
+            var accountGuid = Guid.NewGuid();
+            var saveCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var encoder = new RecordingFileEncoder
+            {
+                Data = new OnePassData { Accounts = { new Account { Guid = accountGuid } } },
+                SaveCompletion = saveCompletion.Task
+            };
+            var model = new ContentModel(encoder, CreateSession());
+            await model.LoadAsync();
+            var removal = model.RemoveAsync(Assert.Single(model.Accounts));
+            Assert.Single(model.Accounts);
+            Assert.Single(model.AccountListModel);
+
+            saveCompletion.SetResult();
+            await removal;
+            Assert.Empty(model.Accounts);
+            Assert.Empty(model.AccountListModel);
+        }
+
+        [Fact]
+        public async Task AccountUpdate_SaveFailure_DoesNotPublishEditedData()
+        {
+            var originalAccount = new Account { Guid = Guid.NewGuid(), Name = "Original", Password = "unchanged" };
+            var original = new OnePassData { Accounts = { originalAccount } };
+            var encoder = new RecordingFileEncoder { Data = original, FailSave = true };
+            var model = new AccountModel(encoder, CreateSession())
+            {
+                OnePassData = original,
+                Guid = originalAccount.Guid,
+                Name = "Edited",
+                Password = originalAccount.Password
+            };
+
+            await Assert.ThrowsAsync<IOException>(() => model.UpdateAccountAsync());
+
+            Assert.Same(original, model.OnePassData);
+            Assert.Equal("Original", originalAccount.Name);
+            Assert.Null(originalAccount.DateModified);
+        }
+
+        [Fact]
+        public async Task VaultCreation_SaveFailure_DoesNotReportSuccess()
+        {
+            var encoder = new RecordingFileEncoder { FailSave = true };
+            var model = new LoginModel(encoder);
+            await Assert.ThrowsAsync<IOException>(() => model.CreateAccountAsync(CreateSession().FilePath, "password"));
+        }
+
         private static UserData CreateSession()
         {
             return new UserData
@@ -93,6 +167,10 @@ namespace OnePass.WPF.Tests.Tests
 
             public string LastSavePath { get; private set; }
 
+            public bool FailSave { get; set; }
+
+            public Task SaveCompletion { get; set; } = Task.CompletedTask;
+
             public Task<OnePassData> LoadAsync(string username, string password, string path = null)
             {
                 LoadCount++;
@@ -100,11 +178,15 @@ namespace OnePass.WPF.Tests.Tests
                 return Task.FromResult(Data);
             }
 
-            public Task SaveAsync(string username, string password, OnePassData rootAccount, string path = null)
+            public async Task SaveAsync(string username, string password, OnePassData rootAccount, string path = null)
             {
-                Data = rootAccount;
                 LastSavePath = path;
-                return Task.CompletedTask;
+                if (FailSave)
+                {
+                    throw new IOException("Injected save failure");
+                }
+                await SaveCompletion;
+                Data = rootAccount;
             }
 
             public bool Verify(string username, string password, string path = null)

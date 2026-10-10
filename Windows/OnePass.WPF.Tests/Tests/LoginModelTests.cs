@@ -17,7 +17,7 @@ namespace OnePass.WPF.Tests.Tests
         {
             var directory = CreateTempDirectory();
             var filePath = Path.Combine(directory, "selected-vault.bin");
-            var encoder = new FileEncoder();
+            var encoder = new FileEncoder(new VaultFileStore());
             var vault = new OnePassData();
             vault.Accounts.Add(new Account { Name = "Example" });
 
@@ -44,7 +44,7 @@ namespace OnePass.WPF.Tests.Tests
         {
             var directory = CreateTempDirectory();
             var filePath = Path.Combine(directory, "selected-vault.bin");
-            var encoder = new FileEncoder();
+            var encoder = new FileEncoder(new VaultFileStore());
 
             try
             {
@@ -72,7 +72,7 @@ namespace OnePass.WPF.Tests.Tests
 
             try
             {
-                var model = CreateModel(new FileEncoder(), filePath, Password);
+                var model = CreateModel(new FileEncoder(new VaultFileStore()), filePath, Password);
 
                 var result = await model.TryDecryptAsync();
 
@@ -96,7 +96,7 @@ namespace OnePass.WPF.Tests.Tests
             try
             {
                 var options = new AppOptions { RememberFilePath = filePath };
-                var model = new LoginModel(new FileEncoder());
+                var model = new LoginModel(new FileEncoder(new VaultFileStore()));
 
                 model.ApplyOptions(options);
 
@@ -117,7 +117,7 @@ namespace OnePass.WPF.Tests.Tests
             {
                 RememberFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.bin")
             };
-            var model = new LoginModel(new FileEncoder());
+            var model = new LoginModel(new FileEncoder(new VaultFileStore()));
 
             model.ApplyOptions(options);
 
@@ -135,7 +135,7 @@ namespace OnePass.WPF.Tests.Tests
             try
             {
                 var options = new AppOptions { RememberUsername = "legacy" };
-                var model = new LoginModel(new FileEncoder());
+                var model = new LoginModel(new FileEncoder(new VaultFileStore()));
 
                 model.ApplyOptions(options, directory);
 
@@ -155,7 +155,7 @@ namespace OnePass.WPF.Tests.Tests
         {
             var filePath = Path.Combine(Path.GetTempPath(), "vault.bin");
             var options = new AppOptions { RememberUsername = "legacy" };
-            var model = CreateModel(new FileEncoder(), filePath, Password);
+            var model = CreateModel(new FileEncoder(new VaultFileStore()), filePath, Password);
             model.Login.RememberMe = true;
 
             model.UpdateRememberedFileOption(options);
@@ -172,7 +172,7 @@ namespace OnePass.WPF.Tests.Tests
                 RememberFilePath = @"C:\vault.bin",
                 RememberUsername = "legacy"
             };
-            var model = new LoginModel(new FileEncoder());
+            var model = new LoginModel(new FileEncoder(new VaultFileStore()));
 
             model.UpdateRememberedFileOption(options);
 

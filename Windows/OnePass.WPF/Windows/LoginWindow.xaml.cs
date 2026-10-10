@@ -250,7 +250,15 @@ namespace OnePass.WPF.Windows
                 if (model.Register.IsValid())
                 {
                     // Create account
-                    await model.CreateAccountAsync(model.Register.FilePath, model.Register.Password);
+                    try
+                    {
+                        await model.CreateAccountAsync(model.Register.FilePath, model.Register.Password);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, $"Couldn't create the vault: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
 
                     // Set login details
                     var data = App.Current.GetService<UserData>();

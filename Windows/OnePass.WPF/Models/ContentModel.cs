@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using OnePass.Infrastructure;
+using OnePass.Models;
 using OnePass.Services;
 using OnePass.WPF.Services;
 using System;
@@ -224,14 +225,16 @@ namespace OnePass.WPF.Models
         {
             var root = await _fileEncoder.LoadAsync(_onePassData.Username, _onePassData.Password, _onePassData.FilePath);
 
-            root.DeletedAccounts.Add(model.Guid);
-
-            var account = root.Accounts.First(x => x.Guid == model.Guid);
-            root.Accounts.Remove(account);
+            root = new OnePassData
+            {
+                Accounts = root.Accounts.Where(x => x.Guid != model.Guid).ToList(),
+                DeletedAccounts = root.DeletedAccounts.Append(model.Guid).ToList()
+            };
 
             await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, root, _onePassData.FilePath);
 
             // Remove from view
+            AccountListModel?.Remove(model);
             Accounts.Remove(model);
             CheckVisibility();
         }

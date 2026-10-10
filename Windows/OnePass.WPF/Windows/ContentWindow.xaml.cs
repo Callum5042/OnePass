@@ -175,9 +175,14 @@ namespace OnePass.WPF.Windows
             {
                 if (DataContext is ContentModel contentModel)
                 {
-                    contentModel.AccountListModel.Remove(model);
-                    contentModel.Accounts.Remove(model);
-                    await contentModel.RemoveAsync(model);
+                    try
+                    {
+                        await contentModel.RemoveAsync(model);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, $"Couldn't delete the account: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }

@@ -107,25 +107,35 @@ namespace OnePass.WPF.Models
                 });
             }
 
-            OnePassData.Accounts.Add(model);
-
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData, _onePassData.FilePath);
+            var updated = new OnePassData
+            {
+                Accounts = OnePassData.Accounts.Append(model).ToList(),
+                DeletedAccounts = OnePassData.DeletedAccounts.ToList()
+            };
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, updated, _onePassData.FilePath);
+            OnePassData = updated;
             return guid;
         }
 
         public async Task UpdateAccountAsync()
         {
-            var account = OnePassData.Accounts.First(x => x.Guid == Guid);
-            var passwordChanged = account.Password != Password;
-
-            account.Name = Name;
-            account.Username = Username;
-            account.EmailAddress = EmailAddress;
-            account.Password = Password;
-            account.DateModified = DateTime.Now;
-            account.WebsiteUrl = Website;
-            account.Favourite = Favourite;
-            account.Notes = Notes;
+            var original = OnePassData.Accounts.First(x => x.Guid == Guid);
+            var passwordChanged = original.Password != Password;
+            var account = new Account
+            {
+                Guid = original.Guid,
+                DateCreated = original.DateCreated,
+                MfaEnabled = original.MfaEnabled,
+                PasswordHistory = original.PasswordHistory.ToList(),
+                Name = Name,
+                Username = Username,
+                EmailAddress = EmailAddress,
+                Password = Password,
+                DateModified = DateTime.Now,
+                WebsiteUrl = Website,
+                Favourite = Favourite,
+                Notes = Notes
+            };
 
             if (passwordChanged && App.Current.AppOptions.EnablePasswordHistory)
             {
@@ -137,7 +147,13 @@ namespace OnePass.WPF.Models
                 });
             }
 
-            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, OnePassData, _onePassData.FilePath);
+            var updated = new OnePassData
+            {
+                Accounts = OnePassData.Accounts.Select(x => x.Guid == Guid ? account : x).ToList(),
+                DeletedAccounts = OnePassData.DeletedAccounts.ToList()
+            };
+            await _fileEncoder.SaveAsync(_onePassData.Username, _onePassData.Password, updated, _onePassData.FilePath);
+            OnePassData = updated;
         }
 
         public string NameValidation { get => nameValidation; set => SetProperty(ref nameValidation, value); }

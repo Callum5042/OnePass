@@ -13,6 +13,13 @@ namespace OnePass.Services
     {
         private const string _fileSignature = ".ONEPASS";
         private const int _fileVersion = 1;
+        private readonly IVaultFileStore _fileStore;
+
+        public FileEncoder(IVaultFileStore fileStore)
+        {
+            ArgumentNullException.ThrowIfNull(fileStore);
+            _fileStore = fileStore;
+        }
 
         public async Task<OnePassData> LoadAsync(string username, string password, string filename = null)
         {
@@ -63,26 +70,44 @@ namespace OnePass.Services
 
         public async Task SaveAsync(string username, string password, OnePassData rootAccount, string filename = null)
         {
-            if (filename is null)
-            {
-                filename = $"{username}.bin";
-            }
+            ArgumentNullException.ThrowIfNull(rootAccount);
+            filename = Path.GetFullPath(filename ?? $"{username}.bin");
+            var temporaryPath = filename + ".tmp";
 
+            // An exclusive handle also protects against saves from other application instances.
+            // A crash releases the handle; the next save overwrites any abandoned encrypted temp file.
+            using var saveLock = _fileStore.AcquireLock(filename);
+            try
+            {
+                await WriteEncryptedAsync(password, rootAccount, temporaryPath);
+                _fileStore.Commit(temporaryPath, filename);
+            }
+            finally
+            {
+                // Cleanup must not hide a save error or report failure after a successful commit.
+                try { _fileStore.DeleteTemporary(temporaryPath); }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+            }
+        }
+
+        private async Task WriteEncryptedAsync(string password, OnePassData rootAccount, string temporaryPath)
+        {
             // Generate salt
-            var generator = RandomNumberGenerator.Create();
+            using var generator = RandomNumberGenerator.Create();
 
             var salt = new byte[8];
             generator.GetBytes(salt, 0, 8);
 
             // Generate keys
-            var rfc = new Rfc2898DeriveBytes(password, salt);
+            using var rfc = new Rfc2898DeriveBytes(password, salt);
             using (var aes = Aes.Create())
             {
                 aes.Key = rfc.GetBytes(16);
 
-                using (var file = File.Create(filename))
+                using (var file = _fileStore.CreateTemporary(temporaryPath))
                 {
-                    var writer = new BinaryWriter(file);
+                    using var writer = new BinaryWriter(file, Encoding.UTF8, leaveOpen: true);
 
                     // Write signature
                     writer.Write(Encoding.UTF8.GetBytes(_fileSignature));
@@ -110,10 +135,13 @@ namespace OnePass.Services
                     writer.Write(aes.IV);
 
                     // Encrypt
-                    using (var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    writer.Flush();
+                    using (var cryptoStream = new CryptoStream(file, aes.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen: true))
                     {
                         await JsonSerializer.SerializeAsync(cryptoStream, rootAccount);
+                        await cryptoStream.FlushFinalBlockAsync();
                     }
+                    _fileStore.FlushToDisk(file);
                 }
             }
         }

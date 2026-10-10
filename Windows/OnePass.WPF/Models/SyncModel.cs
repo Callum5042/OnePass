@@ -72,21 +72,21 @@ namespace OnePass.WPF.Models
                 var accountSyncer = new AccountSyncer();
                 var sortedAccounts = accountSyncer.Sync(mobileAccounts, accountModel.OnePassData);
 
-                // Send sorted content back
                 var data = new OnePassData
                 {
                     Accounts = sortedAccounts.Accounts,
                     DeletedAccounts = sortedAccounts.DeletedAccounts
                 };
 
-                using var writer = new BinaryWriter(stream);
-                var sortedJson = JsonSerializer.Serialize(data);
-                writer.Write(sortedJson);
-
                 // Save
                 var fileEncoder = App.Current.GetService<IFileEncoder>();
                 var userData = App.Current.GetService<UserData>();
                 await fileEncoder.SaveAsync(userData.Username, userData.Password, data, userData.FilePath);
+
+                // Only publish the merged vault after the local save succeeds.
+                using var writer = new BinaryWriter(stream);
+                var sortedJson = JsonSerializer.Serialize(data);
+                writer.Write(sortedJson);
 
                 // Append
                 AccountListModels = sortedAccounts.Accounts
