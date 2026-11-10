@@ -239,6 +239,60 @@ class AccountVaultTest {
         assertEquals(true, encoder.savedData?.accounts?.single()?.favourite)
     }
 
+    @Test
+    fun upgradeFormatRewritesAnUnlockedVersionOneVault() = runBlocking {
+        val store = FakeDocumentStore(vaultHeader(version = 1))
+        val encoder = CapturingEncoder("encrypted".encodeToByteArray())
+        val repository = repository(store, encoder)
+        val data = OnePassData(accounts = listOf(account()))
+        repository.unlock(data, "content://vault", "key".toCharArray())
+
+        assertEquals(true, repository.upgradeFormat())
+
+        assertArrayEquals("encrypted".encodeToByteArray(), store.bytes)
+        assertEquals(data, encoder.savedData)
+        assertEquals(data, (repository.state.value as VaultState.Unlocked).data)
+    }
+
+    @Test
+    fun upgradeFormatLeavesCurrentAndUnreadableVaultsUntouched() = runBlocking {
+        for (bytes in listOf(vaultHeader(version = 2), "not a vault".encodeToByteArray())) {
+            val store = FakeDocumentStore(bytes)
+            val repository = repository(store, CapturingEncoder("encrypted".encodeToByteArray()))
+            repository.unlock(OnePassData(), "content://vault", "key".toCharArray())
+
+            assertEquals(false, repository.upgradeFormat())
+
+            assertArrayEquals(bytes, store.bytes)
+            assertEquals(0, store.writeAttempts)
+        }
+    }
+
+    @Test
+    fun upgradeFormatDoesNothingWhileLocked() = runBlocking {
+        val store = FakeDocumentStore(vaultHeader(version = 1))
+        val repository = repository(store, CapturingEncoder("encrypted".encodeToByteArray()))
+
+        assertEquals(false, repository.upgradeFormat())
+        assertEquals(0, store.writeAttempts)
+    }
+
+    @Test
+    fun upgradeFormatRestoresTheOriginalWhenWritingFails() = runBlocking {
+        val original = vaultHeader(version = 1)
+        val store = FakeDocumentStore(original, failuresRemaining = 1)
+        val repository = repository(store, CapturingEncoder("encrypted".encodeToByteArray()))
+        repository.unlock(OnePassData(), "content://vault", "key".toCharArray())
+
+        assertEquals(false, repository.upgradeFormat())
+
+        assertArrayEquals(original, store.bytes)
+        assertEquals(2, store.writeAttempts)
+    }
+
+    private fun vaultHeader(version: Int): ByteArray =
+        ".ONEPASS".encodeToByteArray() + byteArrayOf(version.toByte(), 0, 0, 0)
+
     private fun repository(store: FakeDocumentStore, encoder: CapturingEncoder) = VaultRepository(
         documentStore = store,
         encoder = encoder,

@@ -67,6 +67,7 @@ class VaultRepository(
     private val encoder: VaultEncoder = FileEncoder(),
     private val now: () -> Instant = Instant::now,
     private val newGuid: () -> UUID = UUID::randomUUID,
+    private val needsUpgrade: (ByteArray) -> Boolean = FileEncoder::needsUpgrade,
 ) {
     private val _state = MutableStateFlow<VaultState>(VaultState.Locked)
     val state = _state.asStateFlow()
@@ -101,6 +102,48 @@ class VaultRepository(
     fun lock() {
         clearSession()
         _state.value = VaultState.Locked
+    }
+
+    /**
+     * Rewrites an unlocked vault that is still stored in an older file format, so it does not
+     * stay on the weaker format until the next edit. Returns true when the file was rewritten.
+     */
+    suspend fun upgradeFormat(): Boolean = updateMutex.withLock {
+        val unlocked = _state.value as? VaultState.Unlocked ?: return@withLock false
+        val activeSession = session ?: return@withLock false
+        val password = activeSession.password.copyOf()
+
+        try {
+            val original = try {
+                documentStore.read(activeSession.documentUri)
+            } catch (_: Exception) {
+                return@withLock false
+            }
+            val outdated = try {
+                needsUpgrade(original)
+            } catch (_: Exception) {
+                false
+            }
+            if (!outdated) return@withLock false
+
+            val encrypted = try {
+                encoder.save(password, unlocked.data)
+            } catch (_: Exception) {
+                return@withLock false
+            }
+            // Locking clears the session password, so never write a vault encoded across a lock.
+            if (session !== activeSession) return@withLock false
+
+            try {
+                documentStore.write(activeSession.documentUri, encrypted)
+            } catch (_: Exception) {
+                runCatching { documentStore.write(activeSession.documentUri, original) }
+                return@withLock false
+            }
+            true
+        } finally {
+            password.fill('\u0000')
+        }
     }
 
     internal fun copyActiveSession(): ActiveVaultSession? =

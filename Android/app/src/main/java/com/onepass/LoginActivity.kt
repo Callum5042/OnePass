@@ -259,8 +259,12 @@ class LoginActivity : FragmentActivity() {
 
     private fun loginAndOpenMain(data: OnePassData, documentUri: Uri, password: CharArray) {
         try {
-            val repository = (application as OnePassApplication).vaultRepository
+            val onePassApplication = application as OnePassApplication
+            val repository = onePassApplication.vaultRepository
             repository.unlock(data, documentUri.toString(), password)
+
+            // Outlives this activity: a vault in an older file format is rewritten once unlocked.
+            onePassApplication.applicationScope.launch { repository.upgradeFormat() }
 
             val activity = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(activity)

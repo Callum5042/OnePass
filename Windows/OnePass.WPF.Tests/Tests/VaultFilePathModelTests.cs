@@ -107,9 +107,9 @@ namespace OnePass.WPF.Tests.Tests
                 return Task.CompletedTask;
             }
 
-            public bool Verify(string username, string password, string path = null)
+            public bool NeedsUpgrade(string username, string path = null)
             {
-                return true;
+                return false;
             }
         }
     }

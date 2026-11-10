@@ -19,4 +19,8 @@
     <ProjectReference Include="..\OnePass.WPF\OnePass.WPF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\OnePass.Tests\Fixtures\vault-v1.bin" Link="Fixtures\vault-v1.bin" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
