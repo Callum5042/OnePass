@@ -64,6 +64,57 @@ namespace OnePass.WPF.Tests.Tests
         }
 
         [Fact]
+        public async Task TryDecryptAsync_VersionOneVault_UpgradesFileOnUnlock()
+        {
+            var directory = CreateTempDirectory();
+            var filePath = Path.Combine(directory, "legacy-vault.bin");
+            File.Copy(Path.Combine(AppContext.BaseDirectory, "Fixtures", "vault-v1.bin"), filePath);
+            var encoder = new FileEncoder();
+
+            try
+            {
+                Assert.True(encoder.NeedsUpgrade("ignored", filePath));
+                var model = CreateModel(encoder, filePath, "fixture-password");
+
+                var result = await model.TryDecryptAsync();
+
+                Assert.NotNull(result);
+                Assert.Single(result.Accounts);
+                Assert.False(encoder.NeedsUpgrade("ignored", filePath));
+                var reloaded = await encoder.LoadAsync("ignored", "fixture-password", filePath);
+                Assert.Equal("Ünicode account", Assert.Single(reloaded.Accounts).Name);
+            }
+            finally
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        [Fact]
+        public async Task TryDecryptAsync_VersionOneVaultIncorrectPassword_LeavesFileUntouched()
+        {
+            var directory = CreateTempDirectory();
+            var filePath = Path.Combine(directory, "legacy-vault.bin");
+            File.Copy(Path.Combine(AppContext.BaseDirectory, "Fixtures", "vault-v1.bin"), filePath);
+            var original = File.ReadAllBytes(filePath);
+
+            try
+            {
+                var model = CreateModel(new FileEncoder(), filePath, "IncorrectPassword123");
+
+                var result = await model.TryDecryptAsync();
+
+                Assert.Null(result);
+                Assert.Equal("Password is incorrect.", model.Login.PasswordValidation);
+                Assert.Equal(original, File.ReadAllBytes(filePath));
+            }
+            finally
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+
+        [Fact]
         public async Task TryDecryptAsync_InvalidVault_SetsFileValidation()
         {
             var directory = CreateTempDirectory();

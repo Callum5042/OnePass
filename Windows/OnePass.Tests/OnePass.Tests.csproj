@@ -25,4 +25,8 @@
     <ProjectReference Include="..\OnePass\OnePass.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

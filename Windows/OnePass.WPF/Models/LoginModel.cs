@@ -51,19 +51,20 @@ namespace OnePass.WPF.Models
 
             try
             {
-                if (!_fileEncoder.Verify(username, Login.Password, Login.FilePath))
-                {
-                    Login.PasswordValidation = "Password is incorrect.";
-                    return null;
-                }
-
                 var data = await _fileEncoder.LoadAsync(username, Login.Password, Login.FilePath);
                 if (data is null)
                 {
                     Login.FilePathValidation = "Not a valid OnePass file.";
+                    return null;
                 }
 
+                await TryUpgradeAsync(username, data);
+
                 return data;
+            }
+            catch (InvalidPasswordException)
+            {
+                Login.PasswordValidation = "Password is incorrect.";
             }
             catch (FileNotFoundException)
             {
@@ -103,6 +104,25 @@ namespace OnePass.WPF.Models
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Rewrites a vault stored in an older file format as soon as it has been
+        /// unlocked, so it does not stay on the weaker format until the next edit.
+        /// </summary>
+        private async Task TryUpgradeAsync(string username, OnePassData data)
+        {
+            try
+            {
+                if (_fileEncoder.NeedsUpgrade(username, Login.FilePath))
+                {
+                    await _fileEncoder.SaveAsync(username, Login.Password, data, Login.FilePath);
+                }
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                // The vault is already open; a read-only file is upgraded on a later save instead.
+            }
         }
 
         public async Task LoadOptions()
